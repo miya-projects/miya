@@ -9,8 +9,7 @@ import java.util.Objects;
 
 /**
  * @author 杨超辉
- * @date 2018/6/30
- * @description http响应实体
+ * http响应实体
  * 当用户未达到调用接口的目的时，success应该为false，业务逻辑的多种走向应该使用data里的信息承载
  */
 @Getter

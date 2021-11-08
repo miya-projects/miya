@@ -22,8 +22,7 @@ import java.util.Objects;
 
 /**
  * @author 杨超辉
- * @date 2018/6/18
- * @description jwt filter
+ * jwt filter
  */
 @Slf4j
 @RequiredArgsConstructor

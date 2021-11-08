@@ -20,7 +20,6 @@ public @interface Acl {
 
     /**
      * 可访问的用户类型 该参数也用作swagger文档分组
-     * @return
      */
     @AliasFor("value")
     Class<?> userType() default AllUser.class;

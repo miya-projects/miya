@@ -9,8 +9,6 @@ import javax.persistence.PersistenceContext;
 
 /**
  * @author 杨超辉
- * @date 2018/6/26
- * @description
  */
 public class BaseApi {
 

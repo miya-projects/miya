@@ -30,8 +30,6 @@ import java.util.Objects;
 
 /**
  * @author 杨超辉
- * @date 2018/7/21
- * @description
  */
 @Slf4j
 public class JwtTokenService implements Serializable, SystemInit, TokenService {

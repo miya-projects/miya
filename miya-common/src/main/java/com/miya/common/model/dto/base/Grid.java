@@ -13,8 +13,7 @@ import java.util.Map;
 
 /**
  * @author 杨超辉
- * @date 2019/2/26
- * @description page 对象的简化版本， page对象序列化后有很多用不到的字段
+ * page 对象的简化版本， page对象序列化后有很多用不到的字段
  */
 @Data
 @AllArgsConstructor

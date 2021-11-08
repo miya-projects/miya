@@ -18,8 +18,7 @@ import java.util.*;
 
 /**
  * @author 杨超辉
- * @date 2018/7/29
- * @description 实现json传参方式中部分参数接收的参数解析器 在json 参数中使用@RequestJson("参数名")即可
+ * 实现json传参方式中部分参数接收的参数解析器 在json 参数中使用@RequestJson("参数名")即可
  * 没配置参数名默认为变量名
  */
 

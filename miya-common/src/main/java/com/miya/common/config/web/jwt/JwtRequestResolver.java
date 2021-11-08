@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author 杨超辉
- * @date 2018/6/18
  * 请求权限解析器
  */
 @Slf4j

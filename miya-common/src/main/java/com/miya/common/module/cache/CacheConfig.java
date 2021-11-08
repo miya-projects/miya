@@ -27,9 +27,6 @@ public class CacheConfig {
      * 每个cache缺省：10秒超时、最多缓存50000条数据，需要修改可以在构造方法的参数中指定。
      */
     public enum Caches {
-        /**
-         * @see SysConfigService
-         */
         SYS_CONFIG(600),
         // 有效期2个小时 , 最大容量1000
         caffeineTwo(5, 600);

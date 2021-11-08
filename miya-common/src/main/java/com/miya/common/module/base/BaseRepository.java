@@ -16,10 +16,9 @@ import javax.persistence.LockModeType;
 
 /**
  * @author 杨超辉
- * @date 2019/3/2
- * @description repository基类
  * @param <T> 实体类
  * @param <S> Q实体类
+ * repository基类
  */
 @NoRepositoryBean
 public interface BaseRepository<T, S extends EntityPath<?>> extends JpaRepository<T, String>,

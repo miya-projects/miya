@@ -8,8 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author 杨超辉
- * @date 2018/7/29
- * @description @See #RequestJsonHandlerMethodArgumentResolver
+ * 另见 com.miya.common.config.web.RequestJsonHandlerMethodArgumentResolver
  */
 
 @Target(ElementType.PARAMETER)

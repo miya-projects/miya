@@ -9,10 +9,35 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
+    <name>${project.artifactId}</name>
+    <description>MIYA是一个追求简单易用的中后台软件开发包。你可以轻而易举得到一些实用的功能</description>
+    <url>https://github.com/miya-projects/miya.git</url>
+
+    <developers>
+        <developer>
+            <name>杨超辉</name>
+            <id>rxxy</id>
+            <email>891841484@qq.com</email>
+            <organization>teamytd</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+
         <springboot.version>2.5.6</springboot.version>
         <maven.jar.version>3.2.0</maven.jar.version>
         <maven.compiler.version>3.8.1</maven.compiler.version>
@@ -29,6 +54,7 @@
     </modules>
 
     <scm>
+        <url>https://github.com/miya-projects/miya.git</url>
         <connection>scm:git:https://github.com/miya-projects/miya</connection>
         <developerConnection>scm:git:https://github.com/miya-projects/miya</developerConnection>
     </scm>
@@ -86,19 +112,22 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!--<plugin>-->
-                    <!--    <groupId>org.apache.maven.plugins</groupId>-->
-                    <!--    <artifactId>maven-javadoc-plugin</artifactId>-->
-                    <!--    <version>2.9.1</version>-->
-                    <!--    <executions>-->
-                    <!--        <execution>-->
-                    <!--            <id>attach-javadocs</id>-->
-                    <!--            <goals>-->
-                    <!--                <goal>jar</goal>-->
-                    <!--            </goals>-->
-                    <!--        </execution>-->
-                    <!--    </executions>-->
-                    <!--</plugin>-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>

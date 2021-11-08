@@ -22,7 +22,6 @@ import java.util.*;
 
 /**
  * @author 杨超辉
- * @date 2018/10/18
  * api访问日志拦截器
  */
 // @ControllerAdvice

@@ -11,21 +11,18 @@ public interface KeyValueStore {
     /**
      * 获取配置项 没有的话返回null
      * @param key
-     * @return
      */
     String get(CacheKey key);
 
     /**
      * 获取配置项
      * @param key
-     * @return
      */
     <T> T get(CacheKey key, Class<T> tClass);
 
     /**
      * 设置数据
      * @param key
-     * @return
      */
     void set(CacheKey key, Serializable value);
 

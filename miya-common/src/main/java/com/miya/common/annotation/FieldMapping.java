@@ -14,7 +14,6 @@ public @interface FieldMapping {
 
     /**
      * model中的名字，如果dto和model中名字相同，不需要配置
-     * @return
      */
     String value() default "";
 
@@ -23,7 +22,6 @@ public @interface FieldMapping {
      * 如SysUserDTO中sex字段为String类型，
      * 映射到SysUser中为SysDict类型，dto中的sex作为SysDict的id
      * 这时此字段配置为SysDict.class
-     * @return
      */
     Class<?> mappingClass() default Void.class;
 

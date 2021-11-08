@@ -11,9 +11,8 @@ import java.util.Objects;
 
 /**
  * @author 樊超
- * @description: 签名认证访问拦截器
+ * 签名认证访问拦截器
  * 主要为了防止重放攻击
- * @date 2019-02-24
  * todo BS架构好像也没什么应用场景
  */
 @Slf4j
