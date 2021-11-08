@@ -1,0 +1,154 @@
+{
+  "groups": [
+    {
+      "name": "config",
+      "type": "com.miya.system.config.ProjectConfig",
+      "sourceType": "com.miya.system.config.ProjectConfig"
+    },
+    {
+      "name": "config.backup-on-delete",
+      "type": "com.miya.system.module.bod.BackupDataSourceConfig$DbConfig",
+      "sourceType": "com.miya.system.module.bod.BackupDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.db",
+      "type": "com.miya.common.config.orm.source.PrimaryDataSourceConfig$DbConfig",
+      "sourceType": "com.miya.common.config.orm.source.PrimaryDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.oss",
+      "type": "com.miya.system.module.oss.OssConfigProperties",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties"
+    },
+    {
+      "name": "config.oss.aliyun",
+      "type": "com.miya.system.module.oss.OssConfigProperties$Aliyun",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties"
+    },
+    {
+      "name": "config.oss.bare",
+      "type": "com.miya.system.module.oss.OssConfigProperties$Bare",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties"
+    },
+    {
+      "name": "config.oss.minio",
+      "type": "com.miya.system.module.oss.OssConfigProperties$Minio",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "config.backup-on-delete.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启备份库",
+      "sourceType": "com.miya.system.module.bod.BackupDataSourceConfig$DbConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "config.backup-on-delete.password",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.bod.BackupDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.backup-on-delete.url",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.bod.BackupDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.backup-on-delete.username",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.bod.BackupDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.db.password",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.common.config.orm.source.PrimaryDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.db.url",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.common.config.orm.source.PrimaryDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.db.username",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.common.config.orm.source.PrimaryDataSourceConfig$DbConfig"
+    },
+    {
+      "name": "config.domain",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.config.ProjectConfig"
+    },
+    {
+      "name": "config.email",
+      "type": "java.lang.String",
+      "description": "发生错误时发送的邮件地址",
+      "sourceType": "com.miya.system.config.ProjectConfig"
+    },
+    {
+      "name": "config.oss.aliyun.access-key",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Aliyun"
+    },
+    {
+      "name": "config.oss.aliyun.bucket-name",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Aliyun",
+      "defaultValue": "base-group"
+    },
+    {
+      "name": "config.oss.aliyun.endpoint",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Aliyun"
+    },
+    {
+      "name": "config.oss.aliyun.secret-key",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Aliyun"
+    },
+    {
+      "name": "config.oss.bare.upload-absolute-path",
+      "type": "java.lang.String",
+      "description": "上传绝对路径",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Bare"
+    },
+    {
+      "name": "config.oss.minio.access-key",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Minio"
+    },
+    {
+      "name": "config.oss.minio.bucket-name",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Minio",
+      "defaultValue": "base-group"
+    },
+    {
+      "name": "config.oss.minio.endpoint",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Minio"
+    },
+    {
+      "name": "config.oss.minio.secret-key",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties$Minio"
+    },
+    {
+      "name": "config.oss.type",
+      "type": "com.miya.system.module.oss.OssConfigProperties$OssType",
+      "sourceType": "com.miya.system.module.oss.OssConfigProperties"
+    },
+    {
+      "name": "config.project-name",
+      "type": "java.lang.String",
+      "sourceType": "com.miya.system.config.ProjectConfig"
+    },
+    {
+      "name": "config.version",
+      "type": "java.lang.String",
+      "description": "软件版本",
+      "sourceType": "com.miya.system.config.ProjectConfig"
+    }
+  ],
+  "hints": []
+}

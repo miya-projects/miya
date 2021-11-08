@@ -1,0 +1,37 @@
+cache:
+    paths:
+    - target/
+stages:
+  - build_and_deploy
+variables:
+before_script:
+  - echo "before-script"
+
+# 本地单机单实例docker部署
+#local_server_build_and_deploy:
+#   stage: build_and_deploy
+#   variables:
+##     镜像名/构建后的jar名/启动之后的容器名 将都沿用这个名字
+#     NAME: "miya-service"
+#     PORT: 8633
+#     PROFILE: "dev"
+#   tags:
+#     - local_shell
+#   only:
+#     - master
+#   script:
+#     - TIME=`date "+%Y%m%d%H%M"`
+#     - GIT_REVISION=`git log -1 --pretty=format:"%h"`
+#     - TAG=${TIME}_${GIT_REVISION}
+#     - IMAGE_NAME=ytd-local.com:81/ledaotech/${NAME}
+#     - docker build --build-arg NAME=${NAME} --build-arg PROFILE=${PROFILE} -t ${IMAGE_NAME}:${TAG} -f .deploy/Dockerfile --target=build-image .
+#     - docker tag ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:latest
+#     # - docker push ${IMAGE_NAME}:${TAG}
+#     # - docker push ${IMAGE_NAME}:latest
+#     - docker stop ${NAME}
+#     - docker rm ${NAME}
+#     - docker run -d -p8088:${PORT} --name ${NAME} -eSPRING_PROFILES_ACTIVE=prod ${IMAGE_NAME}:${TAG}
+
+# 需要开启docker的buildkit
+#export DOCKER_BUILDKIT=1
+#  docker build -f .deploy/Dockerfile --target=export-stage -o dist .

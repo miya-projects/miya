@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.github.rxxy</groupId>
+        <artifactId>miya-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>miya-examples</artifactId>
+    <properties>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>central-snapshots</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.10.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.rxxy</groupId>
+            <artifactId>miya-system</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <!--powerjob-->
+        <!--<dependency>-->
+        <!--    <groupId>tech.powerjob</groupId>-->
+        <!--    <artifactId>powerjob-worker-spring-boot-starter</artifactId>-->
+        <!--    <version>4.0.0</version>-->
+        <!--</dependency>-->
+        <!-- es -->
+        <!--<dependency>-->
+        <!--    <groupId>org.hibernate.search</groupId>-->
+        <!--    <artifactId>hibernate-search-mapper-orm</artifactId>-->
+        <!--    <version>6.0.6.Final</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--    <groupId>org.hibernate.search</groupId>-->
+        <!--    <artifactId>hibernate-search-backend-elasticsearch</artifactId>-->
+        <!--    <version>6.0.6.Final</version>-->
+        <!--</dependency>-->
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <version>5.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-core</artifactId>
+                <version>5.0.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <!-- 只过滤配置文件 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.1.4</version>
+                <configuration>
+                    <from>
+                        <image>registry.cn-hangzhou.aliyuncs.com/rxxy/java:8-jdk</image>
+                        <auth>
+                            <username>${env.REGISTRY_USERNAME}</username>
+                            <password>${env.REGISTRY_PASSWORD}</password>
+                        </auth>
+                    </from>
+                    <to>
+                        <image>registry.cn-hangzhou.aliyuncs.com/rxxy/miya-service:latest</image>
+                        <auth>
+                            <username>${env.REGISTRY_USERNAME}</username>
+                            <password>${env.REGISTRY_PASSWORD}</password>
+                        </auth>
+                    </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Dspring.profiles.active=prod</jvmFlag>
+                            <jvmFlag>-Xms512m</jvmFlag>
+                            <jvmFlag>-Xdebug</jvmFlag>
+                        </jvmFlags>
+                        <mainClass>com.teamytd.Application</mainClass>
+                        <args>
+                            <arg>args</arg>
+                        </args>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <labels>
+                            <app>miya-examples</app>
+                        </labels>
+                        <format>OCI</format>
+                    </container>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.4.2.Final</version>
+                        </path>
+                        <path>
+                            <groupId>com.querydsl</groupId>
+                            <artifactId>querydsl-apt</artifactId>
+                            <version>5.0.0</version>
+                            <classifier>jpa</classifier>
+                        </path>
+                        <!-- 需额外增加该依赖 @see https://github.com/querydsl/querydsl/issues/2654-->
+                        <path>
+                            <groupId>jakarta.persistence</groupId>
+                            <artifactId>jakarta.persistence-api</artifactId>
+                            <version>2.2.3</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>fatjar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <!--不添加描述信息到jar中，包括pom文件等信息-->
+                                <addMavenDescriptor>false</addMavenDescriptor>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <fork>true</fork>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,111 @@
+[
+  {
+    "$schema": "./business.schema.json",
+    "name": "系统",
+    "code": "sys",
+    "children": [
+      {
+        "name": "用户",
+        "code": "user",
+        "children": [
+          {
+            "name": "查看",
+            "code": "view"
+          },
+          {
+            "name": "新增",
+            "code": "add"
+          },
+          {
+            "name": "编辑",
+            "code": "edit"
+          },
+          {
+            "name": "删除",
+            "code": "delete"
+          },
+          {
+            "name": "冻结/解冻",
+            "code": "blocks"
+          },
+          {
+            "name": "重置密码",
+            "code": "resetPassword"
+          }
+        ]
+      },
+      {
+        "name": "角色",
+        "code": "role",
+        "children": [
+          {
+            "name": "查看",
+            "code": "view"
+          },
+          {
+            "name": "新增",
+            "code": "add"
+          },
+          {
+            "name": "编辑",
+            "code": "edit"
+          },
+          {
+            "name": "删除",
+            "code": "delete"
+          }
+        ]
+      },
+      {
+        "name": "参数",
+        "code": "config",
+        "children": [
+          {
+            "name": "查看",
+            "code": "view"
+          },
+          {
+            "name": "编辑",
+            "code": "edit"
+          }
+        ]
+      },
+      {
+        "name": "日志",
+        "code": "log",
+        "children": [
+          {
+            "name": "查看",
+            "code": "view"
+          }
+        ]
+      },
+      {
+        "name": "字典",
+        "code": "dict",
+        "children": [
+          {
+            "name": "查看",
+            "code": "view"
+          },
+          {
+            "name": "新增",
+            "code": "add"
+          },
+          {
+            "name": "编辑",
+            "code": "edit"
+          },
+          {
+            "name": "删除",
+            "code": "delete"
+          }
+        ]
+      },
+      {
+        "name": "开发工具",
+        "code": "develop"
+      }
+    ]
+  }
+]

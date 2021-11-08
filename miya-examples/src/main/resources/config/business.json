@@ -1,0 +1,13 @@
+[
+  {
+    "$schema": "https://miya.rxxy.icu/business.schema.json#",
+    "name": "订单管理",
+    "code": "order",
+    "children": [
+      {
+        "name": "查看",
+        "code": "view"
+      }
+    ]
+  }
+]

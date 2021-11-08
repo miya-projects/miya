@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik:v2.3
+    container_name: "traefik"
+    restart: always
+    networks:
+      - traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+#swarm模式需要指定的
+#      - "--providers.docker.swarmMode=true"
+#      - "--providers.docker.swarmModeRefreshSeconds=5"
+      - "--providers.docker.network=traefik"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--api.debug=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+networks:
+  traefik:
+    external: true

@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: MUST_BE_CHANGE_IN_PRODUCTION
+      MINIO_SECRET_KEY: MUST_BE_CHANGE_IN_PRODUCTION
+    volumes:
+      - minio-data:/data
+      - minio-config:/root/.minio
+    networks:
+      - minio
+    restart: always
+    command: server /data
+networks:
+  minio:
+    external: true
+volumes:
+  minio-data:
+    external: true
+  minio-config:
+    external: true
