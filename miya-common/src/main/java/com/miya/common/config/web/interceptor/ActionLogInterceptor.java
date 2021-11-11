@@ -43,6 +43,9 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
      */
     private final boolean printResponse;
 
+    /**
+     * 某些类或包的的请求不打印日志，需传全类名
+     */
     private final String[] excludes;
 
 

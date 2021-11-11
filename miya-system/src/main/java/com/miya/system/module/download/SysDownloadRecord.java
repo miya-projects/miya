@@ -20,16 +20,19 @@ import java.time.Instant;
 public class SysDownloadRecord extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "enum('PROCESSING', 'COMPLETED', 'DOWNLOAD')")
     private Status status = Status.PROCESSING;
 
-    @Column(name = "name")
+    /**
+     * 下载内容
+     */
+    @Column(name = "name", length = 100)
     private String name;
 
     @Column(name = "download_time")
     private Instant downloadTime;
 
-    @Column(name = "file_name")
+    @Column(name = "file_name", length = 100)
     private String fileName;
 
     @ManyToOne
@@ -38,7 +41,7 @@ public class SysDownloadRecord extends BaseEntity {
     private SysFile file;
 
     @Type(type = "com.vladmihalcea.hibernate.type.json.JsonNodeStringType")
-    @Column(name = "extra")
+    @Column(name = "extra", columnDefinition = "json")
     private JsonNode extra;
 
     @Getter

@@ -24,9 +24,15 @@ import java.util.stream.Collectors;
 @Entity
 public class SysRole extends BaseEntity {
 
+    @Column(length = 50, unique = true)
     private String name;
+
+    @Column(length = 10)
     private Integer sequence;
+
+    @Column(length = 100)
     private String description;
+
     private Boolean isSystem;
 
     /**
@@ -34,7 +40,7 @@ public class SysRole extends BaseEntity {
      */
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "sys_permission", joinColumns = {@JoinColumn(name = "role_id")})
-    @Column(name = "code", insertable = false)
+    @Column(name = "code", insertable = false, length = 100, columnDefinition = "")
     private Set<String> permissions = new ConcurrentHashSet<>();
 
     public Set<Business> getBusiness(){

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration scan="true" scanPeriod="1000" >
+<configuration scan="true" scanPeriod="1 seconds" >
     <!--scan:-->
     <!--当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。（这个功能可以在不重启运行环境下，调整打印日志的细节，方便定位问题）-->
     <!--scanPeriod:-->
@@ -28,13 +28,6 @@
               value="%date{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %replace(%caller{1}){'\t|Caller.{1}0|\r\n', ''} - %m%n">
     </property>
 
-    <!-- Console 输出设置 -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
 <!--    <logger name="org.springframework.web" level="WARN"/>-->
 <!--    <logger name="org.springframework.boot.web.servlet.filter" level="WARN"/>-->
 <!--    <logger name="org.eclipse" level="WARN"/>-->
@@ -44,7 +37,15 @@
 <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />-->
 <!--    swagger-->
     <logger name="springfox.documentation.spring.web" level="warn" />
+    <logger name="com.miya.common.config.web.RepeatableRequestMappingHandlerMapping" level="info" />
     <logger name="com.miya" level="DEBUG" />
+
+    <!-- Console 输出设置 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
 
     <springProfile name="!prod">
         <root level="info">

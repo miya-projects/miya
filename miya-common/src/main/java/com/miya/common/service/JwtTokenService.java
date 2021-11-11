@@ -10,6 +10,7 @@ import com.miya.common.config.web.jwt.TokenExpirationException;
 import com.miya.common.config.web.jwt.TokenService;
 import com.miya.common.module.cache.CacheKey;
 import com.miya.common.module.cache.KeyValueStore;
+import com.miya.common.module.config.SysConfig;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.common.module.init.SystemInit;
 import com.miya.common.module.init.SystemInitErrorException;
@@ -57,7 +58,7 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
         // 重置secret
         // 随机生成一个Secret
         String secStr = RandomUtil.randomString(18);
-        this.configService.set(JWT_SECRET_KEY, secStr);
+        this.configService.put(JWT_SECRET_KEY, secStr, "jwt密钥(务必不可泄露)", SysConfig.GROUP_SYSTEM);
         this.secret = secStr.getBytes();
     }
 
@@ -68,7 +69,7 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
         String sec = configService.get(JWT_SECRET_KEY).orElseGet(() -> {
             log.info("未设置JWT密钥，生成一个");
             String secStr = RandomUtil.randomString(18);
-            this.configService.set(JWT_SECRET_KEY, secStr);
+            this.configService.put(JWT_SECRET_KEY, secStr, "jwt密钥(务必不可泄露)", SysConfig.GROUP_SYSTEM);
             return secStr;
         });
         this.secret = sec.getBytes();

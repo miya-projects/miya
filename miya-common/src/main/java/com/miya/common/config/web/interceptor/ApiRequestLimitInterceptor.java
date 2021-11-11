@@ -7,6 +7,7 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.util.CastUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -48,12 +49,13 @@ public class ApiRequestLimitInterceptor implements HandlerInterceptor{
             accessQueue = new ArrayBlockingQueue<>(count);
             session.setAttribute(key, accessQueue);
         }else {
-            accessQueue = (Queue<Date>)o;
+            accessQueue = CastUtils.cast(o);
         }
 
         //队列未满
         if (count <= accessQueue.size() ) {
-            return mm(seconds, accessQueue);
+            addToQueue(seconds, accessQueue);
+            return true;
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
@@ -64,11 +66,10 @@ public class ApiRequestLimitInterceptor implements HandlerInterceptor{
 
     /**
      * 队列未满，加到队列里去
-     * @param seconds
-     * @param accessQueue
-     * @return
+     * @param seconds   多少秒后过期
+     * @param accessQueue   访问队列
      */
-    public static boolean mm(int seconds, Queue<Date> accessQueue) {
+    public static void addToQueue(int seconds, Queue<Date> accessQueue) {
         accessQueue.add(new Date());
         final Queue<Date> accessQueueForLambada = accessQueue;
         Timer timer = new Timer();
@@ -80,7 +81,6 @@ public class ApiRequestLimitInterceptor implements HandlerInterceptor{
         };
         Date now = new Date();
         timer.schedule(task, DateUtil.offsetSecond(now, seconds));
-        return true;
     }
 
 }

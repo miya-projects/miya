@@ -36,8 +36,9 @@ import java.util.Date;
 public abstract class BaseEntity implements Serializable, Persistable<Serializable> {
 
     @Id
-    // @GenericGenerator(name = "idGenerator", strategy = "com.miya.system.config.orm.ManualInsertGenerator")
-    @GenericGenerator(name = "idGenerator", strategy = "uuid")
+    @Column(name = "id", columnDefinition = "char(32)")
+    @GenericGenerator(name = "idGenerator", strategy = "com.miya.common.config.orm.ManualInsertGenerator")
+    // @GenericGenerator(name = "idGenerator", strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")
     protected String id;
 
@@ -61,6 +62,7 @@ public abstract class BaseEntity implements Serializable, Persistable<Serializab
      * 创建人
      */
     @CreatedBy
+    @Column(name = "created_user", length = 50)
     protected String createdUser;
 
     @JsonIgnore

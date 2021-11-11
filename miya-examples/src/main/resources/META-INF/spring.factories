@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.miya.common.config.orm.source.CommonDataSourceConfig,\
-  com.miya.system.config.BeanRegister,\
-  com.miya.system.config.MiyaSystemAutoConfiguration,\
-  com.miya.system.config.ProjectConfiguration

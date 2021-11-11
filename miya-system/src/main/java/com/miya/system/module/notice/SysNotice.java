@@ -6,10 +6,7 @@ import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Map;
 
@@ -24,16 +21,21 @@ public class SysNotice extends BaseEntity {
     /**
      * 通知标题
      */
+    @Column(length = 512)
     private String title;
+
     /**
      * 通知内容
      */
+    @Column(columnDefinition = "text")
     private String content;
+
     /**
      * 额外参数
      * todo 具化类型?
      */
     @Type(type = "json")
+    @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
 
     /**

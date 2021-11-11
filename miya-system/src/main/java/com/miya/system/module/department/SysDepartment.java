@@ -22,7 +22,11 @@ import java.util.Objects;
 @Entity
 @Accessors(chain = true)
 public class SysDepartment extends BaseEntity {
+
+    @Column(length = 100)
     private String name;
+
+    @Column(length = 200)
     private String description;
 
     @ManyToOne
@@ -34,6 +38,7 @@ public class SysDepartment extends BaseEntity {
     private List<SysDepartment> children;
 
     @Type(type = "json")
+    @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
 
     @Override

@@ -25,7 +25,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * @author 杨超辉
  * @date 2018/6/26
- * @description
  */
 @RestController
 @RequestMapping("user/current")
@@ -101,6 +100,14 @@ public class AccountApi {
                 Pair.of("systemMeta", sysConfigService.getSystemMeta()),
                 Pair.of("unreadNoticeAmount", sysNoticeService.unreadNoticeAmount(sysUser.getId()))
         ));
+    }
+
+    @PutMapping("preferences")
+    @ApiOperation(value = "用户偏好配置修改(前端)")
+    public R<?> preferences(@NotBlank String preferences, @AuthenticationPrincipal final SysUser sysUser) {
+        sysUser.getPreferences().setFront(preferences);
+        sysUserService.update(sysUser);
+        return R.success();
     }
 
     @Acl

@@ -63,7 +63,8 @@ public class ApiUsageLimitInterceptor implements HandlerInterceptor {
         }
         //队列未满
         if (visitTimes.compareTo(accessQueue.size()) >= 0) {
-            return ApiRequestLimitInterceptor.mm(windowSize, accessQueue);
+            ApiRequestLimitInterceptor.addToQueue(windowSize, accessQueue);
+            return true;
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");

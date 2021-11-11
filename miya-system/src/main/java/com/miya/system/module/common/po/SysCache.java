@@ -2,11 +2,17 @@ package com.miya.system.module.common.po;
 
 
 import com.miya.common.module.base.BaseEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.Hibernate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 可持久化k-v存储
@@ -17,10 +23,26 @@ import java.util.Date;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class SysCache extends BaseEntity {
+
+    @Column(length = 100)
     private String sKey;
+
+    @Column(columnDefinition = "text")
     private String sVal;
+
     private Date expireDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        SysCache sysCache = (SysCache) o;
+        return Objects.equals(id, sysCache.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

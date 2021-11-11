@@ -16,23 +16,20 @@ import org.springframework.security.core.AuthenticatedPrincipal;
 
 import javax.persistence.Entity;
 import javax.persistence.*;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author 杨超辉
  * @date 2018/6/17
- * @description 用户
  * 有多个类有相同的部分属性，把它们定义到父类中，恰好id（数据库主键）也在父类中，
  * 那么就会存在部分对象在比较时，它们并不相等，
  * 却因为lombok自动生成的equals(Object other) 和 hashCode()方法判定为相等，从而导致出错。
- *
- * todo 用户偏好配置
  */
 @Getter
 @Setter
-@RequiredArgsConstructor(staticName = "of")
-@NoArgsConstructor
 @Entity
 @DynamicInsert
 @BackupOnDelete
@@ -41,19 +38,30 @@ import java.util.stream.Collectors;
 @FilterDef(name = "orderOwnerFilter",
         parameters = {@ParamDef(name = "ownerIds", type = "string")})
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})
+@Table(indexes = {@Index(name = "avatar", columnList = "avatar_id")})
 public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
-    @NonNull
-    @Column(unique = true)
+
+    @Column(unique = true, length = 20)
     private String username;
+
+    @Column(length = 60)
     private String password;
+
+    @Column(length = 50)
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "enum('NORMAL', 'LOCKED')")
     private AccountStatus accountStatus = AccountStatus.NORMAL;
+
+    @Column(length = 512)
     private String remark;
+
+    @Column(length = 20)
     private String phone;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "enum('MALE', 'FEMALE')")
     private Sex sex;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -71,13 +79,22 @@ public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
     @NotFound(action = NotFoundAction.IGNORE)
     private SysFile avatar;
 
+    /**
+     * 偏好配置
+     */
+    @Type(type = "json")
+    @Column(name = "preferences", columnDefinition = "json")
+    private Preferences preferences = new Preferences();
+
+    /**
+     * 获取头像 头像为空时返回默认头像
+     */
     public SysFile getAvatar() {
         return Optional.ofNullable(this.avatar).orElse(SysFileService.DEFAULT_AVATAR);
     }
 
     /**
-     * 该用户有拥有的权限数据
-     * @return
+     * @return 该用户有拥有的权限数据
      */
     public Set<String> getBusiness() {
         //如果用户为超级管理员，则拥有所有权限
@@ -103,9 +120,16 @@ public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
         private final String name;
     }
 
+    @Getter
+    @Setter
+    @EqualsAndHashCode
+    public static class Preferences{
+        // 前端使用
+        String front;
+    }
+
     /**
      * 是不是管理员
-     * @return
      */
     public boolean isAdmin(){
         return SysDefaultRoles.ADMIN.hasThisRole(this);

@@ -67,6 +67,7 @@ public class CommonDataSourceConfig implements InitializingBean {
         // properties.put(AvailableSettings.INTERCEPTOR, AuditingLogListener.class.getName());
         properties.put(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "20");
         properties.put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, SpringPhysicalNamingStrategy.class.getName());
+        // properties.put(AvailableSettings.HBM2DDL_AUTO, "update");
 
         // 对有加注解的实体启用二级缓存
         properties.put(AvailableSettings.JPA_SHARED_CACHE_MODE, SharedCacheMode.ENABLE_SELECTIVE.name());

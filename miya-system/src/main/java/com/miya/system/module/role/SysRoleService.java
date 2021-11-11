@@ -2,6 +2,7 @@ package com.miya.system.module.role;
 
 import cn.hutool.core.io.IoUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.miya.common.module.init.SystemInit;
 import com.miya.system.config.business.Business;
 import com.miya.system.module.role.model.QSysRole;
 import com.miya.system.module.role.model.SysRole;
@@ -24,7 +25,7 @@ import java.util.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SysRoleService {
+public class SysRoleService implements SystemInit {
 
     /**
      * business功能文件默认查找路径
@@ -40,7 +41,7 @@ public class SysRoleService {
 
     @SneakyThrows
     @PostConstruct
-    public void init(){
+    public void load(){
         // 寻找功能定义文件并生成business对象
         final ArrayList<URL> resources = new ArrayList<>();
         List<String> locations = new ArrayList<>(DEFAULT_BUSINESS_LOCATION);
@@ -64,10 +65,22 @@ public class SysRoleService {
         for (Business business : this.business) {
             fillParent(business, business.getChildren());
         }
+    }
 
+    @Override
+    public void init(){
         // 检查默认角色有效性
         for (SysDefaultRoles value : SysDefaultRoles.values()) {
-            value.getSysRole();
+            try{
+                value.getSysRole();
+            }catch (Exception e){
+                // 没有就新增
+                SysRole role = new SysRole();
+                role.setIsSystem(true);
+                role.setName(value.getName());
+                role.setId(value.getId());
+                sysRoleRepository.save(role);
+            }
         }
     }
 

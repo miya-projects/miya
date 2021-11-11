@@ -57,7 +57,6 @@ public class SysConfigApi extends BaseApi {
 
     /**
      * 设置系统参数
-     * @return
      */
     @PutMapping
     @ApiOperation("设置系统参数")
@@ -74,7 +73,6 @@ public class SysConfigApi extends BaseApi {
 
     /**
      * 系统参数列表
-     * @return
      */
     @ApiOperation("系统参数列表")
     @GetMapping
@@ -87,8 +85,6 @@ public class SysConfigApi extends BaseApi {
 
     /**
      * 系统参数详情
-     *
-     * @return
      */
     @ApiOperation("系统参数详情")
     @GetMapping("{id}")
@@ -98,7 +94,6 @@ public class SysConfigApi extends BaseApi {
 
     /**
      * 修改系统参数
-     * @return
      */
     @ApiOperation("修改系统参数")
     @PutMapping("{id}")
@@ -111,7 +106,7 @@ public class SysConfigApi extends BaseApi {
         long count = sysConfigRepository.count(QSysConfig.sysConfig.key.eq(sysConfigForm.getSkey())
                 .and(QSysConfig.sysConfig.id.ne(sysConfig.getId())));
         if (count > 0) {
-            return R.errorWithMsg("skey重复");
+            return R.errorWithMsg("key重复");
         }
         sysConfigForm.mergeToPo(sysConfig);
         sysConfigRepository.save(sysConfig);
@@ -120,7 +115,6 @@ public class SysConfigApi extends BaseApi {
 
     /**
      * 新增系统参数
-     * @return
      */
     @PostMapping
     @ApiOperation("新增系统参数")
@@ -132,7 +126,7 @@ public class SysConfigApi extends BaseApi {
         }
         boolean exists = sysConfigRepository.exists(QSysConfig.sysConfig.key.eq(sysConfigForm.getSkey()));
         if (exists) {
-            return R.errorWithMsg("skey重复");
+            return R.errorWithMsg("key重复");
         }
         SysConfig sysConfig = sysConfigForm.mergeToNewPo();
         sysConfigRepository.save(sysConfig);
@@ -141,8 +135,6 @@ public class SysConfigApi extends BaseApi {
 
     /**
      * 删除系统参数
-     *
-     * @return
      */
     @DeleteMapping("{id}")
     @ApiOperation("删除系统参数")

@@ -6,7 +6,7 @@
 
     <groupId>io.github.rxxy</groupId>
     <artifactId>miya-parent</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -49,7 +49,7 @@
 
     <modules>
         <module>../miya-system</module>
-        <module>../miya-websocket</module>
+        <!--<module>../miya-websocket</module>-->
         <module>../miya-common</module>
     </modules>
 
@@ -187,6 +187,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>io.github.rxxy</groupId>
+                <artifactId>miya-common</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${springboot.version}</version>
@@ -214,11 +219,6 @@
             <!--    <version>${querydsl.version}</version>-->
             <!--    <classifier>jpa</classifier>-->
             <!--</dependency>-->
-            <dependency>
-                <groupId>io.github.rxxy</groupId>
-                <artifactId>miya-common</artifactId>
-                <version>1.0</version>
-            </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>

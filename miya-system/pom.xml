@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>miya-system</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -15,7 +15,7 @@
     <parent>
         <groupId>io.github.rxxy</groupId>
         <artifactId>miya-parent</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
         <relativePath>../miya-parent</relativePath>
     </parent>
 
@@ -108,7 +108,6 @@
         <dependency>
             <groupId>io.github.rxxy</groupId>
             <artifactId>miya-common</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.retry</groupId>

@@ -28,25 +28,25 @@ public class SysConfig extends BaseEntity {
     /**
      * 变量key
      */
-    @Column(name = "`key`")
+    @Column(name = "`key`", length = 50, unique = true)
     private String key;
 
     /**
      * 变量值
      */
-    @Column(name = "val")
+    @Column(name = "val", columnDefinition = "text")
     private String val;
 
     /**
      * 配置项说明
      */
-    @Column(name = "`desc`")
+    @Column(name = "`desc`", length = 200)
     private String desc;
 
     /**
      * 分组
      */
-    @Column(name = "`group`")
+    @Column(name = "`group`", length = 30)
     private String group = GROUP_SYSTEM;
 
 

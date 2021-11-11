@@ -8,6 +8,8 @@ import com.miya.common.auth.way.LoginDevice;
 import com.miya.common.auth.way.LoginWay;
 import com.miya.common.config.web.jwt.JwtPayload;
 import com.miya.common.config.web.jwt.TokenService;
+import com.miya.common.module.init.SystemInit;
+import com.miya.common.module.init.SystemInitErrorException;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.business.Business;
 import com.miya.common.exception.ErrorMsgException;
@@ -45,7 +47,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class SysUserService {
+public class SysUserService implements SystemInit {
 
     private final SysUserRepository sysUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -92,7 +94,6 @@ public class SysUserService {
     /**
      * 新增用户
      * @param userForm
-     * @return
      */
     public R<?> save(SysUserForm userForm) {
         boolean exists = sysUserRepository.exists(qSysUser.username.eq(userForm.getUsername()));
@@ -116,6 +117,14 @@ public class SysUserService {
      */
     public void modifyProfile(SysUserModifyForm userModifyForm, SysUser user) {
         userModifyForm.mergeToPo(user);
+        sysUserRepository.save(user);
+    }
+
+    /**
+     * 修改当前用户信息
+     * @param user
+     */
+    public void update(SysUser user) {
         sysUserRepository.save(user);
     }
 
@@ -308,6 +317,20 @@ public class SysUserService {
             assert patternForNumber.matcher(password).find();
         }
         return true;
+    }
+
+
+    @Override
+    public void init() throws SystemInitErrorException {
+        // 超管帐号
+        SysUserForm form = new SysUserForm();
+        form.setName("Admin");
+        form.setUsername("admin");
+        form.setPhone("13800000000");
+        SysUser sysUser = form.mergeToNewPo();
+        sysUser.setPassword(bCryptPasswordEncoder.encode(this.defaultPasswordGenerator.apply(form)));
+        sysUser.setId("1");
+        sysUserRepository.save(sysUser);
     }
 
 }

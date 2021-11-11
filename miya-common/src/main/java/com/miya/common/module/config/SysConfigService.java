@@ -40,12 +40,21 @@ public class SysConfigService implements InitializingBean, SystemInit {
 
     @Override
     public void init() throws SystemInitErrorException {
-
+        Optional<String> isInitialize = get(SystemConfigKey.IS_INITIALIZE);
+        if (!isInitialize.isPresent()) {
+            // 还未初始化，进行初始化
+            put(SystemConfigKey.IS_INITIALIZE.name(), "1", SystemConfigKey.IS_INITIALIZE.name, "SYSTEM");
+            put(SystemConfigKey.SYSTEM_NAME.name(), "MIYA", SystemConfigKey.SYSTEM_NAME.name, "SYSTEM");
+            put(SystemConfigKey.SYSTEM_VERSION.name(), "1.0", SystemConfigKey.SYSTEM_VERSION.name, "SYSTEM");
+            put(SystemConfigKey.BACKEND_DOMAIN.name(), "http://localhost:8080", SystemConfigKey.BACKEND_DOMAIN.name, "SYSTEM");
+            put(SystemConfigKey.OSS_DOMAIN.name(), "", SystemConfigKey.OSS_DOMAIN.name, "SYSTEM");
+        }
     }
 
     @AllArgsConstructor
     @Getter
     public enum SystemConfigKey implements Serializable {
+        IS_INITIALIZE("是否初始化完毕"),
         SYSTEM_NAME("系统名称"),
         SYSTEM_VERSION("系统版本"),
         BACKEND_DOMAIN("后端域名(让后端知道怎么可以访问到自己)"),
@@ -62,9 +71,7 @@ public class SysConfigService implements InitializingBean, SystemInit {
 
     /**
      * 获取所有配置，分组过滤
-     *
      * @param group 如果为空就获取所有分组
-     * @return
      */
     public List<SysConfig> configs(String group) {
         BooleanBuilder bb = new BooleanBuilder();
@@ -149,6 +156,26 @@ public class SysConfigService implements InitializingBean, SystemInit {
     public void set(String key, String value) {
         Optional<SysConfig> sysConfigOptional = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
         SysConfig sysConfig = sysConfigOptional.orElseThrow(() -> new RuntimeException(StrUtil.format("配置项【{}】不存在", key)));
+        sysConfig.setVal(value);
+        configRepository.save(sysConfig);
+    }
+
+    /**
+     * 设置配置项，没有key就新建
+     * @param key
+     * @param value
+     */
+    @ManagedOperation
+    @CacheEvict(cacheNames = "SYS_CONFIG", key = "#key")
+    public void put(String key, String value, String desc, String group) {
+        Optional<SysConfig> sysConfigOptional = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
+        SysConfig sysConfig = sysConfigOptional.orElseGet(() -> {
+            SysConfig config = new SysConfig();
+            config.setKey(key);
+            config.setGroup(group);
+            config.setDesc(desc);
+            return config;
+        });
         sysConfig.setVal(value);
         configRepository.save(sysConfig);
     }

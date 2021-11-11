@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Map;
 import java.util.Objects;
@@ -33,30 +34,38 @@ public class SysFile extends BaseEntity {
     /**
      * 服务端全路径/或oss的object name
      */
+    @Column(length = 100)
     private String path;
+
     /**
      * 前端上传的文件名
      */
+    @Column(length = 100)
     private String filename;
+
     /**
      * 文件可读大小
      */
+    @Column(length = 20)
     private String simpleSize;
     /**
      * 文件大小
      */
+    @Column(length = 20)
     private Long size;
 
     /**
      * 分类
      */
+    @Column(length = 50)
     private String category;
 
     @Type(type = "json")
+    @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
+
     /**
-     * 能够提供对外访问的url
-     * @return
+     * @return 能够提供对外访问的url
      */
     public String getUrl(){
         SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
@@ -69,8 +78,7 @@ public class SysFile extends BaseEntity {
     }
 
     /**
-     * 兼容ng-alain默认name
-     * @return
+     * @return 兼容ng-alain默认name
      */
     public String getName(){
         return this.filename;
