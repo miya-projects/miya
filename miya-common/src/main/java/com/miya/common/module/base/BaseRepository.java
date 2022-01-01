@@ -32,7 +32,6 @@ public interface BaseRepository<T, S extends EntityPath<?>> extends JpaRepositor
     /**
      * 多数情况使用exists时都是判断数据唯一性，故直接默认加悲观锁，如特殊情况需取消乐观锁，继承覆盖即可
      * @param predicate
-     * @return
      */
     @Override
     @Lock(LockModeType.PESSIMISTIC_WRITE)

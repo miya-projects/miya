@@ -55,7 +55,6 @@ public class Grid<T> {
      * 通过page对象转换为Grid对象
      *
      * @param page
-     * @return
      */
     public static <T> Grid<T> of(Page<T> page) {
         return of(page, null);
@@ -66,7 +65,6 @@ public class Grid<T> {
      *
      * @param page
      * @param others 其他信息
-     * @return
      */
     public static <T> Grid<T> of(Page<T> page, Map<String, Object> others) {
         final Grid<T> grid = Grid.of(page.getTotalPages(), page.getPageable().getPageSize(), page.getPageable().getPageNumber(), page.getTotalElements(), page.getContent());

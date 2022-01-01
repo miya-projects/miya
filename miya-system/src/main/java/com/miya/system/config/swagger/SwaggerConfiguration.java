@@ -51,7 +51,6 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 /**
  * @author 杨超辉
- * @date 2019/7/21 19:57
  * 丝袜哥配置
  */
 @Configuration
@@ -71,7 +70,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     /**
      * 根据DocketBuilder创建docket
-     * @return
      */
     @PostConstruct
     public void buildDocket() {
@@ -87,7 +85,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
      * 创建docket对象
      * @param title
      * @param predicate
-     * @return
      */
     public Docket createDocket(String title, Predicate<RequestHandler> predicate) {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -116,7 +113,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     /**
      * 全局参数
-     * @return
      */
     private List<Parameter> globalOperationParameters(){
         return Arrays.asList(new ParameterBuilder()
@@ -174,7 +170,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         /**
          * 按用户类型选择，没有配置用户类型的
          * @param userType
-         * @return
          */
         public static Predicate<RequestHandler> userTypeApiSelector(Class<?> userType) {
             Class[] classes = new Class[]{userType, Acl.AllUser.class, Acl.NotNeedLogin.class};
@@ -204,7 +199,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         /**
          * 属于该包下的接口会被选中
          * @param packageName
-         * @return
          */
         public static Predicate<RequestHandler> packageApiSelector(String packageName) {
             return input -> {
@@ -216,7 +210,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
          * 属于某包且是某个用户类型的接口会被选中
          * @param userType
          * @param packageName
-         * @return
          */
         public static Predicate<RequestHandler> userTypeAndPackageApiSelector(Class<?> userType, String packageName) {
             return packageApiSelector(packageName).and(userTypeApiSelector(userType));
@@ -231,8 +224,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     /**
      * 替换Pageable参数，默认的pageable有很多无用参数
-     *
-     * @return
      */
     @Bean
     public AlternateTypeRuleConvention pageableConvention() {

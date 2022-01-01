@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * @author 杨超辉
- * @date 2018/12/18
  *  字典表
  */
 @Getter

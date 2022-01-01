@@ -39,7 +39,6 @@ public interface SysFileService {
     /**
      * 上传一个文件
      * @param file
-     * @return
      */
     SysFile upload(MultipartFile file);
 
@@ -48,7 +47,7 @@ public interface SysFileService {
      * @param fileName
      * @param inputStream
      * @param contentType
-     * @return
+     * @return 上传后的文件对象
      */
     SysFile upload(String fileName, InputStream inputStream, String contentType);
 
@@ -66,7 +65,7 @@ public interface SysFileService {
      * 上传一个文件 通过流
      * @param fileName
      * @param inputStream
-     * @return
+     * @return 上传后的文件对象
      */
     default SysFile upload(String fileName, InputStream inputStream) {
         return upload(fileName, inputStream, null);
@@ -75,7 +74,7 @@ public interface SysFileService {
     /**
      * 通过url上传图像
      * @param imageUrl
-     * @return
+     * @return 上传后的文件对象
      */
     default SysFile uploadByUrl(@NotBlank String imageUrl) throws MalformedURLException {
         //测试url是否合法
@@ -104,14 +103,13 @@ public interface SysFileService {
     /**
      * 获取外部可访问的url
      * @param sysFile
-     * @return
+     * @return url
      */
     String getUrl(SysFile sysFile);
 
     /**
      * 获取流
      * @param sysFile
-     * @return
      */
     InputStream openStream(SysFile sysFile);
 

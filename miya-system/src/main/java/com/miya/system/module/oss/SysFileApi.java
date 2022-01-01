@@ -46,7 +46,6 @@ public class SysFileApi {
     /**
      * 上传文件 耗时操作，限流避免攻击
      * @param imageUrl
-     * @return
      */
     @PostMapping(params = "imageUrl")
     @ApiOperation(value = "通过url上传图片")
@@ -64,7 +63,6 @@ public class SysFileApi {
     /**
      * 上传文件
      * @param file
-     * @return
      */
     @PostMapping
     @ApiOperation(value = "上传单个文件")
@@ -79,7 +77,6 @@ public class SysFileApi {
     /**
      * 上传文件
      * @param files
-     * @return
      */
     @PostMapping("many")
     @ApiOperation(value = "上传多个文件")
@@ -101,7 +98,6 @@ public class SysFileApi {
     /**
      * 上传图片(进行压缩) 返回对象名
      * @param file
-     * @return
      */
     @PostMapping(params = "image")
     @ApiOperation(value = "上传图片(进行压缩,丢弃原图)")
@@ -138,7 +134,6 @@ public class SysFileApi {
     /**
      * 上传图片 多张(进行压缩) 返回对象名
      * @param files
-     * @return
      */
     @PostMapping(params = {"image", "files"})
     @ApiOperation(value = "上传图片多张(进行压缩,丢弃原图)")

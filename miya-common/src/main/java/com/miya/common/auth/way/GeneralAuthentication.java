@@ -82,7 +82,6 @@ public class GeneralAuthentication extends AbstractAuthenticationToken {
      * 从token获取GeneralAuthentication
      * 但不会填充user
      * @param jwtPayload
-     * @return
      */
     public static GeneralAuthentication getFromToken(JwtPayload jwtPayload) {
         return GeneralAuthentication.builder()

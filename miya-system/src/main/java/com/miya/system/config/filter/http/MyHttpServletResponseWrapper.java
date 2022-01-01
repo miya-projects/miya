@@ -11,8 +11,7 @@ import java.io.PrintWriter;
 
 /**
  * @author 杨超辉
- * @date 2018/7/12
- * @description response对象包装类 在filter中实现response数据的统一处理
+ * response对象包装类 在filter中实现response数据的统一处理
  */
 public class MyHttpServletResponseWrapper extends HttpServletResponseWrapper {
     private CharArrayWriter charArrayWriter = new CharArrayWriter();

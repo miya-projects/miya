@@ -43,7 +43,6 @@ public class SysDepartmentApi extends BaseApi {
 
     /**
      * 部门列表
-     * @return
      */
     @ApiOperation("部门列表")
     @GetMapping
@@ -98,7 +97,6 @@ public class SysDepartmentApi extends BaseApi {
 
     /**
      * 部门详情
-     * @return
      */
     @GetMapping("{id}")
     @ApiOperation("部门详情")
@@ -108,7 +106,6 @@ public class SysDepartmentApi extends BaseApi {
 
     /**
      * 删除部门
-     * @return
      */
     @ApiOperation("删除部门以及子部门")
     @DeleteMapping("{id}")

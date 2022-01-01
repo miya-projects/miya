@@ -16,8 +16,6 @@ import java.io.PrintWriter;
 
 /**
  * @author 杨超辉
- * @date 2018/7/12
- * @description
  */
 //@Component
 //@Configuration
@@ -42,7 +40,7 @@ public class CommonFilter implements Filter {
         //response 没有提交 时进行提交
         if (!response.isCommitted()) {
             PrintWriter out = response.getWriter();
-            out.write(true == StringUtils.isBlank(output) ? outputs : output);
+            out.write(StringUtils.isBlank(output) ? outputs : output);
             out.close();
         }
     }

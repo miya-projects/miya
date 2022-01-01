@@ -17,7 +17,6 @@ public class UserAuditor implements AuditorAware<String> {
 
     /**
      * 获取当前创建或修改的用户
-     * @return
      */
     @Override
     public Optional<String> getCurrentAuditor() {

@@ -24,7 +24,6 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @author 杨超辉
- * @date 2018/6/26
  */
 @RestController
 @RequestMapping("user/current")

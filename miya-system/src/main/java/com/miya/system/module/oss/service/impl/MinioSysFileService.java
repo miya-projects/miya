@@ -83,7 +83,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     /**
      * 获取对象信息
      * @param objectName    对象名
-     * @return
      */
     public ObjectStat objectStat(String objectName){
         try {
@@ -97,7 +96,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     /**
      * 返回指定对象名是否存在
      * @param objectName 对象名
-     * @return
      */
     private boolean exist(String objectName) {
         ObjectStat objectStat = null;
@@ -112,7 +110,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     /**
      * 获取对象url(授权过)
      * @param objectName
-     * @return
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String presignedGetObject(String objectName) {
@@ -122,7 +119,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     /**
      * 获取对象url
      * @param objectName
-     * @return
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String getObjectUrl(String objectName) {
@@ -134,7 +130,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      * duration必须在int类型存储长度范围内，超过将会被截断
      * @param objectName 对象名
      * @param duration   有效时长
-     * @return
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String getObjectUrl(String objectName, Duration duration) {
@@ -145,7 +140,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      * 获取对象url
      * @param objectName
      * @param expireDate 过期时间 必须在int类型存储长度范围内，超过将会被截断
-     * @return
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String getObjectUrl(String objectName, Date expireDate) {
@@ -159,7 +153,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
 
     /**
      * 获取minioClient
-     * @return
      */
     public MinioClient getMinioClient() {
         return this.minioClient;
@@ -186,7 +179,6 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     /**
      * 重命名文件名
      * @param fileName
-     * @return
      */
     private String rename(String fileName){
         return StrUtil.format("{}/{}.{}",

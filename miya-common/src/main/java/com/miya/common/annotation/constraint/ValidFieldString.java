@@ -42,13 +42,11 @@ public @interface ValidFieldString {
 
     /**
      * 校验类型
-     * @return
      */
     ValidType type() default ValidType.NONE;
 
     /**
      * 允许为空
-     * @return
      */
     boolean allowEmpty() default false;
 

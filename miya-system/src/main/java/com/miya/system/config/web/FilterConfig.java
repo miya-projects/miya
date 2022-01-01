@@ -9,8 +9,7 @@ import java.util.Collections;
 
 /**
  * @author 杨超辉
- * @date 2018/7/18
- * @description servlet filter注册
+ * servlet filter注册
  */
 @Configuration
 @Slf4j

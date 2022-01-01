@@ -9,8 +9,7 @@ import java.util.Date;
 
 /**
  * @author 杨超辉
- * @description: 持久化缓存
- * @date 2019-05-23 9:02
+ * 持久化缓存
  */
 public interface CacheRepository extends BaseRepository<SysCache, QSysCache> {
 

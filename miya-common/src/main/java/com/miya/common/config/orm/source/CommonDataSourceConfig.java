@@ -129,7 +129,6 @@ public class CommonDataSourceConfig implements InitializingBean {
     /**
      * 配置事物管理器
      * @param entityManagerFactory
-     * @return
      */
     @Bean(name = "transactionManager")
     @ConditionalOnMissingBean(name = "transactionManager")

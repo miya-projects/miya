@@ -79,7 +79,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     /**
      * 获取payload 如token不合法，返回null
      * @param token
-     * @return
      */
     public JwtPayload getPayload(String token) {
         Claims claims = getClaimsFromToken(token);
@@ -94,7 +93,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     /**
      * 获取token的创建时间
      * @param token
-     * @return
      */
     public Date getCreatedDateFromToken(String token) {
         Date created;
@@ -110,7 +108,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     /**
      * 获取token中的过期时间
      * @param token
-     * @return
      */
     public Date getExpirationDateFromToken(String token) {
         Date expiration;
@@ -126,7 +123,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     /**
      * 获取token中存的信息 payload
      * @param token
-     * @return
      */
     private Claims getClaimsFromToken(String token) {
         Claims claims;
@@ -146,7 +142,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     /**
      * token是否过期？
      * @param token
-     * @return
      */
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
@@ -158,7 +153,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
      * 生成token
      * @param claims    token payload
      * @param expirationDate    token过期时间
-     * @return
      */
     private String generateToken(Map<String, Object> claims, Date expirationDate) {
         return Jwts.builder()
@@ -172,7 +166,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
      * 生成token
      * @param jwtPayload    token payload
      * @param expirationDate    token过期时间
-     * @return
      */
     public String generateToken(JwtPayload jwtPayload, Date expirationDate) {
         return Jwts.builder()
@@ -186,7 +179,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
      * 刷新token
      * @param token
      * @param expirationDate 过期日期
-     * @return
      */
     public String refreshToken(String token, Date expirationDate) {
         String refreshedToken;
@@ -206,7 +198,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     /**
      * 根据jwtPayload获取用户对象
      * @param jwtPayload
-     * @return
      */
     private Object getUserByJwtPayload(JwtPayload jwtPayload){
         String jpql = "from " + jwtPayload.getUserClass().getName() + " where id = :id";

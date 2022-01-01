@@ -7,7 +7,6 @@ public interface PrefixKeyWrapper {
 
     /**
      * 返回前缀
-     * @return
      */
     String prefix();
 

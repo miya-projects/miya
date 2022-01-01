@@ -10,7 +10,7 @@ public interface TokenService {
     /**
      * 根据token获取用户对象
      * @param token
-     * @return
+     * @return 用户对象
      */
     Object getUserByToken(String token);
 
@@ -18,7 +18,7 @@ public interface TokenService {
      * 刷新token有效时间
      * @param token 旧token
      * @param expirationDate    有效期至
-     * @return
+     * @return token
      */
     String reFlushToken(String token, Date expirationDate) throws TokenExpirationException;
 
@@ -27,7 +27,7 @@ public interface TokenService {
      * @param jwtPayload
      * @param user  用户对象
      * @param expirationDate    token失效时间
-     * @return
+     * @return token
      */
     String generateToken(@NonNull JwtPayload jwtPayload, @NonNull Serializable user, Date expirationDate);
 }

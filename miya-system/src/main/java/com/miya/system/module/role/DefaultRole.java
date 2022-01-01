@@ -14,13 +14,11 @@ public interface DefaultRole {
 
     /**
      * 角色数据库id
-     * @return
      */
     String getId();
 
     /**
      * 角色名，相当于备注，用于开发人员识别
-     * @return
      */
     String getName();
 
@@ -35,7 +33,6 @@ public interface DefaultRole {
     /**
      * 判断该用户是否有该角色
      * @param sysUser
-     * @return
      */
     default boolean hasThisRole(SysUser sysUser) {
         return hasThisRole(sysUser.getRoles());
@@ -44,7 +41,6 @@ public interface DefaultRole {
     /**
      * 判断该角色列表是否有该角色
      * @param sysRole
-     * @return
      */
     default boolean hasThisRole(Set<SysRole> sysRole) {
         return sysRole.stream().map(SysRole::getId).anyMatch(this.getId()::equals);

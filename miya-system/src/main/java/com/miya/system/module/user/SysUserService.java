@@ -239,7 +239,6 @@ public class SysUserService implements SystemInit {
     /**
      * 生成token
      * @param sysUser
-     * @return
      */
     private String generateToken(SysUser sysUser, Date expiredDate, LoginWay loginWay) {
         JwtPayload jwtPayload = JwtPayload.builder()
@@ -257,7 +256,6 @@ public class SysUserService implements SystemInit {
      * 获取该用户拥有的权限
      *
      * @param sysUser
-     * @return
      */
     public Set<Business> getPermissions(SysUser sysUser) {
         Set<Business> permissions = new HashSet<>();
@@ -306,7 +304,6 @@ public class SysUserService implements SystemInit {
     /**
      * 判断密码是否符合规范
      * @param password
-     * @return
      */
     public boolean isPasswordValid(String password){
         assert password != null;

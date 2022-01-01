@@ -102,7 +102,6 @@ public class SysRoleService implements SystemInit {
     /**
      * 根据fullCode获取business对象
      * @param fullCode
-     * @return
      */
     public Business valueOfCode(String fullCode){
         return valueOfCode(fullCode, business);
@@ -111,7 +110,6 @@ public class SysRoleService implements SystemInit {
     /**
      * 根据code返回Business
      * @param fullCode
-     * @return
      */
     public Business valueOfCode(String fullCode, List<Business> business){
         String[] businessCodes = fullCode.split(":");

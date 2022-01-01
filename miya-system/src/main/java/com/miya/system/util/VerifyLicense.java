@@ -68,7 +68,6 @@ public class VerifyLicense {
 
     /**
      * 验证许可证 通过返回true，否则返回false
-     * @return
      */
     public boolean verify() {
         try {

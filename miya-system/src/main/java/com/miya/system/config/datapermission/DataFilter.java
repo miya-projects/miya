@@ -18,19 +18,16 @@ public @interface DataFilter {
 
     /**
      * 过滤器名称
-     * @return
      */
     String filter();
 
     /**
      * 不受数据权限控制的角色列表，如登录用户含有该角色列表中的至少一个角色，则不启用该数据权限过滤
-     * @return
      */
     SysDefaultRoles[] noCheckRoles() default {};
 
     /**
      * 其他额外参数
-     * @return
      */
     String[] extraParameters() default {};
 }

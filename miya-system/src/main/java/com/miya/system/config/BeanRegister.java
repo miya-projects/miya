@@ -47,7 +47,6 @@ public class BeanRegister implements ApplicationContextAware {
 
     /**
      * hash密码 bean
-     * @return
      */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -62,7 +61,6 @@ public class BeanRegister implements ApplicationContextAware {
 
     /**
      * 扩展jackson配置
-     * @return
      */
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer(){
@@ -128,7 +126,6 @@ public class BeanRegister implements ApplicationContextAware {
 
     /**
      * 应用启动监听器
-     * @return
      */
     @Bean
     public ApplicationRunner builds(ApplicationContext applicationContext){
@@ -137,7 +134,6 @@ public class BeanRegister implements ApplicationContextAware {
 
     /**
      * 分页从1开始?
-     * @return
      */
     // @Bean
     // public PageableHandlerMethodArgumentResolverCustomizer pageableResolverCustomizer() {

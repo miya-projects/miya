@@ -16,7 +16,6 @@ import java.util.Collections;
 
 /**
  * @author 杨超辉
- * @date 2018/6/19
  * SpringSecurity的配置
  * https://blog.csdn.net/linzhiqiang0316/article/details/78358907
  */
