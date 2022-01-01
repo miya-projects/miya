@@ -96,8 +96,6 @@ public class DataFilterAdvice {
 
     /**
      * 获取当前登录用户id
-     *
-     * @return
      */
     public String getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -111,7 +109,6 @@ public class DataFilterAdvice {
 
     /**
      * 获取当前登录用户角色
-     * @return
      */
     public Set<SysRole> getCurrentUserRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

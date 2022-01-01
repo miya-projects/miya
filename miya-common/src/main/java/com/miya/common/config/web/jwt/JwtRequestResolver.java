@@ -31,7 +31,6 @@ public class JwtRequestResolver {
     /**
      * 认证一个请求
      * @param request
-     * @return
      */
     public Authentication getAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
@@ -45,7 +44,7 @@ public class JwtRequestResolver {
     /**
      * 解析authorization头 获得token
      * @param authorization
-     * @return
+     * @return token
      */
     public String resolveAuthorization(String authorization){
         if (StringUtils.isEmpty(authorization)) {
@@ -62,7 +61,6 @@ public class JwtRequestResolver {
     /**
      * 将token解析为authentication  解析无状态token
      * @param token
-     * @return
      */
     public Authentication getAuthentication(String token) {
         GeneralAuthentication generalAuthentication;

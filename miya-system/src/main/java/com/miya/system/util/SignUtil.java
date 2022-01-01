@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 樊超
- * @decription : 签名认证
- * @date 2019-02-20
+ * 签名认证
  */
 @Slf4j
 public class SignUtil {
@@ -20,7 +19,6 @@ public class SignUtil {
      * 数据加密步骤 1,根据数据第一位 1.1 奇数不变 1.2 偶数反转 2,对排序后数据进行SHA加密 3,加密后的数据全部转为大写
      *
      * @param encryptData 加密的字符串数据
-     * @returns {string}
      */
     public static String encodeSign(String encryptData) {
         try {

@@ -25,8 +25,6 @@ public class CPUUtil {
 
     /**
      * 获取CPU序列号
-     *
-     * @return
      */
     public static String getCPUIDByWindows() {
         String result = "";

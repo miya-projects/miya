@@ -61,7 +61,6 @@ public class R<T> implements Serializable {
      * 返回错误信息
      * @param code  错误码
      * @param args  错误信息构建参数 用该参数依次替换msg的{}
-     * @return
      */
     public static <T> R<T> errorWithCodeAndMsg(ResponseCode code, String... args) {
         String msg = code.getMsg();
@@ -76,7 +75,6 @@ public class R<T> implements Serializable {
 
     /**
      * @param msg
-     * @return
      */
     public static <T> R<T> errorWithMsg(String msg) {
         return new R<>(Integer.MIN_VALUE, msg);

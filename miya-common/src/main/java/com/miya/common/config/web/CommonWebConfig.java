@@ -130,7 +130,6 @@ public class CommonWebConfig extends WebSecurityConfigurerAdapter implements Web
 
     /**
      * cors配置
-     * @return
      */
     @Bean
     public UrlBasedCorsConfigurationSource configurationSource() {

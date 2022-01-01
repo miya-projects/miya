@@ -13,8 +13,7 @@ import java.lang.annotation.Target;
 public @interface DataFilters {
 
     /**
-     * 过滤器名称
-     * @return
+     * 过滤器
      */
     DataFilter[] value();
 }

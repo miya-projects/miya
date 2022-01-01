@@ -22,13 +22,11 @@ public interface ResponseCode {
 
     /**
      * 获得提示信息
-     * @return
      */
     String getMsg();
 
     /**
      * 获得code
-     * @return
      */
     int getCode();
 

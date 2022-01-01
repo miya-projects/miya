@@ -32,7 +32,6 @@ public class SpringMvcService {
      * 获取允许不登录访问的url
      * 配置了该注解@Acl(userType = Acl.NotNeedLogin)的class或method，或在ALLOW_ACCESS_URL内的url
      * @see  Acl
-     * @return
      */
     public String[] allowAccessUrlForAcl(){
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
@@ -43,7 +42,6 @@ public class SpringMvcService {
      * 获取允许不登录访问的url
      * 配置了该注解@Acl(userType = Acl.NotNeedLogin)的class或method，或在ALLOW_ACCESS_URL内的url
      * @see  Acl
-     * @return
      */
     public String[] allowAccessUrlForAcl(Map<RequestMappingInfo, HandlerMethod> handlerMethods){
         // Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();

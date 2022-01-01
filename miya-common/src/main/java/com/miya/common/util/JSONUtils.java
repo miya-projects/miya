@@ -39,7 +39,6 @@ public class JSONUtils {
      * 将对象序列化
      *
      * @param obj
-     * @return
      */
     public static String toJson(Object obj) {
         try {
@@ -55,7 +54,6 @@ public class JSONUtils {
      *
      * @param json
      * @param clazz
-     * @return
      */
     public static <T> T toJavaObject(String json, Class<T> clazz) {
         try {
@@ -71,7 +69,6 @@ public class JSONUtils {
      *
      * @param json
      * @param valueTypeRef
-     * @return
      */
     public static <T> T toJavaObject(String json, TypeReference<T> valueTypeRef) {
         try {

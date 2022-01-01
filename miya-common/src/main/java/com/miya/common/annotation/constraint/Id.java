@@ -51,7 +51,6 @@ public @interface Id {
 
     /**
      * 数据库表对应model类型
-     * @return
      */
     Class<?> type();
 

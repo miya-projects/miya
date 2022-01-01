@@ -66,7 +66,6 @@ public class GlobalExceptionHandler {
      * 参数校验异常回调
      * @param e
      * @param response
-     * @return
      */
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)

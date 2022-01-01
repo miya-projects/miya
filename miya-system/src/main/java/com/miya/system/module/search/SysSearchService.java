@@ -60,7 +60,6 @@ public class SysSearchService {
     /**
      * 全文检索
      * @param q 搜索关键字
-     * @return
      */
     public SearchResult<?> query(String q) {
         SearchResult<List<?>> result = searchSession.search(types)

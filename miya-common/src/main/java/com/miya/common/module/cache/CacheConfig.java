@@ -60,8 +60,6 @@ public class CacheConfig {
 
     /**
      * 创建基于Caffeine的Cache Manager
-     *
-     * @return
      */
     @Bean
     @Primary

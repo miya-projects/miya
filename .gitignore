@@ -28,3 +28,4 @@ out/
 *.log*gz
 node_modules/
 manager/
+application-local.properties

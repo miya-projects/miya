@@ -51,7 +51,6 @@ public class SysDictService extends BaseService {
      * 分页查询数据字典
      * @param predicate
      * @param pageRequest
-     * @return
      */
     public Grid<SysDictDTO> list(Predicate predicate, Pageable pageRequest) {
         Page<SysDict> all = sysDictRepository.findAll(predicate, pageRequest);
@@ -61,7 +60,6 @@ public class SysDictService extends BaseService {
 
     /**
      * 不分页查询数据字典
-     * @return
      */
     public List<SysDictDTO> listNoPage() {
         List<SysDict> all = sysDictRepository.findAll(Sort.by(Sort.Order.desc(BaseEntity.Fields.createdTime)));
@@ -71,7 +69,6 @@ public class SysDictService extends BaseService {
     /**
      * 根据id或code查找字典
      * @param code
-     * @return
      */
     public Optional<SysDictDetailDTO> getDictByCode(String code) {
         QSysDict qSysDict = QSysDict.sysDict;

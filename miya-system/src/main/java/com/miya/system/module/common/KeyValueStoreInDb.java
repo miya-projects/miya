@@ -32,9 +32,7 @@ public class KeyValueStoreInDb implements KeyValueStore {
 
     /**
      * 获取配置项
-     *
      * @param key
-     * @return
      */
     @ManagedOperation
     public String get(String key) {
@@ -49,9 +47,7 @@ public class KeyValueStoreInDb implements KeyValueStore {
 
     /**
      * 获取配置项
-     *
      * @param key
-     * @return
      */
     public <T> T get(String key, Class<T> tClass) {
         QSysCache qSysCache = QSysCache.sysCache;
@@ -62,9 +58,7 @@ public class KeyValueStoreInDb implements KeyValueStore {
 
     /**
      * 设置配置项
-     *
      * @param key
-     * @return
      */
     public void set(String key, Serializable value) {
         set(key, value, null);

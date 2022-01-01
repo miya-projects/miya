@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * @version 1.0
- * @description: 敏感词过滤
+ * 敏感词过滤
  */
 public class SensitivewordFilter {
     @SuppressWarnings("rawtypes")
@@ -32,8 +32,6 @@ public class SensitivewordFilter {
      *
      * @param txt       文字
      * @param matchType 匹配规则&nbsp;1：最小匹配规则，2：最大匹配规则
-     * @return 若包含返回true，否则返回false
-     * @version 1.0
      */
     public boolean isContaintSensitiveWord(String txt, MatchType matchType) {
         boolean flag = false;
@@ -51,8 +49,6 @@ public class SensitivewordFilter {
      *
      * @param txt       文字
      * @param matchType 匹配规则&nbsp;1：最小匹配规则，2：最大匹配规则
-     * @return
-     * @version 1.0
      */
     public Set<String> getSensitiveWord(String txt, MatchType matchType) {
         Set<String> sensitiveWordList = new HashSet<String>();
@@ -70,7 +66,6 @@ public class SensitivewordFilter {
 	 * 默认替换 ，最大规则匹配 。
 	 * 默认将敏感字符串替换为相同长度的 *
 	 * @param txt
-	 * @return
 	 */
 	public String replaceSensitiveWord(String txt) {
 		return replaceSensitiveWord(txt, MatchType.MAX_MATCH_TYPE, "*");
@@ -81,7 +76,6 @@ public class SensitivewordFilter {
 	 * @param txt
 	 * @param matchType
 	 * @param replaceChar
-	 * @return
 	 */
     public String replaceSensitiveWord(String txt, MatchType matchType, String replaceChar) {
         String resultTxt = txt;
@@ -102,7 +96,6 @@ public class SensitivewordFilter {
      * 获取替换字符串  默认将敏感词替换为 相同长度*
      * @param replaceChar
      * @param length
-     * @return
      * @version 1.0
      */
     private String getReplaceChars(String replaceChar, int length) {
@@ -120,8 +113,6 @@ public class SensitivewordFilter {
      * @param txt
      * @param beginIndex
      * @param matchType
-     * @return，如果存在，则返回敏感词字符的长度，不存在返回0
-     * @version 1.0
      */
     @SuppressWarnings({"rawtypes"})
     public int checkSensitiveWord(String txt, int beginIndex, MatchType matchType) {
@@ -193,7 +184,6 @@ class SensitiveWordInit {
      * map格式为{key={isEnd=0,[map]key={isEnd=0,[map]key={.....}}}}
      *
      * @param keyWordList 敏感词list 列表
-     * @return
      */
     @SuppressWarnings("rawtypes")
     public Map initKeyWord(List<String> keyWordList) {

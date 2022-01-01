@@ -68,7 +68,7 @@ public class SysNoticeApi {
     @PostMapping(value = "list")
     @ApiOperation(value = "查询自己收到通知(分页)")
     public R<Grid<SysNoticeDTO>> list(@AuthenticationPrincipal SysUser sysUser, @QuerydslPredicate(root = SysNotice.class) Predicate predicate,
-                                   @PageableDefault(sort = {SysNotice.Fields.enable, BaseEntity.Fields.createdTime},
+                                   @PageableDefault(sort = {"enable", BaseEntity.Fields.createdTime},
                                            direction = Sort.Direction.DESC) Pageable pageRequest) {
         Page<SysNotice> all = sysNoticeRepository.findAll(ExpressionUtils.and(QSysNotice.sysNotice.sysUser.any()
                 .id.sysUser.eq(sysUser), predicate), pageRequest);

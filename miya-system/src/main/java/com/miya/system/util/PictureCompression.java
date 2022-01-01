@@ -35,7 +35,6 @@ public class PictureCompression {
      * 判断文件名是否可压缩
      *
      * @param suffix 需要判断的文件类型
-     * @return
      */
     public static boolean isNotSupportCompression(String suffix) {
         final String[] CAN_COMPRESSION_SUFFIX = {

@@ -36,7 +36,6 @@ public @interface ValidEnum {
 
     /**
      * 允许的值
-     * @return
      */
     String[] allowValues() default {};
 

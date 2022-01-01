@@ -10,13 +10,11 @@ public interface DownloadTask extends Supplier<InputStream> {
 
     /**
      * 标注下载的是什么
-     * @return
      */
     String getName();
 
     /**
      * 下载的文件名
-     * @return
      */
     String getFileName();
 

@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * @author 杨超辉
- * @date 2018/12/10
  */
 public interface SysUserRepository extends BaseRepository<SysUser, QSysUser> {
 

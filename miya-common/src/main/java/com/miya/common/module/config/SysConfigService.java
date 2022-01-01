@@ -94,8 +94,6 @@ public class SysConfigService implements InitializingBean, SystemInit {
 
     /**
      * 获取系统元信息
-     *
-     * @return
      */
     public SystemMeta getSystemMeta() {
         return new SystemMeta(getSystemName(), get("SYSTEM_VERSION").orElse("0.0.1"));
@@ -103,8 +101,6 @@ public class SysConfigService implements InitializingBean, SystemInit {
 
     /**
      * 获取系统名称
-     *
-     * @return
      */
     public String getSystemName() {
         return get(SystemConfigKey.SYSTEM_NAME).orElse("MiYa");
@@ -113,8 +109,6 @@ public class SysConfigService implements InitializingBean, SystemInit {
     /**
      * 获取后端可访问前缀
      * eg: https://www.website.com/sdf
-     *
-     * @return
      */
     public String getBackendDomain() {
         return get(SystemConfigKey.BACKEND_DOMAIN).orElse(getDefaultDomain());
@@ -122,8 +116,6 @@ public class SysConfigService implements InitializingBean, SystemInit {
 
     /**
      * 获取默认后端域名
-     *
-     * @return
      */
     private String getDefaultDomain() {
         return "http://localhost:" + this.port;
@@ -135,9 +127,7 @@ public class SysConfigService implements InitializingBean, SystemInit {
 
     /**
      * 获取配置项
-     *
      * @param key
-     * @return
      */
     @ManagedOperation
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")

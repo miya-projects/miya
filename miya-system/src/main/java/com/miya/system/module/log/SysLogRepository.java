@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 
 /**
  * @author 杨超辉
- * @description 日志
+ * 日志
  */
 public interface SysLogRepository extends BaseRepository<SysLog, QSysLog> {
 

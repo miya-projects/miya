@@ -29,8 +29,6 @@ import javax.validation.constraints.NotNull;
 
 /**
  * @author 杨超辉
- * @date 2018/6/26
- * @description
  */
 @RequestMapping(value = "/user")
 @RestController
@@ -59,7 +57,6 @@ public class SysUserApi extends BaseApi {
 
     /**
      * 用户列表
-     * @return
      */
     @ApiOperation("用户列表")
     @GetMapping
@@ -142,7 +139,6 @@ public class SysUserApi extends BaseApi {
     /**
      * 重置别人的密码
      * @param sysUser
-     * @return
      */
     @ApiOperation("重置密码")
     //    @PreAuthorize("hasAuthority('user')")

@@ -18,7 +18,6 @@ public interface ExtendsRepository<T, ID, S extends EntityPath<?>> {
      * @param predicate
      * @param clazz DTO类对象
      * @param <D>   DTO类型
-     * @return
      */
     @Deprecated
     <D> List<D> findAll(Predicate predicate, Class<D> clazz);
@@ -29,7 +28,6 @@ public interface ExtendsRepository<T, ID, S extends EntityPath<?>> {
      * @param pageable
      * @param clazz
      * @param <D>
-     * @return
      */
     @Deprecated
     <D> Grid<D> findAll(Predicate predicate, Pageable pageable, Class<D> clazz);

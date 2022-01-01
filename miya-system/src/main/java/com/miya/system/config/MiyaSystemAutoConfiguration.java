@@ -40,7 +40,6 @@ public class MiyaSystemAutoConfiguration {
      * todo 注入了多个KeyValueStore应该如何选择？
      *
      * @param keyValueStore
-     * @return
      */
     @Bean
     public JwtTokenService tokenStore(SysConfigService configService, KeyValueStore keyValueStore) {

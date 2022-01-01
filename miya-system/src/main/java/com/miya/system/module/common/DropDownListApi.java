@@ -60,7 +60,6 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
 
     /**
      * 获取角色列表 下拉框使用
-     * @return
      */
     @GetMapping(value = "role")
     @ApiOperation(value = "获取角色列表", notes = "不分页 下拉框使用")
