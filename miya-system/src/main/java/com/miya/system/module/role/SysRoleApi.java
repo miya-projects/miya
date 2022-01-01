@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @description 角色实现
+ * 角色api
  * @author 杨超辉
  **/
 @RequestMapping(value = "role")
@@ -55,7 +55,6 @@ public class SysRoleApi extends BaseApi {
 
     /**
      * 角色列表
-     * @return
      */
     @ApiOperation(value = "角色列表")
     @GetMapping
@@ -67,7 +66,6 @@ public class SysRoleApi extends BaseApi {
 
     /**
      * 角色详情
-     * @return
      */
     @ApiOperation(value = "角色详情")
     @GetMapping(value = "{id}")
@@ -80,7 +78,6 @@ public class SysRoleApi extends BaseApi {
      * 为角色设置权限
      * @param codes     权限code集合
      * @param sysRole 角色id
-     * @return
      */
     @ApiOperation(value = "为角色设置权限")
     @PutMapping(value = "{id}/business")
@@ -100,7 +97,6 @@ public class SysRoleApi extends BaseApi {
     /**
      * 角色增加
      * @param sysRoleForm 角色信息
-     * @return
      */
     @PostMapping
     @ApiOperation("增加角色")
@@ -115,7 +111,6 @@ public class SysRoleApi extends BaseApi {
     /**
      * 更新
      * @param sysRoleForm 角色信息
-     * @return
      */
     @PutMapping(value = "{id}")
     @ApiOperation("修改角色")
@@ -137,7 +132,6 @@ public class SysRoleApi extends BaseApi {
     /**
      * 角色删除
      * @param sysRole 角色id
-     * @return
      */
     @ApiOperation("删除角色")
     @DeleteMapping(value = "{id}")
@@ -157,7 +151,6 @@ public class SysRoleApi extends BaseApi {
 
     /**
      * 获取业务功能列表
-     * @return
      */
     @GetMapping(value = "/business")
     @ApiOperation("获取业务功能列表")

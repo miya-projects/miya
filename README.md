@@ -20,7 +20,7 @@
 <dependency>
     <groupId>io.github.rxxy</groupId>
     <artifactId>miya-system</artifactId>
-    <version>1.0</version>
+    <version>${latest}</version>
 </dependency>
 ```
 如果你想尝鲜快照版本，请添加如下代码
