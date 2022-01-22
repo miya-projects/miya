@@ -10,6 +10,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
 
@@ -35,5 +36,6 @@ public interface BaseRepository<T, S extends EntityPath<?>> extends JpaRepositor
      */
     @Override
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Transactional
     boolean exists(Predicate predicate);
 }

@@ -29,8 +29,6 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
-@DynamicInsert
-@DynamicUpdate
 @EntityListeners({AuditingEntityListener.class, BackupDataListener.class})
 @FieldNameConstants
 public abstract class BaseEntity implements Serializable, Persistable<Serializable> {

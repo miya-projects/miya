@@ -25,7 +25,6 @@ public class JwtRequestResolver {
 
     private final static Pattern REG = Pattern.compile("Bearer (.+)");
 
-    private final TokenService tokenService;
     private final JwtTokenService jwtTokenService;
 
     /**
@@ -67,7 +66,7 @@ public class JwtRequestResolver {
         try {
             JwtPayload payload = jwtTokenService.getPayload(token);
             generalAuthentication = GeneralAuthentication.getFromToken(payload);
-            generalAuthentication.setUser(tokenService.getUserByToken(token));
+            generalAuthentication.setUser(jwtTokenService.getUserByToken(token));
             generalAuthentication.setAuthenticated(true);
         }catch (Exception e){
             log.trace(ExceptionUtils.getStackTrace(e));

@@ -70,14 +70,18 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
         }
 
         url.set(request.getRequestURI());
-        StringBuilder parameterStr = new StringBuilder();
+        StringBuilder logStr = new StringBuilder();
+        logStr.append("接收到请求：{} \n");
         Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
-        entries.forEach( entry -> {
-            String key = entry.getKey();
-            String[] value = entry.getValue();
-            parameterStr.append(StrUtil.format("\t{}: {}\n", key, Arrays.toString(value)));
-        } );
-        log.debug("\n接收到请求：\nurl：{} \nparameter: \n{}", url.get(), parameterStr);
+        if (entries.size() != 0){
+            logStr.append("parameter: \n");
+            entries.forEach( entry -> {
+                String key = entry.getKey();
+                String[] value = entry.getValue();
+                logStr.append(StrUtil.format("\t{}: {}\n", key, Arrays.toString(value)));
+            } );
+        }
+        log.debug(logStr.toString(), url.get(), logStr);
         return true;
     }
 
