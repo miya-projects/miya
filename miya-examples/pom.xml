@@ -11,8 +11,8 @@
 
     <artifactId>miya-examples</artifactId>
     <properties>
-        <env.REGISTRY_USERNAME>避免IDE解析报错</env.REGISTRY_USERNAME>
-        <env.REGISTRY_PASSWORD>避免IDE解析报错</env.REGISTRY_PASSWORD>
+        <!--<env.REGISTRY_USERNAME>避免IDE解析报错</env.REGISTRY_USERNAME>-->
+        <!--<env.REGISTRY_PASSWORD>避免IDE解析报错</env.REGISTRY_PASSWORD>-->
     </properties>
 
     <repositories>
