@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @ToString
 @RequiredArgsConstructor
 @Entity
+@Table(indexes = {@Index(name = "name_unique", columnList = "name", unique = true)})
 public class SysRole extends BaseEntity {
 
     @Column(length = 50, unique = true)

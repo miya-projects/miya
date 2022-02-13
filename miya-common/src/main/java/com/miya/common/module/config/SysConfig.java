@@ -10,6 +10,8 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.Objects;
 
 /**
@@ -20,6 +22,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
+@Table(indexes = {@Index(name = "key_unique", columnList = "key", unique = true)})
 @Accessors(chain = true)
 public class SysConfig extends BaseEntity {
 
