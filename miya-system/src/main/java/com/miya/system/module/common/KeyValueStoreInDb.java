@@ -88,13 +88,12 @@ public class KeyValueStoreInDb implements KeyValueStore {
 
     /**
      * 刪除
-     *
-     * @param key
+     * @param key   存储key
      */
     @ManagedOperation
     public void remove(String key) {
-        Optional<SysCache> one = cacheRepository.findOne(QSysCache.sysCache.sKey.eq(key));
-        one.ifPresent(cacheRepository::delete);
+        Iterable<SysCache> all = cacheRepository.findAll(QSysCache.sysCache.sKey.eq(key));
+        cacheRepository.deleteAll(all);
     }
 
     /**

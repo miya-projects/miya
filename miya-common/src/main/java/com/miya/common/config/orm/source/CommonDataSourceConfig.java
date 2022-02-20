@@ -56,6 +56,7 @@ public class CommonDataSourceConfig implements InitializingBean {
     @Resource
     @Qualifier("ormPackages")
     private Optional<List<Class<?>>> packages;
+
     @Resource
     private JpaProperties jr;
 
@@ -106,12 +107,7 @@ public class CommonDataSourceConfig implements InitializingBean {
         return dataSource;
     }
 
-    @ConfigurationProperties(prefix = "spring.datasource.db2")
-    public DataSource getDb1DataSource(){
-        return DataSourceBuilder.create().build();
-    }
-
-
+    @Primary
     @Bean(name = "entityManagerFactory")
     @ConditionalOnMissingBean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
@@ -122,7 +118,7 @@ public class CommonDataSourceConfig implements InitializingBean {
                 .dataSource(dataSource)
                 .packages(classes.toArray(new Class[0]))
                 .properties(jr.getProperties())
-                .persistenceUnit("commonPersistenceUnit")
+                .persistenceUnit("persistenceUnit")
                 .build();
     }
 
@@ -131,6 +127,7 @@ public class CommonDataSourceConfig implements InitializingBean {
      * @param entityManagerFactory
      */
     @Bean(name = "transactionManager")
+    @Primary
     @ConditionalOnMissingBean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {
         return new JpaTransactionManager(Objects.requireNonNull(entityManagerFactory.getObject()));

@@ -5,7 +5,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.miya.common.exception.ErrorMsgException;
-import com.miya.system.module.oss.domain.ClassPathSysFile;
+import com.miya.system.module.oss.domain.PublicAssetsSysFile;
 import com.miya.system.module.oss.model.SysFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,8 +33,8 @@ public interface SysFileService {
     /**
      * 默认图片
      */
-    ClassPathSysFile DEFAULT_AVATAR = new ClassPathSysFile("default_avatar.jpg", "默认头像");
-    ClassPathSysFile NOT_FOUND = new ClassPathSysFile("404.jpg", "找不到图像");
+    PublicAssetsSysFile DEFAULT_AVATAR = new PublicAssetsSysFile("default_avatar.jpg", "默认头像");
+    PublicAssetsSysFile NOT_FOUND = new PublicAssetsSysFile("404.jpg", "找不到图像");
 
     /**
      * 上传一个文件

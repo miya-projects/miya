@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  **/
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
+@Table(indexes = {@Index(name = "name_unique", columnList = "name", unique = true)})
 public class SysRole extends BaseEntity {
 
     @Column(length = 50, unique = true)
@@ -60,5 +60,10 @@ public class SysRole extends BaseEntity {
     @Override
     public int hashCode() {
         return 915389366;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

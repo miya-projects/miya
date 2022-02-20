@@ -11,17 +11,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * 类路径下的文件，提供外部访问
+ * 程序自带的公开静态文件，提供外部访问
  * 一般程序硬编码，不做持久化
  */
 @Slf4j
-public class ClassPathSysFile extends SysFile {
+public class PublicAssetsSysFile extends SysFile {
 
-    public ClassPathSysFile(String path){
+    public PublicAssetsSysFile(String path){
         this(path, FileUtil.mainName(path));
     }
 
-    public ClassPathSysFile(String path, String name){
+    public PublicAssetsSysFile(String path, String name){
         this.setPath(path);
         this.setFilename(name);
     }

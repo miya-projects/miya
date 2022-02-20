@@ -13,6 +13,10 @@
             "code": "view"
           },
           {
+            "name": "下载",
+            "code": "download"
+          },
+          {
             "name": "新增",
             "code": "add"
           },

@@ -21,6 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Accessors(chain = true)
+@Table(indexes = {@Index(name = "name_unique", columnList = "pid, name", unique = true)})
 public class SysDepartment extends BaseEntity {
 
     @Column(length = 100)
@@ -54,4 +55,8 @@ public class SysDepartment extends BaseEntity {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
