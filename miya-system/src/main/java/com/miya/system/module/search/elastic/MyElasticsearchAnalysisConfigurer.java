@@ -1,4 +1,4 @@
-package com.miya.system.module.search;
+package com.miya.system.module.search.elastic;
 
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurationContext;
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurer;

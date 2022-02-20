@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotBlank;
+import java.io.IOException;
 
 @Slf4j
 @Api(tags = {"全文检索(todo)"})
@@ -33,6 +34,14 @@ public class SysSearchApi {
     @ApiOperation("搜索")
     public R<?> search(@NotBlank String q) throws InterruptedException {
         searchService.query(q);
+        return R.success();
+    }
+
+    @GetMapping("native")
+    @ApiOperation("搜索")
+    public R<?> searchByNative(@NotBlank String q) throws IOException {
+        // searchService.queryByNative(q);
+        searchService.queryByNative(q);
         return R.success();
     }
 

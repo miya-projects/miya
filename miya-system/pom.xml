@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>miya-system</artifactId>
-    <version>1.1.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -15,7 +15,7 @@
     <parent>
         <groupId>io.github.rxxy</groupId>
         <artifactId>miya-parent</artifactId>
-        <version>1.1.1</version>
+        <version>1.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -138,15 +138,35 @@
         <dependency>
             <groupId>org.hibernate.search</groupId>
             <artifactId>hibernate-search-mapper-orm</artifactId>
-            <version>6.0.7.Final</version>
-            <scope>provided</scope>
+            <version>6.1.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.search</groupId>
             <artifactId>hibernate-search-backend-elasticsearch</artifactId>
-            <version>6.0.7.Final</version>
-            <scope>provided</scope>
+            <version>6.1.0.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <version>7.16.3</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+
         <!--<dependency>-->
         <!--    <groupId>io.github.rxxy</groupId>-->
         <!--    <artifactId>miya-websocket</artifactId>-->
