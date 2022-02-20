@@ -21,6 +21,7 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.config.BootstrapMode;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -60,6 +61,13 @@ public class CommonDataSourceConfig implements InitializingBean {
     @Resource
     private JpaProperties jr;
 
+    @Bean("ormPackages")
+    public List<Class<?>> ormPackages(){
+        ArrayList<Class<?>> classes = new ArrayList<>();
+        classes.add(FlagForMiyaCommonModule.class);
+        return classes;
+    }
+
     @Override
     public void afterPropertiesSet() {
         Map<String, String> properties = jr.getProperties();
@@ -97,7 +105,7 @@ public class CommonDataSourceConfig implements InitializingBean {
         dataSource.setFilters("stat");
         dataSource.setMinIdle(2);
         dataSource.setValidationQuery("select 1");
-        dataSource.setMaxActive(3);
+        dataSource.setMaxActive(5);
         dataSource.setInitialSize(2);
 //        dataSource.setWe
         // dataSource.setRemoveAbandoned(true);
@@ -107,20 +115,19 @@ public class CommonDataSourceConfig implements InitializingBean {
         return dataSource;
     }
 
-    @Primary
-    @Bean(name = "entityManagerFactory")
-    @ConditionalOnMissingBean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
-        List<Class<?>> classes = new ArrayList<>();
-        classes.add(FlagForMiyaCommonModule.class);
-        this.packages.ifPresent(classes::addAll);
-        return builder
-                .dataSource(dataSource)
-                .packages(classes.toArray(new Class[0]))
-                .properties(jr.getProperties())
-                .persistenceUnit("persistenceUnit")
-                .build();
-    }
+    // @Primary
+    // @Bean(name = "entityManagerFactory")
+    // @ConditionalOnMissingBean(name = "entityManagerFactory")
+    // public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
+    //     List<Class<?>> classes = new ArrayList<>();
+    //     this.packages.ifPresent(classes::addAll);
+    //     return builder
+    //             .dataSource(dataSource)
+    //             .packages(classes.toArray(new Class[0]))
+    //             .properties(jr.getProperties())
+    //             .persistenceUnit("persistenceUnit")
+    //             .build();
+    // }
 
     /**
      * 配置事物管理器
