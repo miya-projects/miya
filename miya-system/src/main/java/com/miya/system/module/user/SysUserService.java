@@ -1,41 +1,52 @@
 package com.miya.system.module.user;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.miya.common.auth.way.GeneralAuthentication;
 import com.miya.common.auth.way.LoginDevice;
 import com.miya.common.auth.way.LoginWay;
 import com.miya.common.config.web.jwt.JwtPayload;
 import com.miya.common.config.web.jwt.TokenService;
-import com.miya.common.module.init.SystemInit;
-import com.miya.common.module.init.SystemInitErrorException;
-import com.miya.system.config.ProjectConfiguration;
-import com.miya.system.config.business.Business;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
+import com.miya.common.module.cache.KeyValueStore;
+import com.miya.common.module.init.SystemInit;
+import com.miya.common.module.init.SystemInitErrorException;
 import com.miya.common.module.sms.CacheKeys;
+import com.miya.common.service.JwtTokenService;
+import com.miya.system.config.ProjectConfiguration;
+import com.miya.system.config.business.Business;
+import com.miya.system.module.download.DownloadService;
+import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.user.event.UserLoginEvent;
 import com.miya.system.module.user.model.QSysUser;
-import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserForm;
-import com.miya.common.module.cache.KeyValueStore;
-import com.miya.common.service.JwtTokenService;
 import com.miya.system.module.user.model.SysUserModifyForm;
+import com.querydsl.core.types.Predicate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -46,6 +57,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Transactional
+@Service
 @RequiredArgsConstructor
 public class SysUserService implements SystemInit {
 
@@ -57,6 +69,7 @@ public class SysUserService implements SystemInit {
     private final JwtTokenService jwtTokenService;
     private final ApplicationContext ac;
     private final SysUserCustomizer customizer;
+    private final DownloadService downloadService;
 
     private static final QSysUser qSysUser = QSysUser.sysUser;
 
@@ -328,6 +341,24 @@ public class SysUserService implements SystemInit {
         sysUser.setPassword(bCryptPasswordEncoder.encode(this.defaultPasswordGenerator.apply(form)));
         sysUser.setId("1");
         sysUserRepository.save(sysUser);
+    }
+
+    /**
+     * 导出Excel
+     * @param predicate 筛选条件
+     * @param response http响应
+     */
+    public void export(Predicate predicate, HttpServletResponse response) throws IOException {
+        URL resource = ResourceUtil.getResource("excel-export-template/user.xlsx");
+        String fileName = "用户导出.xlsx";
+        Iterable<SysUser> users = sysUserRepository.findAll(predicate);
+        ArrayList<SysUser> userList = ListUtil.toList(users);
+        Context context = new Context();
+        context.putVar("items", userList);
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+        response.setContentType("application/octet-stream");
+        JxlsHelper.getInstance().processTemplate(resource.openStream(), response.getOutputStream(), context);
+        downloadService.generateTask("后台用户数据", fileName);
     }
 
 }

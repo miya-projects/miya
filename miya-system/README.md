@@ -109,7 +109,7 @@ config.oss.aliyun.access-key=
 实现`SysFileService`接口并注册为bean即可。
 
 ### 业务日志
-1. 事件方式记录日志
+1. 事件方式记录日志(可将业务事件继承自LogEvent，则会同时记录日志，不必单独分发LogEvent事件)
 ```java
 LogEvent event = new LogEvent(content, operationType, businessId, extra);
 applicationContext.publishEvent(event);

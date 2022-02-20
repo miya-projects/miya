@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.common.module.base.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
+import com.miya.system.module.user.model.SysUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.Date;
 
 @Table(name = "sys_download_record")
 @Entity
@@ -30,7 +31,7 @@ public class SysDownloadRecord extends BaseEntity {
     private String name;
 
     @Column(name = "download_time")
-    private Instant downloadTime;
+    private Date downloadTime;
 
     @Column(name = "file_name", length = 100)
     private String fileName;
@@ -39,6 +40,14 @@ public class SysDownloadRecord extends BaseEntity {
     @JoinColumn(name = "file_id")
     @NotFound(action = NotFoundAction.IGNORE)
     private SysFile file;
+
+    /**
+     * 任务下载人
+     */
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private SysUser user;
 
     @Type(type = "com.vladmihalcea.hibernate.type.json.JsonNodeStringType")
     @Column(name = "extra", columnDefinition = "json")

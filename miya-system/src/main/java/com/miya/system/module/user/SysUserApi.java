@@ -15,6 +15,7 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +25,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 /**
  * @author 杨超辉
@@ -36,12 +38,11 @@ import javax.validation.constraints.NotNull;
 @Api(tags = {"用户"})
 @Acl(userType = SysUser.class)
 @Validated
+@RequiredArgsConstructor
 public class SysUserApi extends BaseApi {
 
-    @Resource
-    private SysUserService sysUserService;
-    @Resource
-    private SysUserRepository sysUserRepository;
+    private final SysUserService sysUserService;
+    private final SysUserRepository sysUserRepository;
 
     /**
      * 设置用户角色
@@ -75,6 +76,17 @@ public class SysUserApi extends BaseApi {
         // SimpleExpression<SysUser> wqe = QSysUser.sysUser.as("wqe");
         Page<SysUser> all = sysUserRepository.findAll(predicate, pageRequest);
         return R.successWithData(Grid.of(all.map(SysUserListDTO::of)));
+    }
+
+    /**
+     * 用户列表导出
+     */
+    @ApiOperation("用户列表导出")
+    @GetMapping("export")
+    @Acl(business = "sys:user:download")
+    public void export(
+            @QuerydslPredicate(root = SysUser.class) Predicate predicate, HttpServletResponse response) throws IOException {
+        sysUserService.export(predicate, response);
     }
 
     @PostMapping

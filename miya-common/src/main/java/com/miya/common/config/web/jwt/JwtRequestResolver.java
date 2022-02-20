@@ -1,5 +1,6 @@
 package com.miya.common.config.web.jwt;
 
+import cn.hutool.core.util.StrUtil;
 import com.miya.common.auth.way.GeneralAuthentication;
 import com.miya.common.service.JwtTokenService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,9 @@ public class JwtRequestResolver {
     public Authentication getAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         String token = resolveAuthorization(authorization);
+        if (StrUtil.isBlank(token) && request.getMethod().equalsIgnoreCase("GET")){
+            token = request.getParameter("token");
+        }
         if (Objects.isNull(token)){
             return null;
         }

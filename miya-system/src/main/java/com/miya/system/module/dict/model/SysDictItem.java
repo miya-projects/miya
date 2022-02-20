@@ -1,11 +1,12 @@
 package com.miya.system.module.dict.model;
 
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.service.mapper.BaseMapper;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.IndexColumn;
-import org.mapstruct.Mapper;
+
 import javax.persistence.*;
 
 /**
