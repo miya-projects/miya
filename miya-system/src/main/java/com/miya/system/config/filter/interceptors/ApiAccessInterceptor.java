@@ -91,6 +91,9 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
         }
         if (principal instanceof SysUser) {
             SysUser sysUser = (SysUser) principal;
+            if (Objects.nonNull(businessCodes) && businessCodes.length > 0) {
+                request.setAttribute("business", businessCodes[0]);
+            }
             /*
              * 超级管理员不受所有权限控制
              */
@@ -103,7 +106,6 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
                     for (String code : businessCodes) {
                         Business business = sysRoleService.valueOfCode(code);
                         if (b.equals(business)) {
-                            request.setAttribute("business", business);
                             return true;
                         }
                     }

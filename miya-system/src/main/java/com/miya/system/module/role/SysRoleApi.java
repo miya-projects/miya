@@ -1,20 +1,15 @@
 package com.miya.system.module.role;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import com.miya.common.annotation.Acl;
-
-import com.miya.system.config.business.Business;
-import com.miya.common.module.base.BaseApi;
-import com.miya.system.config.business.SystemErrorCode;
 import com.miya.common.model.dto.base.Grid;
 import com.miya.common.model.dto.base.R;
-import com.miya.system.module.role.model.QSysRole;
+import com.miya.common.module.base.BaseApi;
+import com.miya.system.config.business.Business;
+import com.miya.system.config.business.SystemErrorCode;
 import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.role.model.SysRoleDTO;
 import com.miya.system.module.role.model.SysRoleForm;
-import com.miya.system.module.user.SysUserRepository;
-import com.miya.system.module.user.model.*;
+import com.miya.system.module.user.model.SysUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,8 +40,6 @@ import java.util.stream.Collectors;
 @Validated
 public class SysRoleApi extends BaseApi {
 
-    @Resource
-    private SysUserRepository sysUserRepository;
     @Resource
     private SysRoleRepository sysRoleRepository;
     @Resource
@@ -102,10 +95,7 @@ public class SysRoleApi extends BaseApi {
     @ApiOperation("增加角色")
     @Acl(business = "sys:role:add")
     public R<?> save( @Validated SysRoleForm sysRoleForm) {
-        SysRole sysRole = sysRoleForm.mergeToNewPo();
-        sysRole.setIsSystem(false);
-        sysRoleRepository.save(sysRole);
-        return R.success();
+        return sysRoleService.saveRole(sysRoleForm);
     }
 
     /**
@@ -115,18 +105,8 @@ public class SysRoleApi extends BaseApi {
     @PutMapping(value = "{id}")
     @ApiOperation("修改角色")
     @Acl(business = "sys:role:edit")
-    public R<SysRole> update(@Validated SysRoleForm sysRoleForm, @ApiParam("角色id") @PathVariable("id") @NotNull SysRole sysRole) {
-        if (sysRole.getIsSystem()){
-            return R.errorWithCodeAndMsg(SystemErrorCode.OPE_SYSTEM_ROLE);
-        }
-        sysRoleForm.setName(sysRoleForm.getName().trim());
-        long count = sysRoleRepository.count(QSysRole.sysRole.name.eq(sysRoleForm.getName()));
-        if (count > 0 && !sysRoleForm.getName().equals(sysRole.getName())){
-            return R.errorWithMsg("角色名已被使用");
-        }
-        BeanUtil.copyProperties(sysRoleForm.mergeToNewPo(), sysRole, CopyOptions.create().ignoreNullValue());
-        sysRoleRepository.save(sysRole);
-        return R.success();
+    public R<?> update(@Validated SysRoleForm sysRoleForm, @ApiParam("角色id") @PathVariable("id") @NotNull SysRole sysRole) {
+        return sysRoleService.updateRole(sysRoleForm, sysRole);
     }
 
     /**
@@ -137,17 +117,8 @@ public class SysRoleApi extends BaseApi {
     @DeleteMapping(value = "{id}")
     @Acl(business = "sys:role:delete")
     public R<?> delete( @ApiParam("角色id") @PathVariable("id") @NotNull SysRole sysRole ) {
-        boolean exists = sysUserRepository.exists(QSysUser.sysUser.roles.any().eq(sysRole));
-        if (exists) {
-            return R.errorWithMsg("该角色下有用户，不可删除");
-        }
-        if (sysRole.getIsSystem()){
-            return R.errorWithCodeAndMsg(SystemErrorCode.OPE_SYSTEM_ROLE);
-        }
-        sysRoleRepository.delete(sysRole);
-        return R.success();
+        return sysRoleService.deleteRole(sysRole);
     }
-
 
     /**
      * 获取业务功能列表

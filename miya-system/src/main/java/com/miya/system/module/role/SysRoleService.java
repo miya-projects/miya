@@ -1,13 +1,22 @@
 package com.miya.system.module.role;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.io.IoUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.miya.common.model.dto.base.R;
+import com.miya.common.module.base.BaseService;
 import com.miya.common.module.init.SystemInit;
 import com.miya.system.config.business.Business;
+import com.miya.system.config.business.SystemErrorCode;
+import com.miya.system.module.role.event.RoleModifyEvent;
 import com.miya.system.module.role.model.QSysRole;
 import com.miya.system.module.role.model.SysRole;
+import com.miya.system.module.role.model.SysRoleForm;
 import com.miya.system.module.user.SysUserCustomizer;
 import com.miya.common.util.JSONUtils;
+import com.miya.system.module.user.SysUserRepository;
+import com.miya.system.module.user.model.QSysUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,7 +34,7 @@ import java.util.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SysRoleService implements SystemInit {
+public class SysRoleService extends BaseService implements SystemInit {
 
     /**
      * business功能文件默认查找路径
@@ -35,6 +44,7 @@ public class SysRoleService implements SystemInit {
 
     private final SysUserCustomizer customizer;
     private final SysRoleRepository sysRoleRepository;
+    private final SysUserRepository sysUserRepository;
 
     @Getter
     private List<Business> business;
@@ -141,6 +151,7 @@ public class SysRoleService implements SystemInit {
             sysRole.getPermissions().add(code);
         }
         sysRoleRepository.save(sysRole);
+        this.ac.publishEvent(new RoleModifyEvent(sysRole, RoleModifyEvent.RoleModifyType.MODIFY_PERMISSION));
     }
 
 
@@ -158,6 +169,54 @@ public class SysRoleService implements SystemInit {
         throw new RuntimeException("默认角色[" +  id + "] 在数据库不存在");
     }
 
+    /**
+     * 修改角色
+     * @param sysRoleForm   修改后的角色信息
+     * @param sysRole       待修改角色
+     */
+    public R<?> updateRole(SysRoleForm sysRoleForm, SysRole sysRole) {
+        if (sysRole.getIsSystem()){
+            return R.errorWithCodeAndMsg(SystemErrorCode.OPE_SYSTEM_ROLE);
+        }
+        sysRoleForm.setName(sysRoleForm.getName().trim());
+        long count = sysRoleRepository.count(QSysRole.sysRole.name.eq(sysRoleForm.getName()));
+        if (count > 0 && !sysRoleForm.getName().equals(sysRole.getName())){
+            return R.errorWithMsg("角色名已被使用");
+        }
+        BeanUtil.copyProperties(sysRoleForm.mergeToNewPo(), sysRole, CopyOptions.create().ignoreNullValue());
+        sysRoleRepository.save(sysRole);
+        this.ac.publishEvent(new RoleModifyEvent(sysRole, RoleModifyEvent.RoleModifyType.MODIFY));
+        return R.success();
+    }
+
+    /**
+     * 新增角色
+     * @param sysRoleForm
+     */
+    public R<?> saveRole(SysRoleForm sysRoleForm) {
+        SysRole sysRole = sysRoleForm.mergeToNewPo();
+        sysRole.setIsSystem(false);
+        sysRoleRepository.save(sysRole);
+        this.ac.publishEvent(new RoleModifyEvent(sysRole, RoleModifyEvent.RoleModifyType.NEW));
+        return R.success();
+    }
+
+    /**
+     * 删除角色
+     * @param sysRole 待删除角色
+     */
+    public R<?> deleteRole(SysRole sysRole) {
+        boolean exists = sysUserRepository.exists(QSysUser.sysUser.roles.any().eq(sysRole));
+        if (exists) {
+            return R.errorWithMsg("该角色下有用户，不可删除");
+        }
+        if (sysRole.getIsSystem()){
+            return R.errorWithCodeAndMsg(SystemErrorCode.OPE_SYSTEM_ROLE);
+        }
+        sysRoleRepository.delete(sysRole);
+        this.ac.publishEvent(new RoleModifyEvent(sysRole, RoleModifyEvent.RoleModifyType.DELETE));
+        return R.success();
+    }
 
     /**
      * 根据sortCode寻找business

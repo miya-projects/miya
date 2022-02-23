@@ -6,7 +6,6 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
-import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserDetailDTO;
 import com.miya.system.module.user.model.SysUserListDTO;
@@ -14,7 +13,6 @@ import com.miya.system.module.user.model.SysUserForm;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +22,6 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -43,18 +40,6 @@ public class SysUserApi extends BaseApi {
 
     private final SysUserService sysUserService;
     private final SysUserRepository sysUserRepository;
-
-    /**
-     * 设置用户角色
-     * @param roleIds 要设置的角色id
-     */
-    @PutMapping(value = "role")
-    @ApiOperation(value = "设置用户角色", notes = "设置用户角色")
-    public R<?> setRoles(@RequestParam(required = false) SysRole[] roleIds,
-                         @ApiParam("用户id") @RequestParam("id") SysUser user) {
-        sysUserService.setRoles(roleIds, user);
-        return R.success();
-    }
 
     /**
      * 用户列表
@@ -127,12 +112,7 @@ public class SysUserApi extends BaseApi {
     @PutMapping("{id}/blocks")
     @Acl(business = "sys:user:blocks")
     public R<?> freeze(@NotNull(message = "id不合法") @PathVariable(value = "id") SysUser sysUser) {
-        if (sysUser.isSuperAdmin()) {
-            return R.errorWithCodeAndMsg(ResponseCode.Common.CAN_NOT_OPERATE_SUPER_ADMIN);
-        }
-        sysUser.setAccountStatus(SysUser.AccountStatus.LOCKED);
-        sysUserRepository.save(sysUser);
-        return R.success();
+        return sysUserService.freeze(sysUser);
     }
 
     /**
@@ -143,9 +123,7 @@ public class SysUserApi extends BaseApi {
     @DeleteMapping("{id}/blocks")
     @Acl(business = "sys:user:blocks")
     public R<?> unFreeze(@NotNull(message = "id不合法") @PathVariable(value = "id") SysUser sysUser) {
-        sysUser.setAccountStatus(SysUser.AccountStatus.NORMAL);
-        sysUserRepository.save(sysUser);
-        return R.success();
+        return sysUserService.unFreeze(sysUser);
     }
 
     /**

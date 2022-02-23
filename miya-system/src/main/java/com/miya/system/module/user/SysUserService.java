@@ -14,6 +14,7 @@ import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
+import com.miya.common.module.base.BaseService;
 import com.miya.common.module.cache.KeyValueStore;
 import com.miya.common.module.init.SystemInit;
 import com.miya.common.module.init.SystemInitErrorException;
@@ -22,8 +23,8 @@ import com.miya.common.service.JwtTokenService;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.business.Business;
 import com.miya.system.module.download.DownloadService;
-import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.user.event.UserLoginEvent;
+import com.miya.system.module.user.event.UserModifyEvent;
 import com.miya.system.module.user.model.QSysUser;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserForm;
@@ -59,7 +60,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class SysUserService implements SystemInit {
+public class SysUserService extends BaseService implements SystemInit {
 
     private final SysUserRepository sysUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -67,7 +68,6 @@ public class SysUserService implements SystemInit {
     private final KeyValueStore keyValueStore;
     private final ProjectConfiguration projectConfiguration;
     private final JwtTokenService jwtTokenService;
-    private final ApplicationContext ac;
     private final SysUserCustomizer customizer;
     private final DownloadService downloadService;
 
@@ -91,20 +91,6 @@ public class SysUserService implements SystemInit {
     }
 
     /**
-     * 为用户设置角色
-     * @param roleIds
-     * @param user
-     */
-    public void setRoles(SysRole[] roleIds, SysUser user) {
-        if (Objects.isNull(roleIds)) {
-            roleIds = new SysRole[0];
-        }
-        HashSet<SysRole> sysRoles = new HashSet<>(Arrays.asList(roleIds));
-        user.setRoles(sysRoles);
-        sysUserRepository.save(user);
-    }
-
-    /**
      * 新增用户
      * @param userForm
      */
@@ -120,6 +106,7 @@ public class SysUserService implements SystemInit {
         SysUser sysUser = userForm.mergeToNewPo();
         sysUser.setPassword(bCryptPasswordEncoder.encode(this.defaultPasswordGenerator.apply(userForm)));
         sysUserRepository.save(sysUser);
+        ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.NEW));
         return R.success();
     }
 
@@ -131,6 +118,7 @@ public class SysUserService implements SystemInit {
     public void modifyProfile(SysUserModifyForm userModifyForm, SysUser user) {
         userModifyForm.mergeToPo(user);
         sysUserRepository.save(user);
+        ac.publishEvent(new UserModifyEvent(user, UserModifyEvent.UserModifyType.MODIFY_USERINFO));
     }
 
     /**
@@ -139,6 +127,7 @@ public class SysUserService implements SystemInit {
      */
     public void update(SysUser user) {
         sysUserRepository.save(user);
+        ac.publishEvent(new UserModifyEvent(user, UserModifyEvent.UserModifyType.MODIFY_USERINFO));
     }
 
     /**
@@ -153,6 +142,7 @@ public class SysUserService implements SystemInit {
             throw new ErrorMsgException("手机号重复");
         }
         sysUserRepository.save(user);
+        ac.publishEvent(new UserModifyEvent(user, UserModifyEvent.UserModifyType.MODIFY_USERINFO));
     }
 
     /**
@@ -165,6 +155,32 @@ public class SysUserService implements SystemInit {
             throw new ResponseCodeException(ResponseCode.Common.CAN_NOT_OPERATE_SUPER_ADMIN);
         }
         sysUserRepository.delete(sysUser);
+        ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.DELETE));
+    }
+
+    /**
+     * 冻结用户
+     * @param sysUser
+     */
+    public R<?> freeze(SysUser sysUser) {
+        if (sysUser.isSuperAdmin()) {
+            return R.errorWithCodeAndMsg(ResponseCode.Common.CAN_NOT_OPERATE_SUPER_ADMIN);
+        }
+        sysUser.setAccountStatus(SysUser.AccountStatus.LOCKED);
+        sysUserRepository.save(sysUser);
+        ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.FREEZE));
+        return R.success();
+    }
+
+    /**
+     * 解冻
+     * @param sysUser
+     */
+    public R<?> unFreeze(SysUser sysUser) {
+        sysUser.setAccountStatus(SysUser.AccountStatus.NORMAL);
+        sysUserRepository.save(sysUser);
+        ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.UNFREEZE));
+        return R.success();
     }
 
 
@@ -290,6 +306,7 @@ public class SysUserService implements SystemInit {
         String newPassword = passwordGeneratorForReset.apply(sysUser);
         sysUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
         sysUserRepository.save(sysUser);
+        ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.RESET_PASSWORD));
         return newPassword;
     }
 

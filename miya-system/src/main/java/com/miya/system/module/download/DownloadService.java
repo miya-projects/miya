@@ -28,6 +28,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 下载服务
  * 1. 对导出日志做统一记录，
  * 2. 实现异步下载导出，解决实时导出慢体验差的问题
+ * 3. 导出任务队列，防止用户同时多次导出大数据量的任务，导致服务器内存爆炸
  */
 @Slf4j
 @Service
@@ -36,7 +37,11 @@ public class DownloadService {
 
     private final SysFileService fileService;
     private final DownloadRecordRepository downloadRecordRepository;
-    ThreadPoolExecutor poolExecutor = ExecutorBuilder.create().setMaxPoolSize(5).setCorePoolSize(3).build();
+    /**
+     * 导出线程池
+     * 限制同时进行的任务数，如导出数量超级巨大，内存放不下单个任务时，另外处理。
+     */
+    ThreadPoolExecutor poolExecutor = ExecutorBuilder.create().setMaxPoolSize(5).setCorePoolSize(2).build();
 
     /**
      * 生成任务记录

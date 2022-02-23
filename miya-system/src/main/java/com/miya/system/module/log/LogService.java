@@ -1,7 +1,9 @@
 package com.miya.system.module.log;
 
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.miya.system.config.business.Business;
+import com.miya.system.module.role.SysRoleService;
 import com.miya.system.module.user.model.SysUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -73,7 +75,21 @@ public class LogService {
         SysLog sysLog = createSysLog(business, content, operationType, businessId, extra);
         sysLogRepository.save(sysLog);
     }
-    
+
+    /**
+     * 创建日志对象并保存日志
+     * @param business 所属业务模块
+     * @param content   日志内容
+     * @param operationType 操作类型
+     * @param businessId    相关业务数据的id
+     * @param extra 其他额外数据
+     * @param operatorName  操作人
+     */
+    public void log(String business, String content, String operationType, String businessId, Map<String, Object> extra, String operatorName){
+        SysLog sysLog = createSysLog(business, content, operationType, businessId, extra, operatorName);
+        sysLogRepository.save(sysLog);
+    }
+
     /**
      * 创建日志对象
      * @param content       所属业务模块
@@ -83,13 +99,26 @@ public class LogService {
      * @return              日志对象
      */
     private SysLog createSysLog(String business, String content, String operationType, String businessId, Map<String, Object> extra){
-        SysLog sysLog = new SysLog();
-        sysLog.setBusiness(business);
-        sysLog.setContent(content);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = Optional.ofNullable(authentication).map(Authentication::getPrincipal).orElse(null);
         String name = this.getUserName(principal);
-        sysLog.setOperatorName(name);
+        return createSysLog(business, content, operationType, businessId, extra, name);
+    }
+
+    /**
+     * 创建日志对象
+     * @param content       所属业务模块
+     * @param operationType 日志内容
+     * @param businessId    相关业务数据的id
+     * @param extra         其他额外数据
+     * @param operatorName  操作人
+     * @return              日志对象
+     */
+    private SysLog createSysLog(String business, String content, String operationType, String businessId, Map<String, Object> extra, String operatorName){
+        SysLog sysLog = new SysLog();
+        sysLog.setBusiness(business);
+        sysLog.setContent(content);
+        sysLog.setOperatorName(operatorName);
         sysLog.setOperationType(operationType);
         sysLog.setExtra(extra);
         sysLog.setBusinessId(businessId);
@@ -106,8 +135,8 @@ public class LogService {
         if (Objects.nonNull(servletRequestAttributes)){
             HttpServletRequest request = servletRequestAttributes.getRequest();
             Object businessAttr = request.getAttribute("business");
-            Optional<Object> businessOptional = Optional.ofNullable(businessAttr);
-            return businessOptional.map(o -> (Business) o);
+            return Optional.ofNullable(SpringUtil.getBean(SysRoleService.class)
+                    .valueOfCode(Optional.ofNullable(businessAttr).map(Object::toString).orElse("")));
         }
         return Optional.empty();
     }
