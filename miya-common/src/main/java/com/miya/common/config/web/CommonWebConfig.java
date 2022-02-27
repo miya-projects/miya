@@ -3,6 +3,7 @@ package com.miya.common.config.web;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miya.common.annotation.constraint.CustomMessageInterpolator;
 import com.miya.common.config.web.interceptor.ActionLogInterceptor;
 import com.miya.common.config.web.interceptor.ApiRequestLimitInterceptor;
 import com.miya.common.config.web.interceptor.ApiUsageLimitInterceptor;
@@ -29,6 +30,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -215,6 +218,13 @@ public class CommonWebConfig extends WebSecurityConfigurerAdapter implements Web
         registry.addInterceptor(apiUsageLimitInterceptor()).addPathPatterns(Collections.singletonList("/api/**"));
         //单个api访问次数限制拦截器，限制用户
         registry.addInterceptor(new ApiRequestLimitInterceptor()).addPathPatterns(Collections.singletonList("/api/**"));
+    }
+
+    @Override
+    public Validator getValidator() {
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.setMessageInterpolator(new CustomMessageInterpolator());
+        return localValidatorFactoryBean;
     }
 
     @Bean

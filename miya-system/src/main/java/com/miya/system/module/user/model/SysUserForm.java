@@ -19,7 +19,7 @@ import java.util.Set;
 @Setter
 public class SysUserForm extends BaseForm<SysUser> {
 
-    @NotBlank(message = "用户名不能为空")
+    @NotBlank
     @ApiModelProperty("用户名")
     private String username;
 
