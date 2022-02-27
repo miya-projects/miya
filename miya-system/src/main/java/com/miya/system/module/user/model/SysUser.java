@@ -14,6 +14,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
 import org.springframework.security.core.AuthenticatedPrincipal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Index;
@@ -81,6 +82,10 @@ public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
     @Type(type = "json")
     @Column(name = "preferences", columnDefinition = "json")
     private Preferences preferences = new Preferences();
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private Set<SysUserSocial> sysUserSocials = new HashSet<>();
 
     /**
      * 获取头像 头像为空时返回默认头像
