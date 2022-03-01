@@ -5,13 +5,13 @@
     <parent>
         <groupId>io.github.rxxy</groupId>
         <artifactId>miya-parent</artifactId>
-        <version>1.2</version>
+        <version>1.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>miya-common</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <dependencies>
