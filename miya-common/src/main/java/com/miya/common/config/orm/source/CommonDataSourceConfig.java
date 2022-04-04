@@ -72,7 +72,7 @@ public class CommonDataSourceConfig implements InitializingBean {
     public void afterPropertiesSet() {
         Map<String, String> properties = jr.getProperties();
         properties.put(AvailableSettings.DIALECT, ExtensionMySQLDialect.class.getName());
-        properties.put(AvailableSettings.FLUSH_MODE, FlushMode.COMMIT.name());
+        properties.put(AvailableSettings.FLUSH_MODE, FlushMode.AUTO.name());
         // properties.put(AvailableSettings.INTERCEPTOR, AuditingLogListener.class.getName());
         properties.put(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "20");
         properties.put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, SpringPhysicalNamingStrategy.class.getName());

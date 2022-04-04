@@ -246,7 +246,7 @@ public class CommonWebConfig extends WebSecurityConfigurerAdapter implements Web
     @Bean
     @ConditionalOnMissingBean
     public ActionLogInterceptor actionLogInterceptor(ObjectMapper objectMapper){
-        return new ActionLogInterceptor(objectMapper, false, new String[]{"com.miya.system.module.common.MonitorAndMaintenanceApi"});
+        return new ActionLogInterceptor(objectMapper, false, true, new String[]{"com.miya.system.module.common.MonitorAndMaintenanceApi"});
     }
 
 }

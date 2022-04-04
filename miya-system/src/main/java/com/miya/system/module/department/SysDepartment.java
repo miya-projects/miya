@@ -1,6 +1,7 @@
 package com.miya.system.module.department;
 
 import com.miya.common.module.base.BaseEntity;
+import com.miya.common.module.bod.BackupOnDelete;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@BackupOnDelete
 @Entity
 @Accessors(chain = true)
 @Table(indexes = {@Index(name = "name_unique", columnList = "pid, name", unique = true)})
@@ -34,7 +36,7 @@ public class SysDepartment extends BaseEntity {
     @JoinColumn(name = "pid")
     private SysDepartment parent;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
     @JoinColumn(name = "pid")
     private List<SysDepartment> children;
 

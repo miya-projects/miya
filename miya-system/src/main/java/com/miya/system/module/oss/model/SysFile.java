@@ -1,5 +1,6 @@
 package com.miya.system.module.oss.model;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.common.module.config.SysConfigService;
@@ -72,7 +73,9 @@ public class SysFile extends BaseEntity {
         Optional<String> domainOptional = configService.get(SysConfigService.SystemConfigKey.OSS_DOMAIN);
         if (domainOptional.isPresent()){
             String domain = domainOptional.get();
-            return domain + this.getPath();
+            if(StrUtil.isNotBlank(domain)){
+                return domain + this.getPath();
+            }
         }
         return SpringUtil.getBean(SysFileService.class).getUrl(this);
     }

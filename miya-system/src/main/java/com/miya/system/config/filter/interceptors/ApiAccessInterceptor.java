@@ -83,7 +83,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
         }
         if (Objects.nonNull(userType) && !Acl.AllUser.class.equals(userType)) {
             if (!userType.equals(principal.getClass())) {
-                //                todo 预警入库 模块化
+                // todo 预警入库 模块化
                 log.warn("用户类型与接口允许类型不一致! 用户: {} 方法: {}", principal.getClass().toString(), handlerMethod.getMethod().toString());
                 reject(response);
                 return false;

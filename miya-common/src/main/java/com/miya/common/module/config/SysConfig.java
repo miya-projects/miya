@@ -1,6 +1,7 @@
 package com.miya.common.module.config;
 
 import com.miya.common.module.base.BaseEntity;
+import com.miya.common.module.bod.BackupOnDelete;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
+@BackupOnDelete
 @Table(indexes = {@Index(name = "key_unique", columnList = "key", unique = true)})
 @Accessors(chain = true)
 public class SysConfig extends BaseEntity {

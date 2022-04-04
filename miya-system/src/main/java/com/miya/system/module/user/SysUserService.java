@@ -25,10 +25,7 @@ import com.miya.system.config.business.Business;
 import com.miya.system.module.download.DownloadService;
 import com.miya.system.module.user.event.UserLoginEvent;
 import com.miya.system.module.user.event.UserModifyEvent;
-import com.miya.system.module.user.model.QSysUser;
-import com.miya.system.module.user.model.SysUser;
-import com.miya.system.module.user.model.SysUserForm;
-import com.miya.system.module.user.model.SysUserModifyForm;
+import com.miya.system.module.user.model.*;
 import com.querydsl.core.types.Predicate;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.util.CastUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -95,6 +93,15 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param userForm
      */
     public R<?> save(SysUserForm userForm) {
+        return saveBySocial(userForm, CastUtils.cast(Collections.EMPTY_LIST));
+    }
+
+    /**
+     * 新增用户
+     * @param userForm
+     * @param socials 社交媒体
+     */
+    public R<?> saveBySocial(SysUserForm userForm, List<SysUserSocial> socials) {
         boolean exists = sysUserRepository.exists(qSysUser.username.eq(userForm.getUsername()));
         if (exists) {
             return R.errorWithMsg("用户名已被注册");
@@ -105,6 +112,7 @@ public class SysUserService extends BaseService implements SystemInit {
         }
         SysUser sysUser = userForm.mergeToNewPo();
         sysUser.setPassword(bCryptPasswordEncoder.encode(this.defaultPasswordGenerator.apply(userForm)));
+        sysUser.setSysUserSocials(new HashSet<>(socials));
         sysUserRepository.save(sysUser);
         ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.NEW));
         return R.success();
@@ -140,6 +148,10 @@ public class SysUserService extends BaseService implements SystemInit {
         boolean existsSamePhone = sysUserRepository.exists(qSysUser.phone.eq(user.getPhone()).and(qSysUser.id.ne(user.getId())));
         if (existsSamePhone){
             throw new ErrorMsgException("手机号重复");
+        }
+        boolean existsSameUsername = sysUserRepository.exists(qSysUser.phone.eq(user.getPhone()).and(qSysUser.id.ne(user.getId())));
+        if (existsSameUsername){
+            throw new ErrorMsgException("用户名重复");
         }
         sysUserRepository.save(user);
         ac.publishEvent(new UserModifyEvent(user, UserModifyEvent.UserModifyType.MODIFY_USERINFO));

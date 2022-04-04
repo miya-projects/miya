@@ -43,7 +43,6 @@ public class SysConfigService implements InitializingBean, SystemInit {
         Optional<String> isInitialize = get(SystemConfigKey.IS_INITIALIZE);
         if (!isInitialize.isPresent()) {
             // 还未初始化，进行初始化
-            put(SystemConfigKey.IS_INITIALIZE.name(), "1", SystemConfigKey.IS_INITIALIZE.name, "SYSTEM");
             put(SystemConfigKey.SYSTEM_NAME.name(), "MIYA", SystemConfigKey.SYSTEM_NAME.name, "SYSTEM");
             put(SystemConfigKey.SYSTEM_VERSION.name(), "1.0", SystemConfigKey.SYSTEM_VERSION.name, "SYSTEM");
             put(SystemConfigKey.BACKEND_DOMAIN.name(), "http://localhost:8080", SystemConfigKey.BACKEND_DOMAIN.name, "SYSTEM");
@@ -122,7 +121,7 @@ public class SysConfigService implements InitializingBean, SystemInit {
     }
 
     public Optional<String> get(SystemConfigKey key) {
-        return get(key.name());
+        return SpringUtil.getBean(SysConfigService.class).get(key.name());
     }
 
     /**

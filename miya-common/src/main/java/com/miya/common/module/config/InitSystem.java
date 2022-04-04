@@ -36,6 +36,8 @@ public class InitSystem {
                 for (SystemInit systemInit : systemInits) {
                     systemInit.init();
                 }
+                // 设置为初始化完成
+                sysConfigService.put(SysConfigService.SystemConfigKey.IS_INITIALIZE.name(), "1", SysConfigService.SystemConfigKey.IS_INITIALIZE.getName(), "SYSTEM");
                 log.info("初始化完成");
             }
 

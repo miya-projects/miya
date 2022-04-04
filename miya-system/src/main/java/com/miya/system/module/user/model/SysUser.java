@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @FilterDef(name = "orderOwnerFilter",
         parameters = {@ParamDef(name = "ownerIds", type = "string")})
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})
-@Table(indexes = {@Index(name = "avatar", columnList = "avatar_id")})
+@Table(indexes = {@Index(name = "avatar", columnList = "avatar_id"), @Index(name = "username", columnList = "username", unique = true)})
 public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
 
     @Column(unique = true, length = 20)

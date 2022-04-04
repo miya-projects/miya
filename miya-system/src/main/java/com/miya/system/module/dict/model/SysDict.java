@@ -1,6 +1,7 @@
 package com.miya.system.module.dict.model;
 
 import com.miya.common.module.base.BaseEntity;
+import com.miya.common.module.bod.BackupOnDelete;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
+@BackupOnDelete
 @Accessors(chain = true)
 @Table(indexes = {@Index(name = "code_unique", columnList = "code", unique = true)})
 public class SysDict extends BaseEntity {

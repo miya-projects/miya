@@ -24,7 +24,6 @@ import java.util.*;
  * @author 杨超辉
  * api访问日志拦截器
  */
-// @ControllerAdvice
 @Slf4j
 @RequiredArgsConstructor
 public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdvice<Object> {
@@ -42,6 +41,11 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
      * 是否打印响应内容
      */
     private final boolean printResponse;
+
+    /**
+     * 是否格式化参数
+     */
+    private final boolean format;
 
     /**
      * 某些类或包的的请求不打印日志，需传全类名
@@ -71,15 +75,30 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
 
         url.set(request.getRequestURI());
         StringBuilder logStr = new StringBuilder();
-        logStr.append("接收到请求：{} \n");
-        Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
-        if (entries.size() != 0){
-            logStr.append("parameter: \n");
-            entries.forEach( entry -> {
-                String key = entry.getKey();
-                String[] value = entry.getValue();
-                logStr.append(StrUtil.format("\t{}: {}\n", key, Arrays.toString(value)));
-            } );
+
+        if (format){
+            logStr.append("接收到请求：{} \n");
+            Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
+            if (entries.size() != 0){
+                logStr.append("请求参数: \n");
+                entries.forEach( entry -> {
+                    String key = entry.getKey();
+                    String[] value = entry.getValue();
+                    logStr.append(StrUtil.format("\t{}: {}\n", key, Arrays.toString(value)));
+                } );
+            }
+        }else {
+            logStr.append("接收到请求：{},");
+            Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
+            if (entries.size() != 0){
+                logStr.append("请求参数: ");
+                entries.forEach( entry -> {
+                    String key = entry.getKey();
+                    String[] value = entry.getValue();
+                    logStr.append(StrUtil.format("{}={},", key, Arrays.toString(value)));
+                } );
+            }
+            logStr.deleteCharAt(logStr.length() - 1);
         }
         log.debug(logStr.toString(), url.get(), logStr);
         return true;

@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import com.miya.common.module.config.SysConfigService;
 import com.miya.system.module.oss.OssConfigProperties;
 import com.miya.system.module.oss.SysFileRepository;
 import com.miya.system.module.oss.model.SysFile;
@@ -82,17 +84,13 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer, Ini
     @Override
     public SysFile upload(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        //改文件名
-        String realFileName = UUID.fastUUID().toString(true) + "." + FileUtil.extName(fileName);
-        String relativePath = DateUtil.today().replaceAll("-", "/");
-        //配置文件已配置绝对路径
-        File realDir = new File(uploadAbsolutePath, relativePath);
-        FileUtil.mkdir(realDir);
+        String name = rename(fileName);
+        File destFile = new File(uploadAbsolutePath, name);
+        FileUtil.mkdir(destFile.getParentFile());
         //保存到数据库
-        File destFile = new File(realDir, realFileName);
         SysFile sysFile = new SysFile();
         sysFile.setFilename(fileName);
-        sysFile.setPath(destFile.getAbsolutePath());
+        sysFile.setPath(name);
         sysFile.setSize(file.getSize());
         sysFile.setSimpleSize(FileUtil.readableFileSize(file.getSize()));
         file.transferTo(destFile);
@@ -114,7 +112,7 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer, Ini
         //保存到数据库
         SysFile sysFile = new SysFile();
         sysFile.setFilename(fileName);
-        sysFile.setPath(destFile.getAbsolutePath());
+        sysFile.setPath(name);
         long size = 0;
         try (
                 InputStream i = inputStream;

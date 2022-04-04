@@ -3,6 +3,7 @@ package com.miya.system.config.web;
 import com.miya.common.config.web.interceptor.SignAccessInterceptor;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.filter.interceptors.ApiAccessInterceptor;
+import com.miya.system.config.filter.interceptors.EscapeSensitiveWordFilter;
 import com.miya.system.module.FlagForMiyaSystemModule;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +52,9 @@ public class MiyaSystemWebConfig implements WebMvcConfigurer {
         //添加api访问控制拦截器
         registry.addInterceptor(apiAccessInterceptor)
                 .addPathPatterns(Collections.singletonList("/api/**"));
+        registry.addInterceptor(new EscapeSensitiveWordFilter())
+                .addPathPatterns(Collections.singletonList("/api/**"));
+
     }
 
 }
