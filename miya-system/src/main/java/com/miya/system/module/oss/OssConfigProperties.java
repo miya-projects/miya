@@ -1,5 +1,6 @@
 package com.miya.system.module.oss;
 
+import cn.hutool.system.SystemUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +13,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @Setter
 @ConfigurationProperties(prefix = "config.oss")
 public class OssConfigProperties {
-    private OssType type;
+    private OssType type = OssType.Bare;
     @NestedConfigurationProperty
     private Minio minio;
     @NestedConfigurationProperty
@@ -32,7 +33,7 @@ public class OssConfigProperties {
         /**
          * 上传绝对路径
          */
-        private String uploadAbsolutePath = "/upload";
+        private String uploadAbsolutePath = SystemUtil.getOsInfo().getName().contains("Windows")?"D:/upload": "/upload";
         /**
          * 可访问到文件的路径
          * 最终文件的访问路径为: backendDomain(系统参数可配置) + pathPatterns + 文件path

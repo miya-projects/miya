@@ -1,7 +1,7 @@
 package com.miya.common.module.bod;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.miya.common.module.FlagForMiyaCommonModule;
+import com.miya.common.config.orm.source.DataSourceConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,6 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -41,12 +40,9 @@ public class BackupDataSourceConfig implements InitializingBean {
 
     @Resource
     private DbConfig dbConfig;
-    /**
-     * 额外需要扫描的包，可通过该点进行entityManager扫描包扩展
-     */
+
     @Resource
-    @Qualifier("ormPackages")
-    private Optional<List<Class<?>>> packages;
+    private DataSourceConfig dataSourceConfig;
 
     Map<String, String> properties = new HashMap<>();
 
@@ -55,6 +51,7 @@ public class BackupDataSourceConfig implements InitializingBean {
         properties.put(AvailableSettings.HBM2DDL_AUTO, "update");
         properties.put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, SpringPhysicalNamingStrategy.class.getName());
         properties.put(AvailableSettings.DIALECT, MySQL57Dialect.class.getName());
+        properties.put("hibernate.search.enabled", "false");
         // properties.put(AvailableSettings.SHOW_SQL, "true");
     }
 
@@ -85,14 +82,9 @@ public class BackupDataSourceConfig implements InitializingBean {
         adapter.setDatabase(Database.MYSQL);
         EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(adapter,
                 this.properties, persistenceUnitManager.getIfAvailable());
-
-        List<Class<?>> classes = new ArrayList<>();
-        classes.add(FlagForMiyaCommonModule.class);
-        this.packages.ifPresent(classes::addAll);
-
         return builder
                 .dataSource(dataSource)
-                .packages(classes.toArray(new Class[0]))
+                .packages(dataSourceConfig.getClasses().toArray(new Class[0]))
                 .properties(properties)
                 .persistenceUnit("bodPersistenceUnit")
                 .build();

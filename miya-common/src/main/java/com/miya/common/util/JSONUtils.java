@@ -28,11 +28,14 @@ public class JSONUtils {
         if (objectMapper != null) {
             return objectMapper;
         }
-        if (SpringUtil.getApplicationContext() == null) {
-            return objectMapper = objectMapperSupplier.get();
-        }
-        ObjectMapper bean = SpringUtil.getBean(ObjectMapper.class);
-        return objectMapper = Optional.ofNullable(bean).orElseGet(objectMapperSupplier);
+        // if (SpringUtil.getApplicationContext() == null) {
+        //     return objectMapper = objectMapperSupplier.get();
+        // }
+        // ObjectMapper bean = SpringUtil.getBean(ObjectMapper.class);
+        // return objectMapper = Optional.ofNullable(bean).orElseGet(objectMapperSupplier);
+
+        return objectMapper = objectMapperSupplier.get();
+
     }
 
     /**

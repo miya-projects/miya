@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -39,18 +40,14 @@ import static io.minio.PutObjectOptions.MAX_PART_SIZE;
 public class MinioSysFileService implements SysFileService, InitializingBean {
 
     private final SysFileRepository sysFileRepository;
-    private final OssConfigProperties.Minio minio;
 
+    private final String bucketName;
 
-    private String bucketName;
-
-    private MinioClient minioClient;
+    private final MinioClient minioClient;
 
     @Override
     public void afterPropertiesSet() {
         try {
-            Optional.ofNullable(minio.getBucketName()).ifPresent(bucketName -> this.bucketName = bucketName);
-            minioClient = new MinioClient(minio.getEndpoint(), minio.getAccessKey(), minio.getSecretKey());
             boolean isExist = minioClient.bucketExists(bucketName);
             if (!isExist) {
                 log.info("bucket {} not exits, try creating...", bucketName);
@@ -76,7 +73,7 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
         if (!override && exist(objectName)) {
             return;
         }
-        minioClient.putObject(bucketName, objectName, new FileInputStream(file), putObjectOptions);
+        minioClient.putObject(bucketName, objectName, Files.newInputStream(file.toPath()), putObjectOptions);
     }
 
 

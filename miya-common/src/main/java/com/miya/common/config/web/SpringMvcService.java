@@ -2,11 +2,13 @@ package com.miya.common.config.web;
 
 import com.miya.common.annotation.Acl;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +20,7 @@ import java.util.Set;
  * springmvc 提供相关的能力
  */
 @Service
-public class SpringMvcService {
+public class SpringMvcService extends WebSecurityConfigurerAdapter {
 
     //无需权限可访问的url
     private static final String[] ALLOW_ACCESS_URL = {
@@ -27,6 +29,11 @@ public class SpringMvcService {
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers(allowAccessUrlForAcl()).permitAll();
+    }
 
     /**
      * 获取允许不登录访问的url
@@ -44,13 +51,17 @@ public class SpringMvcService {
      * @see  Acl
      */
     public String[] allowAccessUrlForAcl(Map<RequestMappingInfo, HandlerMethod> handlerMethods){
-        // Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
         Set<Map.Entry<RequestMappingInfo, HandlerMethod>> entries = handlerMethods.entrySet();
         Set<String> urls = new HashSet<>();
         entries.forEach( entry -> {
             RequestMappingInfo key = entry.getKey();
             HandlerMethod value = entry.getValue();
-            Set<String> patterns = key.getPatternsCondition().getPatterns();
+
+            Set<String> patterns = new HashSet<>();
+            PatternsRequestCondition patternsCondition = key.getPatternsCondition();
+            if (patternsCondition != null){
+                patterns = patternsCondition.getPatterns();
+            }
             Class<?> beanType = value.getBeanType();
             Acl aclForClass = AnnotationUtils.findAnnotation(beanType, Acl.class);
             Acl aclForMethod = AnnotationUtils.findAnnotation(value.getMethod(), Acl.class);

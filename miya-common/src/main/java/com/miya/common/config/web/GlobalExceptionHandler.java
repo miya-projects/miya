@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
@@ -129,4 +130,9 @@ public class GlobalExceptionHandler {
         return R.errorWithMsg(StrUtil.format("参数 {}，是必须的", e.getVariableName()));
     }
 
+    @ExceptionHandler({MultipartException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public R<?> multipartException(HttpServletResponse response, MultipartException e) {
+        return R.errorWithMsg(StrUtil.format("{}", e.getMessage()));
+    }
 }

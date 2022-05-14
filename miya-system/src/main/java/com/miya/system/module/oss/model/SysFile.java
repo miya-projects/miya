@@ -69,14 +69,14 @@ public class SysFile extends BaseEntity {
      * @return 能够提供对外访问的url
      */
     public String getUrl(){
-        SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
-        Optional<String> domainOptional = configService.get(SysConfigService.SystemConfigKey.OSS_DOMAIN);
-        if (domainOptional.isPresent()){
-            String domain = domainOptional.get();
-            if(StrUtil.isNotBlank(domain)){
-                return domain + this.getPath();
-            }
-        }
+        // SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
+        // Optional<String> domainOptional = configService.get(SysConfigService.SystemConfigKey.OSS_DOMAIN);
+        // if (domainOptional.isPresent()){
+        //     String domain = domainOptional.get();
+        //     if(StrUtil.isNotBlank(domain)){
+        //         return domain + this.getPath();
+        //     }
+        // }
         return SpringUtil.getBean(SysFileService.class).getUrl(this);
     }
 

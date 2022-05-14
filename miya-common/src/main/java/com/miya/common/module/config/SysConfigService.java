@@ -2,9 +2,7 @@ package com.miya.common.module.config;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONUtil;
 import com.miya.common.module.init.SystemInit;
 import com.miya.common.module.init.SystemInitErrorException;
 import com.querydsl.core.BooleanBuilder;
@@ -12,17 +10,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * 系统配置
@@ -31,7 +34,7 @@ import java.util.Optional;
 @Slf4j
 @ManagedResource
 @RequiredArgsConstructor
-public class SysConfigService implements InitializingBean, SystemInit {
+public class SysConfigService implements SystemInit {
 
     private final SysConfigRepository configRepository;
 
@@ -48,6 +51,20 @@ public class SysConfigService implements InitializingBean, SystemInit {
             put(SystemConfigKey.BACKEND_DOMAIN.name(), "http://localhost:8080", SystemConfigKey.BACKEND_DOMAIN.name, "SYSTEM");
             put(SystemConfigKey.OSS_DOMAIN.name(), "", SystemConfigKey.OSS_DOMAIN.name, "SYSTEM");
         }
+    }
+
+    /**
+     *  注册lazymap bean，可通过以下方式注入配置，属性，支持动态重载配置
+     *  <code>
+     *     \@Value("#{sysConfig['SYSTEM_NAME']}") <br />
+     *     private Supplier<String> systemName;
+     *  </code>
+     */
+    @Bean(name = "sysConfig")
+    public Map<String, Supplier<String>> sysConfig() {
+        return MapUtils.lazyMap(new HashMap<>(),
+                key -> () -> SpringUtil.getBean(SysConfigService.class).get(key).orElse("")
+        );
     }
 
     @AllArgsConstructor
@@ -120,8 +137,18 @@ public class SysConfigService implements InitializingBean, SystemInit {
         return "http://localhost:" + this.port;
     }
 
+    /**
+     * 返回supplier包装过的参数，推荐使用，每次get都会重新加载参数(缓存或DB)。且低依赖(不用依赖于整个configService)。
+     * @param key
+     */
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
+    public Supplier<Optional<String>> getSupplier(SystemConfigKey key) {
+        return () -> get(key.name());
+    }
+
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
     public Optional<String> get(SystemConfigKey key) {
-        return SpringUtil.getBean(SysConfigService.class).get(key.name());
+        return get(key.name());
     }
 
     /**
@@ -169,9 +196,14 @@ public class SysConfigService implements InitializingBean, SystemInit {
         configRepository.save(sysConfig);
     }
 
-    @Override
+    @CacheEvict(cacheNames = "SYS_CONFIG", allEntries = true)
+    public void cleanAllCache() {
+        SpringUtil.getApplicationContext().publishEvent(new ReloadConfigEvent());
+    }
+
+    @PostConstruct
     public void afterPropertiesSet() {
-        if (!get(SystemConfigKey.BACKEND_DOMAIN).isPresent()) {
+        if (!get(SystemConfigKey.BACKEND_DOMAIN.name()).isPresent()) {
             log.warn("未配置后端访问域名，将使用默认值{}", getDefaultDomain());
         }
     }

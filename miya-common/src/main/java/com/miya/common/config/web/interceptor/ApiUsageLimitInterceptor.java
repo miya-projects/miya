@@ -62,7 +62,7 @@ public class ApiUsageLimitInterceptor implements HandlerInterceptor {
             accessRecords.put(ip, accessQueue);
         }
         //队列未满
-        if (visitTimes.compareTo(accessQueue.size()) >= 0) {
+        if (visitTimes.compareTo(accessQueue.size()) > 0) {
             ApiRequestLimitInterceptor.addToQueue(windowSize, accessQueue);
             return true;
         }

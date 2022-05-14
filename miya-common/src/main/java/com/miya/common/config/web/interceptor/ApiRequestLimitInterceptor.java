@@ -53,7 +53,7 @@ public class ApiRequestLimitInterceptor implements HandlerInterceptor{
         }
 
         //队列未满
-        if (count <= accessQueue.size() ) {
+        if (count > accessQueue.size() ) {
             addToQueue(seconds, accessQueue);
             return true;
         }
@@ -69,7 +69,7 @@ public class ApiRequestLimitInterceptor implements HandlerInterceptor{
      * @param seconds   多少秒后过期
      * @param accessQueue   访问队列
      */
-    public static void addToQueue(int seconds, Queue<Date> accessQueue) {
+    public synchronized static void addToQueue(int seconds, Queue<Date> accessQueue) {
         accessQueue.add(new Date());
         final Queue<Date> accessQueueForLambada = accessQueue;
         Timer timer = new Timer();

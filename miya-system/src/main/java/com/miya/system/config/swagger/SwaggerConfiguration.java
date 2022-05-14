@@ -3,6 +3,7 @@ package com.miya.system.config.swagger;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.classmate.TypeResolver;
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.miya.common.annotation.Acl;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.module.FlagForMiyaSystemModule;
@@ -20,6 +21,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -54,26 +56,23 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
  * 丝袜哥配置
  */
 @Configuration
+// @EnableWebMvc
 @EnableSwagger2WebMvc
-// @EnableKnife4j
+@EnableKnife4j
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
     @Resource
     private ProjectConfiguration projectConfiguration;
     @Resource
     private ApplicationContext applicationContext;
-
-    @Bean
-    public DocketBuilder back(){
-        return new DocketBuilder("系统", ApiSelectors.packageApiSelector(FlagForMiyaSystemModule.class.getPackage().getName()));
-    }
+    @Resource
+    private Map<String, DocketBuilder> beansOfType;
 
     /**
      * 根据DocketBuilder创建docket
      */
     @PostConstruct
     public void buildDocket() {
-        Map<String, DocketBuilder> beansOfType = SpringUtil.getBeansOfType(DocketBuilder.class);
         for (DocketBuilder docketBuilder : beansOfType.values()) {
             Docket docket = createDocket(docketBuilder.getTitle(), docketBuilder.getPredicate());
             DefaultListableBeanFactory fty = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
@@ -82,7 +81,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * 创建docket对象
+     * 创建docket对象swagger-resources
      * @param title
      * @param predicate
      */
@@ -92,7 +91,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                 .enable(!projectConfiguration.isProduction())
                 .apiInfo(new ApiInfoBuilder()
                         .title(title)
-                        // .contact(new Contact(configService.get(""), "https://www.ledaotech.com", ""))
+                        // .contact(new Contact(configService.get(""), "https://rxxy.github.io", ""))
                         .version(projectConfiguration.getVersion())
                         .build())
                 .groupName(title)
@@ -104,6 +103,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                         HttpServletResponse.class,
                         HttpServletRequest.class
                 )
+                .enableUrlTemplating(true)
                 .globalOperationParameters(globalOperationParameters())
                 .select()
                 .apis(predicate)
@@ -149,17 +149,17 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.
-                addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-                .resourceChain(false);
+        // registry.
+        //         addResourceHandler("/swagger-ui/**")
+        //         .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+        //         .resourceChain(false);
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger-ui/")
-                .setViewName("forward:/swagger-ui/index.html");
-    }
+    // @Override
+    // public void addViewControllers(ViewControllerRegistry registry) {
+    //     registry.addViewController("/swagger-ui/")
+    //             .setViewName("forward:/swagger-ui/index.html");
+    // }
 
 
     /**

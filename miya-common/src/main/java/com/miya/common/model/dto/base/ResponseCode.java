@@ -45,7 +45,7 @@ public interface ResponseCode {
         ID_CANNOT_BE_EMPTY("参数id不可为空"),
         OBJECT_NOT_EXIST("{}不存在"),
         NO_PERMISSION("无权限访问"),
-        NOT_ALLOW_UPLOAD("该文件不允许上传"),
+        NOT_ALLOW_UPLOAD("{}不允许上传"),
         OLD_PASSWORD_IS_NOT_VALID("旧密码不正确"),
         PARAMETER_IS_REQUIRED("{}参数是必须的"),
         FILE_TOO_BIG("上传文件超出最大限制"),
@@ -53,7 +53,7 @@ public interface ResponseCode {
         DUPLICATE("{}重复"),
         CANNOT_DELETE("不可删除"),
         UPLOAD_TOO_MANY_FILES("上传文件数量超出限制"),
-        FILE_IS_NOT_IMAGE("上传文件非图像文件"),
+        FILE_IS_NOT_IMAGE("{} 不是图像文件"),
         VISIT_TOO_FAST("您访问太快了"),
         PATH_NOT_EXIST("路由{}不存在"),
         CAN_NOT_OPERATE_SUPER_ADMIN("该用户为超级管理员,不可进行该操作");

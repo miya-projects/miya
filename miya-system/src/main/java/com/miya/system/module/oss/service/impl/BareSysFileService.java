@@ -4,13 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import com.miya.common.module.config.SysConfigService;
 import com.miya.system.module.oss.OssConfigProperties;
 import com.miya.system.module.oss.SysFileRepository;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,24 +22,41 @@ import javax.servlet.MultipartConfigElement;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
  * 直接存储到服务器上
  */
 @Slf4j
-@RequiredArgsConstructor
-public class BareSysFileService implements SysFileService, WebMvcConfigurer, InitializingBean {
+public class BareSysFileService implements SysFileService, WebMvcConfigurer {
 
     private final SysFileRepository sysFileRepository;
     private final OssConfigProperties.Bare bare;
+
     /**
      * 访问到系统的域名， eg: http://localhost:8080/
      */
     private final String backendDomain;
 
+    /**
+     * 文件存储的服务器目录，绝对路径
+     */
+    private final String uploadAbsolutePath;
 
-    private String uploadAbsolutePath;
+    public BareSysFileService(SysFileRepository sysFileRepository, OssConfigProperties.Bare bare, String backendDomain) {
+        this.sysFileRepository = sysFileRepository;
+        this.bare = bare;
+        this.backendDomain = backendDomain;
+
+        this.uploadAbsolutePath = this.bare.getUploadAbsolutePath();
+        if (!new File(this.uploadAbsolutePath).exists()){
+            log.info("上传目录{}不存在，自动创建...", this.uploadAbsolutePath);
+            FileUtil.mkdir(this.uploadAbsolutePath);
+        }
+    }
+
 
     @Bean
     MultipartConfigElement multipartConfigElement() {
@@ -57,15 +71,6 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer, Ini
         }
         factory.setLocation(file.getAbsolutePath());
         return factory.createMultipartConfig();
-    }
-
-    @Override
-    public void afterPropertiesSet() {
-        this.uploadAbsolutePath = this.bare.getUploadAbsolutePath();
-        if (!new File(this.uploadAbsolutePath).exists()){
-            log.info("上传目录{}不存在，自动创建...", this.uploadAbsolutePath);
-            FileUtil.mkdir(this.uploadAbsolutePath);
-        }
     }
 
     /**
@@ -159,15 +164,16 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer, Ini
     @Override
     @SneakyThrows(IOException.class)
     public InputStream openStream(SysFile sysFile) {
-        return new FileInputStream(sysFile.getPath());
+        return Files.newInputStream(Paths.get(sysFile.getPath()));
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        if (!uploadAbsolutePath.endsWith("/")) {
-            uploadAbsolutePath = uploadAbsolutePath + "/";
+        String resourceLocation = uploadAbsolutePath;
+        if (!resourceLocation.endsWith("/")) {
+            resourceLocation = resourceLocation + "/";
         }
         registry.addResourceHandler(this.bare.getPathPatterns())
-                .addResourceLocations("file:" + uploadAbsolutePath);
+                .addResourceLocations("file:" + resourceLocation);
     }
 }

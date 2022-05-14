@@ -27,7 +27,7 @@ public interface SysFileService {
     /**
      * 允许上传的文件后缀名
      */
-    String[] ALLOW_SUFFIX = {"jpg", "jpeg", "bmp", "gif", "png", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"};
+    String[] ALLOW_SUFFIX = {"jpg", "jpeg", "bmp", "gif", "png", "pdf", "doc", "docx", "xls", "xlsx", "xlsm", "ppt", "pptx"};
     Pattern IMAGE_PATTERN = Pattern.compile("image/(.+)");
 
     /**
@@ -76,7 +76,7 @@ public interface SysFileService {
      * @param imageUrl
      * @return 上传后的文件对象
      */
-    default SysFile uploadByUrl(@NotBlank String imageUrl) throws MalformedURLException {
+    default SysFile uploadImageByUrl(@NotBlank String imageUrl) throws MalformedURLException {
         //测试url是否合法
         new URL(imageUrl);
         HttpRequest get = HttpUtil.createGet(imageUrl);

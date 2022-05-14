@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 删除的数据，会备份到该数据库中
- * 关于逻辑删除
- * 真实世界没有真正的删除，只是不想要看到而已，谨慎考虑是要delete还是update status
- * https://www.infoq.cn/article/2009/09/Do-Not-Delete-Data/
+ * 关于逻辑删除: 真实世界没有真正的删除，只是不想要看到而已，谨慎考虑是要delete还是update status
+ * todo 大量数据删除时会不会有性能问题? 待测试，如果有可以通过内存异步或kafka等队列系统解耦
+ * <a href="https://www.infoq.cn/article/2009/09/Do-Not-Delete-Data/">不要删除数据</a>
  */
 @Slf4j
 public class BackupDataListener extends EmptyInterceptor {

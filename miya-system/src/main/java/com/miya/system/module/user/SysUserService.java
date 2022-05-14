@@ -34,10 +34,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.util.CastUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +60,7 @@ import java.util.stream.Collectors;
 public class SysUserService extends BaseService implements SystemInit {
 
     private final SysUserRepository sysUserRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final KeyValueStore keyValueStore;
     private final ProjectConfiguration projectConfiguration;
@@ -111,7 +110,7 @@ public class SysUserService extends BaseService implements SystemInit {
             return R.errorWithMsg("手机号重复");
         }
         SysUser sysUser = userForm.mergeToNewPo();
-        sysUser.setPassword(bCryptPasswordEncoder.encode(this.defaultPasswordGenerator.apply(userForm)));
+        sysUser.setPassword(passwordEncoder.encode(this.defaultPasswordGenerator.apply(userForm)));
         sysUser.setSysUserSocials(new HashSet<>(socials));
         sysUserRepository.save(sysUser);
         ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.NEW));
@@ -249,7 +248,7 @@ public class SysUserService extends BaseService implements SystemInit {
             throw new ResponseCodeException(ResponseCode.Common.LOGIN_FAILED, "用户名不存在");
         }
         SysUser sysUser = sysUserOptional.get();
-        boolean matches = bCryptPasswordEncoder.matches(password, sysUser.getPassword());
+        boolean matches = passwordEncoder.matches(password, sysUser.getPassword());
         if (!password.equals(sysUser.getPassword()) && !matches) {
             log.info("登陆失败：用户{}密码错误!", username);
             throw new ResponseCodeException(ResponseCode.Common.LOGIN_FAILED, "密码错误");
@@ -316,7 +315,7 @@ public class SysUserService extends BaseService implements SystemInit {
             throw new ResponseCodeException(ResponseCode.Common.CAN_NOT_OPERATE_SUPER_ADMIN );
         }
         String newPassword = passwordGeneratorForReset.apply(sysUser);
-        sysUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        sysUser.setPassword(passwordEncoder.encode(newPassword));
         sysUserRepository.save(sysUser);
         ac.publishEvent(new UserModifyEvent(sysUser, UserModifyEvent.UserModifyType.RESET_PASSWORD));
         return newPassword;
@@ -329,14 +328,14 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param newPassword   新密码
      */
     public void modifyPassword(SysUser user, String oldPassword, String newPassword) {
-        boolean b = bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
+        boolean b = passwordEncoder.matches(oldPassword, user.getPassword());
         if (!b) {
             throw new ResponseCodeException(ResponseCode.Common.OLD_PASSWORD_IS_NOT_VALID);
         }
         if (!isPasswordValid(newPassword)){
             throw new ErrorMsgException("密码太简单了");
         }
-        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(newPassword));
         sysUserRepository.save(user);
     }
 
@@ -367,7 +366,7 @@ public class SysUserService extends BaseService implements SystemInit {
         form.setUsername("admin");
         form.setPhone("13800000000");
         SysUser sysUser = form.mergeToNewPo();
-        sysUser.setPassword(bCryptPasswordEncoder.encode(this.defaultPasswordGenerator.apply(form)));
+        sysUser.setPassword(passwordEncoder.encode(this.defaultPasswordGenerator.apply(form)));
         sysUser.setId("1");
         sysUserRepository.save(sysUser);
     }

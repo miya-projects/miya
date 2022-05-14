@@ -148,4 +148,18 @@ public class SysConfigApi extends BaseApi {
         return R.success();
     }
 
+    /**
+     * 重载所有参数
+     */
+    @GetMapping("flush")
+    @ApiOperation("重载所有参数")
+    public R<?> flush(@AuthenticationPrincipal SysUser user) {
+        if (!user.isSuperAdmin()) {
+            return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
+        }
+        // todo
+        sysConfigService.cleanAllCache();
+        return R.success();
+    }
+
 }

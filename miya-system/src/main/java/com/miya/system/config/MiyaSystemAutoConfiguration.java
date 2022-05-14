@@ -46,8 +46,8 @@ public class MiyaSystemAutoConfiguration {
         return new JwtTokenService(configService, keyValueStore, entityManager);
     }
 
-    @Bean
-    public KeyValueStore keyValueStore(CacheRepository repository){
-        return new KeyValueStoreInDb(repository);
-    }
+    // @Bean
+    // public KeyValueStore keyValueStore(CacheRepository repository){
+    //     return new KeyValueStoreInDb(repository);
+    // }
 }
