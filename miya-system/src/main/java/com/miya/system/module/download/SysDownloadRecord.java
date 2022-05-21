@@ -2,7 +2,7 @@ package com.miya.system.module.download;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.module.base.ReadableEnum;
+import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.user.model.SysUser;
 import lombok.Getter;

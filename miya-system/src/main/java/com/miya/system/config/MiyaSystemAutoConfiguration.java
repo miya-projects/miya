@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @ComponentScan(
         basePackageClasses = {
@@ -26,6 +28,19 @@ import javax.persistence.PersistenceContext;
 @EnableCaching
 @Configuration
 public class MiyaSystemAutoConfiguration {
+
+    /**
+     * 需扫描ReadableEnum枚举的包集合
+     * @param miyaSystemConfigures
+     */
+    @Bean("scanPackageForReadableEnum")
+    public List<String> scanPackageForReadableEnum(List<MiyaSystemConfigure> miyaSystemConfigures){
+        List<String> readableEnumStr = new ArrayList<>();
+        for (MiyaSystemConfigure configure : miyaSystemConfigures) {
+            configure.addScanPackageForReadableEnum(readableEnumStr);
+        }
+        return readableEnumStr;
+    }
 
     @Bean
     @ConditionalOnMissingBean(value = {KeyValueStore.class})

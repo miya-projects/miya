@@ -1,7 +1,7 @@
 package com.miya.system.module.user.model;
 
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.module.base.ReadableEnum;
+import com.miya.system.config.web.ReadableEnum;
 import com.miya.common.module.bod.BackupOnDelete;
 import com.miya.system.module.department.SysDepartment;
 import com.miya.system.module.oss.model.SysFile;

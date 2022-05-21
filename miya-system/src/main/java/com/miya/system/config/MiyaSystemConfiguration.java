@@ -1,4 +1,4 @@
-package com.miya.system.config.orm;
+package com.miya.system.config;
 
 
 import com.miya.common.config.orm.source.DataSourceConfigure;
@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * 扩展entity扫描包
+ * miya配置
  */
 @Configuration
-public class SystemOrmPackageConfiguration implements DataSourceConfigure {
+public class MiyaSystemConfiguration implements DataSourceConfigure, MiyaSystemConfigure {
 
 
     @Override
@@ -19,4 +19,8 @@ public class SystemOrmPackageConfiguration implements DataSourceConfigure {
     }
 
 
+    @Override
+    public void addScanPackageForReadableEnum(List<String> scanPackages) {
+        scanPackages.add(FlagForMiyaSystemModule.class.getPackage().getName());
+    }
 }

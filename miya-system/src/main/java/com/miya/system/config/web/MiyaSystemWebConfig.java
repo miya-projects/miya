@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.miya.common.config.web.interceptor.SignAccessInterceptor;
-import com.miya.common.module.base.ReadableEnum;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.filter.interceptors.ApiAccessInterceptor;
 import com.miya.system.config.filter.interceptors.EscapeSensitiveWordFilter;

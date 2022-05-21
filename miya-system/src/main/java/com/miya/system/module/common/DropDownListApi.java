@@ -1,9 +1,8 @@
 package com.miya.system.module.common;
 
 import cn.hutool.core.util.ClassUtil;
-import com.miya.system.Application;
 import com.miya.common.module.base.BaseApi;
-import com.miya.common.module.base.ReadableEnum;
+import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.common.dto.DropDownItemDTO;
 import com.miya.common.model.dto.base.R;
 import com.miya.system.module.role.model.QSysRole;
@@ -22,6 +21,7 @@ import org.springframework.data.util.CastUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -50,12 +50,8 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
 
     private static final Map<String, List<Map<String, String>>> MAP = new HashMap<>();
 
-    public static final Set<Class<? extends Enum<? extends Enum<?>>>> CLASSES;
-    static {
-        Set<Class<?>> list = ClassUtil.scanPackageBySuper(Application.class.getPackage().getName(), ReadableEnum.class)
-                .stream().filter(Class::isEnum).collect(Collectors.toSet());
-        CLASSES = CastUtils.cast(list);
-    }
+    @Resource(name = "scanPackageForReadableEnum")
+    private List<String> scanPackageForReadableEnum;
 
 
     /**
@@ -94,7 +90,7 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
 
     @GetMapping(value = "enums")
     @ApiOperation("查询枚举项")
-    public R<List<Map<String, String>>> queryEnum(@ApiParam("查询哪个枚举项") String key) {
+    public R<List<Map<String, String>>> queryEnum(@ApiParam("查询哪个枚举项") @RequestParam String key) {
         return R.successWithData(MAP.getOrDefault(key, CastUtils.cast(Collections.EMPTY_LIST)));
     }
 
@@ -137,7 +133,10 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        CLASSES.forEach(clazz -> {
+        List<Class<? extends Enum<? extends Enum<?>>>> classes = CastUtils.cast(scanPackageForReadableEnum.stream().flatMap(p -> ClassUtil.scanPackageBySuper(p, ReadableEnum.class)
+                .stream().filter(Class::isEnum)).collect(Collectors.toList()));
+
+        classes.forEach(clazz -> {
             String name = clazz.getName();
             String key = name.substring(name.lastIndexOf(".") + 1)
                     .replace("$", ".");
