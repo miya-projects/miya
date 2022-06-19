@@ -4,6 +4,9 @@ import com.miya.system.config.web.ReadableEnum;
 
 import java.util.List;
 
+/**
+ * 实现该接口进行模块的自定义
+ */
 public interface MiyaSystemConfigure {
 
     /**

@@ -65,7 +65,7 @@ public class SysUserService extends BaseService implements SystemInit {
     private final KeyValueStore keyValueStore;
     private final ProjectConfiguration projectConfiguration;
     private final JwtTokenService jwtTokenService;
-    private final SysUserCustomizer customizer;
+    private final MiyaSystemUserConfig customizer;
     private final DownloadService downloadService;
 
     private static final QSysUser qSysUser = QSysUser.sysUser;

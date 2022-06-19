@@ -1,10 +1,11 @@
 package com.miya.system.module.oss.service;
 
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.miya.common.exception.ErrorMsgException;
+import com.miya.system.module.oss.MiyaSystemOssConfig;
 import com.miya.system.module.oss.domain.PublicAssetsSysFile;
 import com.miya.system.module.oss.model.SysFile;
 import org.springframework.http.HttpHeaders;
@@ -14,8 +15,8 @@ import javax.validation.constraints.NotBlank;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,10 +25,8 @@ import java.util.regex.Pattern;
  */
 public interface SysFileService {
 
-    /**
-     * 允许上传的文件后缀名
-     */
-    String[] ALLOW_SUFFIX = {"jpg", "jpeg", "bmp", "gif", "png", "pdf", "doc", "docx", "xls", "xlsx", "xlsm", "ppt", "pptx"};
+    Supplier<MiyaSystemOssConfig> config = () -> SpringUtil.getBean(MiyaSystemOssConfig.class);
+
     Pattern IMAGE_PATTERN = Pattern.compile("image/(.+)");
 
     /**
@@ -56,9 +55,7 @@ public interface SysFileService {
      * @param file
      */
     default boolean isNotAllowUpload(MultipartFile file){
-        String fileName = file.getOriginalFilename();
-        String suffix = FileUtil.extName(fileName);
-        return Arrays.stream(ALLOW_SUFFIX).noneMatch(s -> s.equalsIgnoreCase(suffix));
+        return config.get().isNotAllowUpload(file);
     }
 
     /**

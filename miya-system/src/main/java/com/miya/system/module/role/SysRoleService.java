@@ -13,7 +13,7 @@ import com.miya.system.module.role.event.RoleModifyEvent;
 import com.miya.system.module.role.model.QSysRole;
 import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.role.model.SysRoleForm;
-import com.miya.system.module.user.SysUserCustomizer;
+import com.miya.system.module.user.MiyaSystemUserConfig;
 import com.miya.common.util.JSONUtils;
 import com.miya.system.module.user.SysUserRepository;
 import com.miya.system.module.user.model.QSysUser;
@@ -42,7 +42,7 @@ public class SysRoleService extends BaseService implements SystemInit {
     public static final List<String> DEFAULT_BUSINESS_LOCATION = Arrays.asList("config/business.json", "business.json",
             "business/*.json", "config/business/*.json");
 
-    private final SysUserCustomizer customizer;
+    private final MiyaSystemUserConfig miyaSystemUserConfig;
     private final SysRoleRepository sysRoleRepository;
     private final SysUserRepository sysUserRepository;
 
@@ -55,7 +55,7 @@ public class SysRoleService extends BaseService implements SystemInit {
         // 寻找功能定义文件并生成business对象
         final ArrayList<URL> resources = new ArrayList<>();
         List<String> locations = new ArrayList<>(DEFAULT_BUSINESS_LOCATION);
-        Optional.ofNullable(customizer.businessFileName()).ifPresent(locations::addAll);
+        Optional.ofNullable(miyaSystemUserConfig.businessFileName()).ifPresent(locations::addAll);
 
         for (String url : locations) {
             Enumeration<URL> res = this.getClass().getClassLoader().getResources(url);

@@ -9,10 +9,13 @@ import lombok.experimental.Accessors;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * miya-system各模块的自定义
+ */
 @Builder
 @Accessors(fluent = true)
 @Getter
-public class SysUserCustomizer {
+public class MiyaSystemUserConfig {
 
     /**
      * 新用户密码生成器

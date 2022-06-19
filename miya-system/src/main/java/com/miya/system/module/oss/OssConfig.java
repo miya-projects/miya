@@ -24,10 +24,21 @@ public class OssConfig {
     @Resource
     private SysConfigService configService;
 
+    /**
+     * 默认使用BareSysFileService
+     */
     @Bean
     @ConditionalOnMissingBean(SysFileService.class)
     public BareSysFileService bareSysFileService(){
         return new BareSysFileService(sysFileRepository, ossConfigProperties.getBare(), configService.getBackendDomain());
     }
 
+    /**
+     * 默认的OSS配置
+     */
+    @Bean
+    @ConditionalOnMissingBean(MiyaSystemOssConfig.class)
+    public MiyaSystemOssConfig defaultConfig(){
+        return new MiyaSystemOssConfig(){};
+    }
 }

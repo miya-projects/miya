@@ -6,7 +6,7 @@
 
     <groupId>io.github.rxxy</groupId>
     <artifactId>miya-parent</artifactId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -192,7 +192,7 @@
             <dependency>
                 <groupId>io.github.rxxy</groupId>
                 <artifactId>miya-common</artifactId>
-                <version>1.5</version>
+                <version>1.6-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>

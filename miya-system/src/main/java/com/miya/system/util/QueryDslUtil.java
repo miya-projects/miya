@@ -50,7 +50,6 @@ public class QueryDslUtil {
      * pageable转QPageRequest 用于特殊字段排序
      * @param rootPath
      * @param pageable
-     * @return
      */
     public static QPageRequest toQPageRequest(Path<?> rootPath, Pageable pageable){
         final List<OrderSpecifier> orderSpecifiers = pageable.getSort().stream()

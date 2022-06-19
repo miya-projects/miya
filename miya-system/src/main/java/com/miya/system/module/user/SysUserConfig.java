@@ -11,8 +11,8 @@ public class SysUserConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public SysUserCustomizer sysUserCustomizer() {
-        return SysUserCustomizer.builder().build();
+    public MiyaSystemUserConfig sysUserCustomizer() {
+        return MiyaSystemUserConfig.builder().build();
     }
 
     /**
