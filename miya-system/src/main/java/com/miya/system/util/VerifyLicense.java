@@ -26,7 +26,7 @@ import java.util.Objects;
 /**
  * 许可验证/生成
  * 需配合xjar实现加密jar
- * https://github.com/core-lib/xjar
+ * <a href="https://github.com/core-lib/xjar">xjar</a>
  */
 @Slf4j
 public class VerifyLicense {
@@ -129,7 +129,7 @@ class GenerateLicense {
 
     /**
      * 构造许可信息
-     * @return
+     * @return LicenseInfo
      */
     private LicenseInfo buildLicense(){
         LicenseInfo licenseInfo = new LicenseInfo();
@@ -169,13 +169,23 @@ class GenerateLicense {
 
     }
 
+    /**
+     * 生成密钥对
+     */
+    private static void generateRsa(){
+        RSA rsa = new RSA();
+        System.out.println("私钥：" + rsa.getPrivateKeyBase64());
+        System.out.println("公钥：" + rsa.getPublicKeyBase64());
+    }
+
     public static void main(String[] args) throws Exception{
         //加密
 //       私钥，放到注释中，打包后即消失 MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKSwbzg9q5r4fv3TRrH26aRI4IFIUcx6VUVyqcnXtzoL46molcP72XrSbQSFfVIkd2v83xcF4TfoeM9Vi55D5RB08GR9e+1HMouN//jTl/Z2r2XcHXOOy3L/8SlfirIrGIfip1bjrsCmppA14cKlnIPs1rQ8ykN+xwlD5tZQuh7nAgMBAAECgYEAotUHwpXHPHyCIzloZsF5FUQxJeJ5bjFuajILClTNBwmGWdMj8RjsWPIBdD0AQd1obk8hzMO1gO/Ls0QjvaHnsppzOpHmN692HKajDtFRSYiScJQXWCjMUIy/FI5eWI1/+XQaWBpQgsHBwrzTdTSSd2+UTAd+LHyGC6vvQtnRPrECQQDpSr48tT3FM29COctBTfvVO77IvMjKzcGLvm1m7aUAHtS4qWJpvLOEKfcaEvNDQRTafbM08iHppodiiqDkalRlAkEAtLg4xgoSLsdpne1M5jnZR3I1xDJ7Xzi4RMhqK1hmVi++ASp2lFmOcwI1yuloBlyOTFJmYjyC+zZEai+4YsYzWwJBAMXHyRpcqV6rKXLi3m+h9pOjkC5M5ooRADpCGiv94zoD6WIYsEdmZGby0Pv4/uWQomZN1QVZFekpdnPThW3Au4UCQHS3sns9T+cEhdMoywy6eflp6w3PKN0kDebmpaNfEaFCbm3kVfeUK6td1w45VyUcrA7g/R0fRd0nfGI0ddrddZcCQA0E/Ov9Cvriio8ReJ5CKUs7h/MsSe6DcBUKuhnEGvSZT4hc08MbrURphD32EURUWiMcbSSqrDyx6Lr1mqdsqRo=
-        String privateKeyStr = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKSwbzg9q5r4fv3TRrH26aRI4IFIUcx6VUVyqcnXtzoL46molcP72XrSbQSFfVIkd2v83xcF4TfoeM9Vi55D5RB08GR9e+1HMouN//jTl/Z2r2XcHXOOy3L/8SlfirIrGIfip1bjrsCmppA14cKlnIPs1rQ8ykN+xwlD5tZQuh7nAgMBAAECgYEAotUHwpXHPHyCIzloZsF5FUQxJeJ5bjFuajILClTNBwmGWdMj8RjsWPIBdD0AQd1obk8hzMO1gO/Ls0QjvaHnsppzOpHmN692HKajDtFRSYiScJQXWCjMUIy/FI5eWI1/+XQaWBpQgsHBwrzTdTSSd2+UTAd+LHyGC6vvQtnRPrECQQDpSr48tT3FM29COctBTfvVO77IvMjKzcGLvm1m7aUAHtS4qWJpvLOEKfcaEvNDQRTafbM08iHppodiiqDkalRlAkEAtLg4xgoSLsdpne1M5jnZR3I1xDJ7Xzi4RMhqK1hmVi++ASp2lFmOcwI1yuloBlyOTFJmYjyC+zZEai+4YsYzWwJBAMXHyRpcqV6rKXLi3m+h9pOjkC5M5ooRADpCGiv94zoD6WIYsEdmZGby0Pv4/uWQomZN1QVZFekpdnPThW3Au4UCQHS3sns9T+cEhdMoywy6eflp6w3PKN0kDebmpaNfEaFCbm3kVfeUK6td1w45VyUcrA7g/R0fRd0nfGI0ddrddZcCQA0E/Ov9Cvriio8ReJ5CKUs7h/MsSe6DcBUKuhnEGvSZT4hc08MbrURphD32EURUWiMcbSSqrDyx6Lr1mqdsqRo=";
-        String s = getInstance().encryptLicense(privateKeyStr);
-        getInstance().generateAndSaveLicense(s);
-        System.out.println(s);
+//        String privateKeyStr = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKSwbzg9q5r4fv3TRrH26aRI4IFIUcx6VUVyqcnXtzoL46molcP72XrSbQSFfVIkd2v83xcF4TfoeM9Vi55D5RB08GR9e+1HMouN//jTl/Z2r2XcHXOOy3L/8SlfirIrGIfip1bjrsCmppA14cKlnIPs1rQ8ykN+xwlD5tZQuh7nAgMBAAECgYEAotUHwpXHPHyCIzloZsF5FUQxJeJ5bjFuajILClTNBwmGWdMj8RjsWPIBdD0AQd1obk8hzMO1gO/Ls0QjvaHnsppzOpHmN692HKajDtFRSYiScJQXWCjMUIy/FI5eWI1/+XQaWBpQgsHBwrzTdTSSd2+UTAd+LHyGC6vvQtnRPrECQQDpSr48tT3FM29COctBTfvVO77IvMjKzcGLvm1m7aUAHtS4qWJpvLOEKfcaEvNDQRTafbM08iHppodiiqDkalRlAkEAtLg4xgoSLsdpne1M5jnZR3I1xDJ7Xzi4RMhqK1hmVi++ASp2lFmOcwI1yuloBlyOTFJmYjyC+zZEai+4YsYzWwJBAMXHyRpcqV6rKXLi3m+h9pOjkC5M5ooRADpCGiv94zoD6WIYsEdmZGby0Pv4/uWQomZN1QVZFekpdnPThW3Au4UCQHS3sns9T+cEhdMoywy6eflp6w3PKN0kDebmpaNfEaFCbm3kVfeUK6td1w45VyUcrA7g/R0fRd0nfGI0ddrddZcCQA0E/Ov9Cvriio8ReJ5CKUs7h/MsSe6DcBUKuhnEGvSZT4hc08MbrURphD32EURUWiMcbSSqrDyx6Lr1mqdsqRo=";
+//        String s = getInstance().encryptLicense(privateKeyStr);
+//        getInstance().generateAndSaveLicense(s);
+//        System.out.println(s);
 
+        generateRsa();
     }
 }
