@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.io.IoUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.miya.common.exception.ObjectNotExistException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseService;
 import com.miya.common.module.init.SystemInit;
@@ -83,7 +84,8 @@ public class SysRoleService extends BaseService implements SystemInit {
         for (SysDefaultRoles value : SysDefaultRoles.values()) {
             try{
                 value.getSysRole();
-            }catch (Exception e){
+            }catch (ObjectNotExistException e){
+                log.info("默认角色【{}】不存在，自动创建...", value.getName());
                 // 没有就新增
                 SysRole role = new SysRole();
                 role.setIsSystem(true);
@@ -166,7 +168,7 @@ public class SysRoleService extends BaseService implements SystemInit {
         if (roleOptional.isPresent()) {
             return roleOptional.get();
         }
-        throw new RuntimeException("默认角色[" +  id + "] 在数据库不存在");
+        throw new ObjectNotExistException("默认角色[" +  id + "] 在数据库不存在");
     }
 
     /**

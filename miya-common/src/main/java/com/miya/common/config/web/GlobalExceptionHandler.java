@@ -5,6 +5,7 @@ import cn.hutool.http.ContentType;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
+import com.miya.common.util.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.util.MimeType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingPathVariableException;
@@ -27,7 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -135,4 +139,13 @@ public class GlobalExceptionHandler {
     public R<?> multipartException(HttpServletResponse response, MultipartException e) {
         return R.errorWithMsg(StrUtil.format("{}", e.getMessage()));
     }
+
+    @ExceptionHandler({HttpMediaTypeNotAcceptableException.class})
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public void httpMediaTypeNotAcceptableException(HttpServletResponse response, HttpMediaTypeNotAcceptableException e) throws IOException {
+        R<Object> r = R.errorWithMsg(StrUtil.format("{}", e.getMessage()));
+        response.getWriter().write(Objects.requireNonNull(JSONUtils.toJson(r)));
+        response.setContentType(ContentType.JSON.toString());
+    }
+
 }

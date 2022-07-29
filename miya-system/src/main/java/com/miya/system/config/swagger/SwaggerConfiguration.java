@@ -172,7 +172,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
          * @param userType
          */
         public static Predicate<RequestHandler> userTypeApiSelector(Class<?> userType) {
-            Class[] classes = new Class[]{userType, Acl.AllUser.class, Acl.NotNeedLogin.class};
+            Class<?>[] classes = new Class[]{userType, Acl.AllUser.class, Acl.NotNeedLogin.class};
             //区分不同类型用户的示例代码 eg: apis(isBackendApi)
             return input -> {
                 Optional<Acl> methodAclOptional = input.findAnnotation(Acl.class);
@@ -182,11 +182,15 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                 if (isNoConfig) {
                     return true;
                 }
-                // 优先按照controller上的配置
-                if (controllerAclOptional.isPresent()) {
-                    return Arrays.asList(classes).contains(controllerAclOptional.get().userType());
-                }
-                return Arrays.asList(classes).contains(methodAclOptional.get().userType());
+                // 优先按照controller上的配置 因为这个注解是有默认值的，method上的配置不设置时也是AllUser，
+                // 这时如果controller上配置了就应该还是使用controller上的比较好
+                Class<?> type = controllerAclOptional.orElse(methodAclOptional.get()).userType();
+                return Arrays.asList(classes).contains(type);
+
+//                if (controllerAclOptional.isPresent()) {
+//                    return Arrays.asList(classes).contains(controllerAclOptional.get().userType());
+//                }
+//                return Arrays.asList(classes).contains(methodAclOptional.get().userType());
                 //如果至少在method或class配置了@Acl，则按照method > class的优先级使用配置
                 //            if (methodAclOptional.isPresent()) {
                 //                return Arrays.asList(classes).contains(methodAclOptional.get().userType());

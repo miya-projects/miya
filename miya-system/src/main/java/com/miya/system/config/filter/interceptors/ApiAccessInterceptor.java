@@ -81,8 +81,8 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
         if (Acl.NotNeedLogin.class.equals(userType)){
             return true;
         }
-        if (Objects.nonNull(userType) && !Acl.AllUser.class.equals(userType)) {
-            if (!userType.equals(principal.getClass())) {
+        if (!Acl.AllUser.class.equals(userType)) {
+            if (!principal.getClass().equals(userType)) {
                 // todo 预警入库 模块化
                 log.warn("用户类型与接口允许类型不一致! 用户: {} 方法: {}", principal.getClass().toString(), handlerMethod.getMethod().toString());
                 reject(response);

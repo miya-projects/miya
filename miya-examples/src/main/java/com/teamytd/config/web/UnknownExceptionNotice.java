@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * 用于处理常见的通用异常
+ * {@link com.miya.common.config.web.GlobalExceptionHandler}
+ */
 @Slf4j
 @Order(100)
 @RestControllerAdvice
