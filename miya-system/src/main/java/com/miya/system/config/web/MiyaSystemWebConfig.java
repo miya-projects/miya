@@ -6,13 +6,15 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.miya.common.config.web.interceptor.SignAccessInterceptor;
+import com.miya.system.config.filter.http.SpecialCharacterFilter;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.filter.interceptors.ApiAccessInterceptor;
-import com.miya.system.config.filter.interceptors.EscapeSensitiveWordFilter;
 import com.miya.system.module.FlagForMiyaSystemModule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -64,11 +66,17 @@ public class MiyaSystemWebConfig implements WebMvcConfigurer {
         //添加api访问控制拦截器
         registry.addInterceptor(apiAccessInterceptor)
                 .addPathPatterns(Collections.singletonList("/api/**"));
-        registry.addInterceptor(new EscapeSensitiveWordFilter())
-                .addPathPatterns(Collections.singletonList("/api/**"));
-
     }
 
+
+    @Bean
+    @ConditionalOnProperty(prefix = "config", name = "enable-special-character-filter", havingValue = "true")
+    public FilterRegistrationBean<SpecialCharacterFilter> filterRegistrationBean(){
+        FilterRegistrationBean<SpecialCharacterFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(new SpecialCharacterFilter());
+        bean.addUrlPatterns("/api/*");
+        return bean;
+    }
 
     /**
      * 扩展jackson配置

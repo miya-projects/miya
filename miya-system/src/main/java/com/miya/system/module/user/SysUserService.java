@@ -143,15 +143,16 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param user
      */
     public void update(SysUserForm sysUserForm, SysUser user) {
-        sysUserForm.mergeToPo(user);
-        boolean existsSamePhone = sysUserRepository.exists(qSysUser.phone.eq(user.getPhone()).and(qSysUser.id.ne(user.getId())));
+        boolean existsSamePhone = sysUserRepository.exists(qSysUser.phone.eq(sysUserForm.getPhone()).and(qSysUser.id.ne(user.getId())));
         if (existsSamePhone){
             throw new ErrorMsgException("手机号重复");
         }
-        boolean existsSameUsername = sysUserRepository.exists(qSysUser.phone.eq(user.getPhone()).and(qSysUser.id.ne(user.getId())));
+        boolean existsSameUsername = sysUserRepository.exists(qSysUser.username.eq(sysUserForm.getUsername()).and(qSysUser.id.ne(user.getId())));
         if (existsSameUsername){
             throw new ErrorMsgException("用户名重复");
         }
+        // mergeToPo放到后面，因为合并持久态对象后，再进行查询会先触发commit
+        sysUserForm.mergeToPo(user);
         sysUserRepository.save(user);
         ac.publishEvent(new UserModifyEvent(user, UserModifyEvent.UserModifyType.MODIFY_USERINFO));
     }
@@ -230,7 +231,7 @@ public class SysUserService extends BaseService implements SystemInit {
             throw new ErrorMsgException("账户被锁定");
         }
         // token有效期 一天
-        DateTime expiredDate = DateUtil.offsetDay(new Date(), 1);
+        DateTime expiredDate = DateUtil.offsetDay(new Date(), 7);
         String token = generateToken(sysUser, expiredDate, LoginWay.PHONE_AND_CODE);
         loginLog(sysUser, token);
         return LoginRes.builder().token(token).expiredDate(expiredDate).build();

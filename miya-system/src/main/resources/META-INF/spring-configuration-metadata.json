@@ -148,6 +148,13 @@
       "type": "java.lang.String",
       "description": "软件版本",
       "sourceType": "com.miya.system.config.ProjectConfig"
+    },
+    {
+      "name": "config.enable-special-character-filter",
+      "type": "java.lang.Boolean",
+      "description": "是否开启过滤特殊字符过滤器.",
+      "sourceType": "com.miya.system.config.ProjectConfig",
+      "defaultValue": true
     }
   ],
   "hints": []

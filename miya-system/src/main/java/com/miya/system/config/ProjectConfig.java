@@ -28,4 +28,6 @@ public class ProjectConfig {
      */
     private String version;
 
+    private Boolean enableSpecialCharacterFilter;
+
 }
