@@ -60,7 +60,7 @@ public abstract class BaseForm<PO> {
 
     /**
      * 转换为po 用于持久化
-     * 和toPO()的区别是，Form直接转换为po后，还需要将非空字段copy
+     * mergeToNewPo()的区别是，Form直接转换为po后，还需要将非空字段copy
      * 到已持久化的po(如果复制空字段将会导致dto中没有的字段都为空字段)，这时，如果真正想要置null的字段将不会被修改
      * 而此方法会直接将dto有的字段复制到已持久化的po，实现null值的修改，省去po复制到po的过程
      *
