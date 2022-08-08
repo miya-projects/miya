@@ -25,6 +25,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * 直接存储到服务器上
@@ -38,14 +39,14 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
     /**
      * 访问到系统的域名， eg: http://localhost:8080/
      */
-    private final String backendDomain;
+    private final Supplier<Optional<String>> backendDomain;
 
     /**
      * 文件存储的服务器目录，绝对路径
      */
     private final String uploadAbsolutePath;
 
-    public BareSysFileService(SysFileRepository sysFileRepository, OssConfigProperties.Bare bare, String backendDomain) {
+    public BareSysFileService(SysFileRepository sysFileRepository, OssConfigProperties.Bare bare, Supplier<Optional<String>> backendDomain) {
         this.sysFileRepository = sysFileRepository;
         this.bare = bare;
         this.backendDomain = backendDomain;
@@ -154,10 +155,10 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
     @Override
     public String getUrl(SysFile sysFile) {
         try {
-            return new URL(new URL(backendDomain), "upload/" + FileUtil.subPath(uploadAbsolutePath, sysFile.getPath())).toString();
+            return new URL(new URL(backendDomain.get().orElse("")), "upload/" + FileUtil.subPath(uploadAbsolutePath, sysFile.getPath())).toString();
         } catch (MalformedURLException e) {
             log.error(ExceptionUtils.getStackTrace(e));
-            return backendDomain;
+            return backendDomain.get().orElse("");
         }
     }
 

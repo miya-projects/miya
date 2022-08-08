@@ -78,7 +78,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
                 businessCodes = aclForMethod.business();
             }
         }
-        if (Acl.NotNeedLogin.class.equals(userType)){
+        if (Acl.NotNeedLogin.class.equals(userType) || userType == null){
             return true;
         }
         if (!Acl.AllUser.class.equals(userType)) {
