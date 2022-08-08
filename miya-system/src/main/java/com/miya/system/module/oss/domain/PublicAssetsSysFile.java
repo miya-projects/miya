@@ -9,6 +9,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * 程序自带的公开静态文件，提供外部访问
@@ -17,6 +19,7 @@ import java.net.URL;
 @Slf4j
 public class PublicAssetsSysFile extends SysFile {
 
+    private Supplier<Optional<String>> backendDomainSupplier;
     public PublicAssetsSysFile(String path){
         this(path, FileUtil.mainName(path));
     }
@@ -28,7 +31,10 @@ public class PublicAssetsSysFile extends SysFile {
 
     @Override
     public String getUrl() {
-        String backendDomain = SpringUtil.getBean(SysConfigService.class).getBackendDomain();
+        if (backendDomainSupplier == null){
+            backendDomainSupplier = SpringUtil.getBean(SysConfigService.class).getSupplier(SysConfigService.SystemConfigKey.BACKEND_DOMAIN);
+        }
+        String backendDomain = backendDomainSupplier.get().orElse("");
         try {
             return new URL(new URL(backendDomain), getPath()).toString();
         } catch (MalformedURLException e) {

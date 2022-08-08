@@ -7,11 +7,14 @@ import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
+import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
 import com.miya.system.util.PictureCompression;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -32,6 +35,7 @@ import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 
 /**
@@ -52,19 +56,38 @@ public class SysFileApi {
 
     private final SysFileService sysFileService;
 
+
+    @Getter
+    @RequiredArgsConstructor
+    enum FormatType implements ReadableEnum {
+        Object("对象"),
+        Array("数组");
+
+        private final String name;
+
+    }
+
     /**
      * 上传文件
      * @param files
      */
     @PostMapping("upload")
     @ApiOperation(value = "上传文件(支持多个)")
-    public R<?> upload(@NotNull @RequestParam("file") List<MultipartFile> files) {
+    public R<?> upload(@NotNull @RequestParam("file") List<MultipartFile> files,
+                       @ApiParam("在上传单个文件时返回参数的格式化类型，默认返回数组，对象类型只有在上传单个文件时生效") FormatType formatType) {
         List<SysFile> list = new ArrayList<>();
         for (MultipartFile file : files) {
             if (sysFileService.isNotAllowUpload(file)) {
                 throw new ResponseCodeException(ResponseCode.Common.NOT_ALLOW_UPLOAD, file.getOriginalFilename());
             }
             list.add(sysFileService.upload(file));
+        }
+        if (formatType == null){
+
+        }
+        FormatType ft = Optional.ofNullable(formatType).orElse(FormatType.Array);
+        if (ft.equals(FormatType.Object) && list.size() == 1){
+            return R.successWithData(list.get(0));
         }
         return R.successWithData(list);
     }

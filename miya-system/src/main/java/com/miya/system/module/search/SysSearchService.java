@@ -24,6 +24,7 @@ import org.hibernate.search.engine.search.query.SearchResult;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.mapping.SearchMapping;
 import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
+import org.hibernate.search.mapper.orm.scope.SearchScope;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
 import javax.persistence.EntityManager;
@@ -33,6 +34,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -67,7 +69,7 @@ public class SysSearchService {
     private final AtomicBoolean isInit = new AtomicBoolean(false);
 
     /**
-     * 初始化数据
+     * 删除所有索引并重新初始化
      */
     public void init() throws InterruptedException {
         if (isInit.get()) {
@@ -76,7 +78,16 @@ public class SysSearchService {
         isInit.set(true);
         try {
             MassIndexer indexer = searchSession.massIndexer(SysLog.class, SysUser.class)
+                    .idFetchSize( 500 )
+                    .batchSizeToLoadObjects( 100 )
+                    .transactionTimeout(60 * 30)
                     .threadsToLoadObjects(7);
+
+            indexer.type( SysLog.class ).reindexOnly( "e.publicationYear <= 2100" );
+            indexer.type( SysUser.class ).reindexOnly( "e.birthDate < :birthDate" )
+                    .param( "birthDate", LocalDate.ofYearDay( 2100, 77 ) );
+            // indexer.dropAndCreateSchemaOnStart(true);
+            indexer.purgeAllOnStart(true);
             indexer.startAndWait();
         } finally {
             isInit.set(false);
@@ -88,12 +99,18 @@ public class SysSearchService {
      * @param q 搜索关键字
      */
     public SearchResult<?> query(String q) {
+        SearchSession session = Search.session(entityManager);
+        SearchScope<?> scope = session.scope(Arrays.asList(SysLog.class));
+        scope.predicate().match().field("").matching("").toPredicate();
+
+
         SearchResult<List<?>> result = searchSession.search(types)
                 .select(f -> f.composite(
                         // SearchDTO::new,
                         f.field("content", String.class),
                         f.field("operatorName", String.class)
                 ))
+                // .where(sp -> sp.matchAll())
                 .where(sp -> sp.match().fields(fields).matching(q))
                 .fetch(10);
         long totalHitCount = result.total().hitCount();
