@@ -58,7 +58,7 @@ public @interface ValidEnum {
         public boolean isValid(String value, ConstraintValidatorContext context) {
             if(StringUtils.isBlank(this.message)){
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("{propertyName}不允许该值${validatedValue}，允许的值有: " + Arrays.toString(allowValues))
+                context.buildConstraintViolationWithTemplate("{property}不允许该值${validatedValue}，允许的值有: " + Arrays.toString(allowValues))
                         .addConstraintViolation();
             }
             java.util.List<String> allowValueList = Arrays.asList(allowValues);
@@ -85,7 +85,7 @@ public @interface ValidEnum {
         public boolean isValid(Integer value, ConstraintValidatorContext context) {
             if(StringUtils.isBlank(this.message)){
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("{propertyName}不允许该值${validatedValue}，允许的值有: " + Arrays.toString(allowValues))
+                context.buildConstraintViolationWithTemplate("{property}不允许该值${validatedValue}，允许的值有: " + Arrays.toString(allowValues))
                         .addConstraintViolation();
             }
             java.util.List<String> allowValueList = Arrays.asList(allowValues);

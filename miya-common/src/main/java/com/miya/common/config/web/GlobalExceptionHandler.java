@@ -7,13 +7,13 @@ import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.util.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -24,19 +24,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * 用于处理常见的通用异常
@@ -47,9 +42,6 @@ import java.util.stream.StreamSupport;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-    private final Pattern pattern = Pattern.compile("\\{propertyName}");
-
     /**
      * 参数校验异常回调
      */
@@ -58,11 +50,8 @@ public class GlobalExceptionHandler {
     public R<?> bindException(HttpServletResponse response, BindException e) {
         StringBuilder errorMessage = new StringBuilder("参数校验失败:");
         BindingResult bindingResult = e.getBindingResult();
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            Optional<String> optional = Optional.ofNullable(fieldError.getDefaultMessage());
-            errorMessage.append(pattern.matcher(optional.orElse("")).replaceAll(fieldError.getField()))
-                    .append(", ");
-        }
+        String message = bindingResult.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(","));
+        errorMessage.append(message);
         response.setContentType(ContentType.JSON.toString());
         return R.errorWithMsg(errorMessage.toString());
     }
@@ -77,15 +66,9 @@ public class GlobalExceptionHandler {
     public R<?> constraintViolationException(HttpServletResponse response, ConstraintViolationException e) {
         StringBuilder errorMessage = new StringBuilder("参数校验失败:");
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
-        constraintViolations.forEach( constraintViolation -> {
-            Path propertyPath = constraintViolation.getPropertyPath();
-            List<Path.Node> nodes = StreamSupport.stream(propertyPath.spliterator(), false).collect(Collectors.toList());
-            Path.Node property = nodes.get(nodes.size() - 1);
-            errorMessage.append(constraintViolation.getMessage()
-                    .replaceAll("\\{propertyName}", property.getName()))
-                    .append(", ");
-        } );
-        response.setContentType("application/json");
+        String message = constraintViolations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(","));
+        errorMessage.append(message);
+        response.setContentType(ContentType.JSON.toString());
         return R.errorWithMsg(errorMessage.toString());
     }
 

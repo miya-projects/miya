@@ -1,16 +1,19 @@
 package com.miya.common.annotation.constraint;
 
+import cn.hutool.core.collection.ListUtil;
 import org.hibernate.validator.internal.engine.MessageInterpolatorContext;
 import org.hibernate.validator.messageinterpolation.ExpressionLanguageFeatureLevel;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import javax.validation.Path;
 import javax.validation.metadata.ConstraintDescriptor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 /**
  * 自定义消息变量插值器
+ * 增加property变量，标识属性名
  */
 public class CustomMessageInterpolator extends ResourceBundleMessageInterpolator {
 
@@ -37,6 +40,14 @@ public class CustomMessageInterpolator extends ResourceBundleMessageInterpolator
         public Map<String, Object> getExpressionVariables() {
             HashMap<String, Object> map = new HashMap<>(super.getExpressionVariables());
             map.put("property", getPropertyPath().toString());
+            return map;
+        }
+
+        @Override
+        public Map<String, Object> getMessageParameters() {
+            HashMap<String, Object> map = new HashMap<>(super.getMessageParameters());
+            ArrayList<Path.Node> nodes = ListUtil.toList(getPropertyPath());
+            map.put("property", nodes.get(nodes.size() - 1).toString());
             return map;
         }
     }

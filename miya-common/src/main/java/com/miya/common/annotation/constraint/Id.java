@@ -39,7 +39,7 @@ import static javax.validation.constraintvalidation.ValidationTarget.PARAMETERS;
 @SupportedValidationTarget({ValidationTarget.ANNOTATED_ELEMENT, PARAMETERS})
 @Target({ FIELD, PARAMETER,ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@NotBlank(message = "{propertyName}不能为空")
+@NotBlank(message = "{property}不能为空")
 @Deprecated
 public @interface Id {
 
@@ -74,7 +74,7 @@ public @interface Id {
         public boolean isValid(String value, ConstraintValidatorContext context) {
             if(StringUtils.isBlank(this.message)){
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("{propertyName}:没有这样的id:'${validatedValue}'")
+                context.buildConstraintViolationWithTemplate("{property}:没有这样的id:'${validatedValue}'")
                         .addConstraintViolation();
             }
             if (Objects.isNull(this.jpaQueryFactory)){

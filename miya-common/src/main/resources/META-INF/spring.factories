@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.miya.common.config.MiyaCommonAutoConfiguration

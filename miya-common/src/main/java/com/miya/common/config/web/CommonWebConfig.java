@@ -3,10 +3,8 @@ package com.miya.common.config.web;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.miya.common.annotation.constraint.CustomMessageInterpolator;
 import com.miya.common.config.web.interceptor.ActionLogInterceptor;
 import com.miya.common.config.web.interceptor.ApiRequestLimitInterceptor;
-import com.miya.common.config.web.interceptor.ApiUsageLimitInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +13,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -91,14 +87,6 @@ public class CommonWebConfig implements WebMvcConfigurer {
         //单个api访问次数限制拦截器，限制用户
         registry.addInterceptor(new ApiRequestLimitInterceptor()).addPathPatterns(Collections.singletonList("/api/**"));
     }
-
-    @Override
-    public Validator getValidator() {
-        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
-        localValidatorFactoryBean.setMessageInterpolator(new CustomMessageInterpolator());
-        return localValidatorFactoryBean;
-    }
-
 
     // @Bean
     // @ConditionalOnMissingBean(ApiUsageLimitInterceptor.class)
