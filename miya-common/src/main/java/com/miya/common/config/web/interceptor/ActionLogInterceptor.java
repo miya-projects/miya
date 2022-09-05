@@ -23,6 +23,11 @@ import java.util.*;
 /**
  * @author 杨超辉
  * api访问日志拦截器
+ * 不会打印json方式传参
+ *
+ * 以下可启用webmvc自带的请求日志，不过太过于臃肿不方便查看
+ * logging.level.org.springframework.web.servlet.DispatcherServlet=trace
+ * spring.mvc.log-request-details=true
  */
 @Slf4j
 @RequiredArgsConstructor

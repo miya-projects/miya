@@ -1,4 +1,4 @@
-package com.miya.system.config.filter.http;
+package com.miya.common.config.web.filter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * @author 杨超辉
- * 特殊字符过滤器
+ * 特殊字符过滤器，需要自己注册，默认启用了StringTrimmerEditor，实现差不多的效果
  */
 @Slf4j
 @RequiredArgsConstructor

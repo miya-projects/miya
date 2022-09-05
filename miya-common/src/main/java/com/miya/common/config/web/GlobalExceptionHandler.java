@@ -7,13 +7,13 @@ import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.util.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -48,12 +48,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({BindException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> bindException(HttpServletResponse response, BindException e) {
-        StringBuilder errorMessage = new StringBuilder("参数校验失败:");
-        BindingResult bindingResult = e.getBindingResult();
-        String message = bindingResult.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(","));
-        errorMessage.append(message);
+        //没有对应的converter转换参数，打印异常信息处理
+        log.error(ExceptionUtils.getStackTrace(e));
         response.setContentType(ContentType.JSON.toString());
-        return R.errorWithMsg(errorMessage.toString());
+        return R.errorWithMsg("参数解析错误，请联系管理员");
+    }
+
+    /**
+     * 不合法的a.b格式的传参
+     */
+    @ExceptionHandler({NullValueInNestedPathException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public R<?> nullValueInNestedPathException(NullValueInNestedPathException e) {
+        return R.errorWithMsg(StrUtil.format("参数校验失败: 参数[{}]格式错误", e.getPropertyName()));
     }
 
     /**

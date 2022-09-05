@@ -1,12 +1,10 @@
 package com.miya.system.config.swagger;
 
 
-import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.miya.common.annotation.Acl;
 import com.miya.system.config.ProjectConfiguration;
-import com.miya.system.module.FlagForMiyaSystemModule;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,9 +19,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -42,10 +38,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -241,7 +235,8 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
             public List<AlternateTypeRule> rules() {
                 List<AlternateTypeRule> arrayList;
                 arrayList = newArrayList(
-                        newRule(Pageable.class, Page.class)
+                        newRule(Pageable.class, Page.class),
+                        newRule(Timestamp.class, Date.class)
                 );
                 return arrayList;
             }

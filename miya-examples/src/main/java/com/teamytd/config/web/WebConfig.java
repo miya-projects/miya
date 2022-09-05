@@ -17,12 +17,19 @@ import java.util.Arrays;
 public class WebConfig implements WebMvcConfigurer {
 
     /**
+     * 默认允许上传的后缀
+     */
+    private static final String[] allowUploadSuffix = {
+      "txt"
+    };
+
+    /**
      * 路由匹配规则
      * @param configurer
      */
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/api/video", HandlerTypePredicate.forBasePackage(FlagForModule.class.getPackage().getName()));
+        configurer.addPathPrefix("/api/example", HandlerTypePredicate.forBasePackage(FlagForModule.class.getPackage().getName()));
     }
 
     /**
@@ -30,9 +37,8 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Bean
     public MiyaSystemOssConfig defaultConfig(){
-        ArrayList<String> strings = new ArrayList<>();
-        strings.addAll(Arrays.asList(MiyaSystemOssConfig.DEFAULT_ALLOW_SUFFIX));
-        strings.add("exe");
+        ArrayList<String> strings = new ArrayList<>(Arrays.asList(MiyaSystemOssConfig.DEFAULT_ALLOW_SUFFIX));
+        strings.addAll(Arrays.asList(allowUploadSuffix));
         String[] result = strings.toArray(new String[0]);
         return new MiyaSystemOssConfig(){
             @Override

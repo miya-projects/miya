@@ -1,28 +1,22 @@
 package com.miya.common.config.web;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miya.common.config.web.converter.StringToTimeLikeConverter;
 import com.miya.common.config.web.interceptor.ActionLogInterceptor;
 import com.miya.common.config.web.interceptor.ApiRequestLimitInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Configuration
@@ -45,32 +39,7 @@ public class CommonWebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        //这里改为lambda会报错
-        Converter<String, Date> converter = new Converter<String, Date>() {
-            @Override
-            public Date convert(String source) {
-                return Convert.toDate(source);
-            }
-        };
-        Converter<String, Timestamp> timeStampConverter = new Converter<String, Timestamp>() {
-            @Override
-            public Timestamp convert(String source) {
-                return Optional.ofNullable(Convert.toLocalDateTime(source)).map(Timestamp::valueOf).orElse(null);
-            }
-        };
-        Converter<String, LocalDate> localDateConverter = new Converter<String, LocalDate>() {
-            @Override
-            public LocalDate convert(String source) {
-                LocalDateTime localDateTime = Convert.toLocalDateTime(source);
-                if (localDateTime == null){
-                    return null;
-                }
-                return LocalDate.of(localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth());
-            }
-        };
-        registry.addConverter(converter);
-        registry.addConverter(timeStampConverter);
-        registry.addConverter(localDateConverter);
+        registry.addConverter(new StringToTimeLikeConverter());
     }
 
 
