@@ -7,13 +7,13 @@ import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.util.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -49,9 +49,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> bindException(HttpServletResponse response, BindException e) {
         //没有对应的converter转换参数，打印异常信息处理
-        log.error(ExceptionUtils.getStackTrace(e));
+        // log.error(ExceptionUtils.getStackTrace(e));
+        List<ObjectError> allErrors = e.getAllErrors();
+        String message = allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(","));
         response.setContentType(ContentType.JSON.toString());
-        return R.errorWithMsg("参数解析错误，请联系管理员");
+        return R.errorWithMsg(StrUtil.format("参数校验失败: {}", message));
     }
 
     /**

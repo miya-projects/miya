@@ -129,15 +129,15 @@ logService.log(content, operationType, businessId, extra);
    普通方式的逻辑删除或多或少对系统产生一些副作用(唯一约束)和维护开销(查询索引维护等), 在用户误操作删除数据后，提供除binlog外的另一种数据备份方式  
    删除数据备份是一种悲观的设计思路，主张在删除后恢复，但更应该做的是认真考虑业务场景是否需要删除数据，这里仁者见仁，参考[《不要删除数据》](https://www.infoq.cn/article/2009/09/Do-Not-Delete-Data/)
 3. 如何使用?
-    1. 增加如下配置
-   ```properties
-   config.backup-on-delete.enable=true
-   config.backup-on-delete.url=jdbc:mysql://192.168.2.170:3306/miya-backup?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true
-   config.backup-on-delete.username=root
-   config.backup-on-delete.password=root
-   ```
-    2. 在需要做删除备份的实体类上增加`@BackupOnDelete`
-    3. 数据源创建好数据库即可，miya会自动为你创建和源数据一样的表结构
+   1. 增加如下配置
+      ```properties
+      config.backup-on-delete.enable=true
+      config.backup-on-delete.url=jdbc:mysql://192.168.2.170:3306/miya-backup?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true
+      config.backup-on-delete.username=root
+      config.backup-on-delete.password=root
+      ```
+   2. 在需要做删除备份的实体类上增加`@BackupOnDelete`
+   3. 数据源创建好数据库即可，miya会自动为你创建和源数据一样的表结构
 
 ### 邮件
 配置发件邮箱
@@ -174,7 +174,14 @@ TODO
 ### 搜索服务
 TODO
 
+## Q&A
 
+### 为什么将功能的定义放到后端的json中?
+很多系统中将功能定义放置到数据库中，且配有界面方便进行动态配置，但其实我们在UI界面增加这一菜单后，只是多了个菜单，并不意味着
+这个功能开发好了。功能的菜单和实现功能的代码是强耦合的，独立的菜单是无意义的。
+将需要控制权限的功能放在json中，在开发功能时去维护，功能标识code和功能代码同时维护是合理的。前后端通过fullCode统一
+
+### 
 
 
 ```shell
