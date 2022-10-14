@@ -1,4 +1,4 @@
-package com.miya.system.config.swagger;
+package com.miya.system.config.swagger.plugin;
 
 import com.fasterxml.classmate.ResolvedType;
 import org.slf4j.Logger;

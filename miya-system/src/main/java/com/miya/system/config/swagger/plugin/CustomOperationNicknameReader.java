@@ -1,4 +1,4 @@
-package com.miya.system.config.swagger;
+package com.miya.system.config.swagger.plugin;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

@@ -1,26 +1,35 @@
 package com.miya.system.config.swagger;
 
 
+import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.miya.common.annotation.Acl;
 import com.miya.system.config.ProjectConfiguration;
+import com.miya.system.config.swagger.plugin.QuerydslPredicateReader;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.cglib.proxy.InvocationHandler;
+import org.springframework.cglib.proxy.Proxy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
+import springfox.bean.validators.plugins.parameter.ExpandedParameterNotBlankAnnotationPlugin;
+import springfox.bean.validators.plugins.parameter.NotBlankAnnotationPlugin;
+import springfox.bean.validators.plugins.parameter.NotNullAnnotationPlugin;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
@@ -30,19 +39,23 @@ import springfox.documentation.schema.AlternateTypeRuleConvention;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.ExpandedParameterBuilderPlugin;
+import springfox.documentation.spi.service.ParameterBuilderPlugin;
+import springfox.documentation.spi.service.contexts.ParameterContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Predicate;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static springfox.bean.validators.plugins.Validators.annotationFromParameter;
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 /**
@@ -53,7 +66,8 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 // @EnableWebMvc
 @EnableSwagger2WebMvc
 @EnableKnife4j
-public class SwaggerConfiguration implements WebMvcConfigurer {
+@Import(BeanValidatorPluginsConfiguration.class)
+public class SwaggerConfiguration {
 
     @Resource
     private ProjectConfiguration projectConfiguration;
@@ -61,6 +75,93 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     private ApplicationContext applicationContext;
     @Resource
     private Map<String, DocketBuilder> beansOfType;
+
+    /*
+        关于jsr-303和apiModelProperty扫描插件应用顺序问题的讨论
+        https://github.com/springfox/springfox/issues/1231
+        https://github.com/springfox/springfox/issues/2210
+        给出解决方案是自定义@ApiModelPropertyDescription注解只配置字段描述
+        这里暂时先改变插件执行顺序进行覆盖ApiModelProperty注解配置(事实上也没想到任何增加jsr-303注解和ApiModelProperty表达相反意思的场景)
+
+        还有一种方案是各个扫描器之间的数据应当互通，采用投票机制最后决定最终文档，如2个扫描插件认为a字段为required=false，一个扫描器认为required为true，
+        那投票结果就是required为true，如果多个扫描器设置description，则应聚合description
+     */
+
+    @Bean
+    public ParameterBuilderPlugin notBlankAnnotationPlugin(){
+        final NotBlankAnnotationPlugin notBlankAnnotationPlugin = new NotBlankAnnotationPlugin();
+        return (ParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class[]{Ordered.class, ParameterBuilderPlugin.class},
+                new OrderInvocationHandler(notBlankAnnotationPlugin, Integer.MAX_VALUE - 1));
+    }
+
+    @Bean
+    public ExpandedParameterBuilderPlugin notBlankSchemaAnnotationPlugin(){
+        final ExpandedParameterNotBlankAnnotationPlugin notBlankAnnotationPlugin = new ExpandedParameterNotBlankAnnotationPlugin();
+        return (ExpandedParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class[]{Ordered.class, ExpandedParameterBuilderPlugin.class},
+                new OrderInvocationHandler(notBlankAnnotationPlugin, Integer.MAX_VALUE - 1));
+    }
+
+    @Bean
+    public ParameterBuilderPlugin notNull(){
+        final NotNullAnnotationPlugin notNullAnnotationPlugin = new NotNullAnnotationPlugin();
+        return (ParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class[]{Ordered.class, ParameterBuilderPlugin.class},
+                new OrderInvocationHandler(notNullAnnotationPlugin, Integer.MAX_VALUE - 1));
+    }
+
+    /**
+     * 代理Ordered接口强制改变bean顺序
+     */
+    @RequiredArgsConstructor
+    static class OrderInvocationHandler implements InvocationHandler {
+
+        /**
+         * 代理bean
+         */
+        private final Object target;
+
+        /**
+         * 改变为目标顺序值
+         */
+        private final Integer order;
+        private static final Method getOrderMethod = ReflectUtil.getMethodByName(Ordered.class, "getOrder");
+
+        @Override
+        public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+            if (method.equals(getOrderMethod)){
+                return order;
+            }
+            return method.invoke(target, objects);
+        }
+    }
+
+    // @Bean
+    // public ParameterBuilderPlugin parameterBuilderPlugin(){
+    //     return new PathAnnotationPlugin();
+    // }
+
+    // TODO @PathVariable可能是非必须吗？
+    @Order(Integer.MAX_VALUE - 1)
+    class PathAnnotationPlugin implements ParameterBuilderPlugin {
+
+        @Override
+        public boolean supports(DocumentationType delimiter) {
+            // we simply support all documentationTypes!
+            return true;
+        }
+
+        @Override
+        public void apply(ParameterContext context) {
+            Optional<PathVariable> pathVariable = annotationFromParameter(context, PathVariable.class);
+
+            if (pathVariable.isPresent()) {
+                context.parameterBuilder().required(true);
+            }
+        }
+    }
+
 
     /**
      * 根据DocketBuilder创建docket
@@ -109,7 +210,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
      * 全局参数
      */
     private List<Parameter> globalOperationParameters(){
-        return Arrays.asList(new ParameterBuilder()
+        return Collections.singletonList(new ParameterBuilder()
                 .name("Authorization")
                 .description("用户jwt token")
                 .modelRef(new ModelRef("string"))
@@ -139,22 +240,6 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     //             .validatorUrl(null)
     //             .build();
     // }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        // registry.
-        //         addResourceHandler("/swagger-ui/**")
-        //         .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-        //         .resourceChain(false);
-    }
-
-    // @Override
-    // public void addViewControllers(ViewControllerRegistry registry) {
-    //     registry.addViewController("/swagger-ui/")
-    //             .setViewName("forward:/swagger-ui/index.html");
-    // }
-
 
     /**
      * API选择器

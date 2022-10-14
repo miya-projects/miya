@@ -1,4 +1,4 @@
-package com.miya.system.config.swagger;
+package com.miya.system.config.swagger.plugin;
 
 
 import cn.hutool.core.util.ReflectUtil;
