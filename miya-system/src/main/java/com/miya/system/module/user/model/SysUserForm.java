@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @ApiModel
@@ -20,6 +21,7 @@ public class SysUserForm extends BaseForm<SysUser> {
     private String username;
 
     @ApiModelProperty("姓名")
+    @NotNull
     private String name;
 
     @ApiModelProperty("备注")

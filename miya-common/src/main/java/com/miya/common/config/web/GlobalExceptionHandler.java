@@ -2,6 +2,7 @@ package com.miya.common.config.web;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
+import com.miya.common.exception.DataTooLongException;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
@@ -112,6 +113,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> maxUploadSizeExceededException(HttpServletResponse response, MaxUploadSizeExceededException e) {
         return R.errorWithMsg("上传文件大小超过最大值");
+    }
+
+    @ExceptionHandler({DataTooLongException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public R<?> dataTooLongException(HttpServletResponse response, DataTooLongException e) {
+        return R.errorWithMsg(StrUtil.format("{}输入太长", e.getFiledName()));
     }
 
     @ExceptionHandler({MissingServletRequestParameterException.class})

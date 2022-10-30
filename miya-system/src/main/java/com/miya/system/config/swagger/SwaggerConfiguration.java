@@ -19,15 +19,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.bean.validators.plugins.parameter.ExpandedParameterNotBlankAnnotationPlugin;
+import springfox.bean.validators.plugins.parameter.ExpandedParameterNotNullAnnotationPlugin;
 import springfox.bean.validators.plugins.parameter.NotBlankAnnotationPlugin;
 import springfox.bean.validators.plugins.parameter.NotNullAnnotationPlugin;
 import springfox.documentation.RequestHandler;
@@ -41,9 +40,9 @@ import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.ExpandedParameterBuilderPlugin;
 import springfox.documentation.spi.service.ParameterBuilderPlugin;
-import springfox.documentation.spi.service.contexts.ParameterContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +54,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static springfox.bean.validators.plugins.Validators.annotationFromParameter;
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 /**
@@ -96,6 +94,14 @@ public class SwaggerConfiguration {
     }
 
     @Bean
+    public ParameterBuilderPlugin notNull(){
+        final NotNullAnnotationPlugin notNullAnnotationPlugin = new NotNullAnnotationPlugin();
+        return (ParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class[]{Ordered.class, ParameterBuilderPlugin.class},
+                new OrderInvocationHandler(notNullAnnotationPlugin, Integer.MAX_VALUE - 1));
+    }
+
+    @Bean
     public ExpandedParameterBuilderPlugin notBlankSchemaAnnotationPlugin(){
         final ExpandedParameterNotBlankAnnotationPlugin notBlankAnnotationPlugin = new ExpandedParameterNotBlankAnnotationPlugin();
         return (ExpandedParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
@@ -104,12 +110,13 @@ public class SwaggerConfiguration {
     }
 
     @Bean
-    public ParameterBuilderPlugin notNull(){
-        final NotNullAnnotationPlugin notNullAnnotationPlugin = new NotNullAnnotationPlugin();
-        return (ParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
-                new Class[]{Ordered.class, ParameterBuilderPlugin.class},
+    public ExpandedParameterBuilderPlugin notNullSchemaAnnotationPlugin(){
+        final ExpandedParameterNotNullAnnotationPlugin notNullAnnotationPlugin = new ExpandedParameterNotNullAnnotationPlugin();
+        return (ExpandedParameterBuilderPlugin)Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class[]{Ordered.class, ExpandedParameterBuilderPlugin.class},
                 new OrderInvocationHandler(notNullAnnotationPlugin, Integer.MAX_VALUE - 1));
     }
+
 
     /**
      * 代理Ordered接口强制改变bean顺序
@@ -141,26 +148,6 @@ public class SwaggerConfiguration {
     // public ParameterBuilderPlugin parameterBuilderPlugin(){
     //     return new PathAnnotationPlugin();
     // }
-
-    // TODO @PathVariable可能是非必须吗？
-    @Order(Integer.MAX_VALUE - 1)
-    class PathAnnotationPlugin implements ParameterBuilderPlugin {
-
-        @Override
-        public boolean supports(DocumentationType delimiter) {
-            // we simply support all documentationTypes!
-            return true;
-        }
-
-        @Override
-        public void apply(ParameterContext context) {
-            Optional<PathVariable> pathVariable = annotationFromParameter(context, PathVariable.class);
-
-            if (pathVariable.isPresent()) {
-                context.parameterBuilder().required(true);
-            }
-        }
-    }
 
 
     /**

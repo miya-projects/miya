@@ -26,6 +26,8 @@ import static javax.validation.constraintvalidation.ValidationTarget.PARAMETERS;
 
 /**
  * String类型 字段长度校验，读取数据库字段长度作为最大长度要求
+ * 也可以通过捕获DataTooLongException在数据库发出异常时进行异常处理
+ * 该注解在执行前进行校验，捕获DataTooLongException则是发生异常后回滚再进行友好返回。
  */
 @Documented
 @Constraint(validatedBy = {AutoMaxLength.BaseFormFieldValidator.class/*, AutoValidLength.StringFieldValidator.class*/})
