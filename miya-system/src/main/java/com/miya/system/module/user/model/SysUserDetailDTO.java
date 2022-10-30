@@ -5,10 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 @ApiModel
@@ -30,5 +28,9 @@ public class SysUserDetailDTO extends SysUserListDTO {
     @org.mapstruct.Mapper
     public interface Mapper extends DTOMapper<SysUserDetailDTO, SysUser> {
         Mapper INSTANCE = Mappers.getMapper(Mapper.class);
+
+        @Mapping(target = "avatar", expression = "java(entity.getAvatar().getUrl())")
+        @Override
+        SysUserDetailDTO toDto(SysUser entity);
     }
 }

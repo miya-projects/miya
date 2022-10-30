@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.rxxy</groupId>
         <artifactId>miya-parent</artifactId>
-        <version>1.6.2</version>
+        <version>1.6.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -26,13 +26,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.9</version>
+            <version>1.2.12</version>
         </dependency>
         <!-- hibernate 二级缓存-->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>org.hibernate</groupId>-->
+        <!--    <artifactId>hibernate-ehcache</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -93,6 +93,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+            <version>2.0.21</version>
         </dependency>
     </dependencies>
 

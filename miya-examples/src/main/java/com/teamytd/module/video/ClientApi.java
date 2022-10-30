@@ -1,9 +1,12 @@
 package com.teamytd.module.video;
 
 import com.miya.common.annotation.Acl;
+import com.miya.common.annotation.constraint.AutoMaxLength;
 import com.miya.common.model.dto.base.R;
+import com.miya.common.module.base.BaseForm;
 import com.miya.system.module.download.DownloadTask;
 import com.miya.system.module.download.SimpleDownloadTask;
+import com.miya.system.module.user.model.SysUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -57,7 +61,7 @@ public class ClientApi {
 
     @PostMapping("testConvertRequestBody")
     @ApiOperation("testConvertRequestBody")
-    public R<?> testConvertRequestBody(@Validated @RequestBody  TestDTO dto) {
+    public R<?> testConvertRequestBody(@Validated @RequestBody TestDTO dto) {
          // log.info("\n" + dto.toString());
         return R.successWithData(dto);
     }
@@ -65,9 +69,11 @@ public class ClientApi {
     @Getter
     @Setter
     @ToString
-    static class TestDTO{
-        private String str;
-        private int num;
+    @AutoMaxLength(enabled = true)
+    static class TestDTO extends BaseForm<SysUser> {
+        @NotBlank
+        private String name;
+        private Integer num;
         private Date date;
         private LocalDate localDate;
         private LocalDateTime localDateTime;

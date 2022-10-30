@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.github.rxxy</groupId>
         <artifactId>miya-parent</artifactId>
-        <version>1.6.2</version>
+        <version>1.6.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -247,20 +247,12 @@
                             <port>8080</port>
                         </ports>
                         <labels>
-                            <app>miya-examples</app>
+                            <app>${project.name}</app>
                         </labels>
                         <format>OCI</format>
                     </container>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--    <groupId>org.apache.maven.plugins</groupId>-->
-            <!--    <artifactId>maven-checkstyle-plugin</artifactId>-->
-            <!--    <version>3.0.0</version>-->
-            <!--    <configuration>-->
-            <!--        <configLocation>check-style.xml</configLocation>-->
-            <!--    </configuration>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 

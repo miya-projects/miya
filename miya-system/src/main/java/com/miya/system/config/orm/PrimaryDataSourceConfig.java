@@ -1,5 +1,7 @@
 package com.miya.system.config.orm;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceWrapper;
 import com.miya.common.config.orm.source.DataSourceConfig;
 import com.miya.common.module.base.ExtendsRepositoryImpl;
 import com.miya.system.module.FlagForMiyaSystemModule;
@@ -45,6 +47,13 @@ public class PrimaryDataSourceConfig {
 
     @Resource
     private JpaProperties jr;
+
+    @Bean(initMethod = "init")
+    @Primary
+    @ConditionalOnMissingBean(name = "dataSource")
+    public DruidDataSource dataSource() {
+        return new DruidDataSourceWrapper();
+    }
 
     @Primary
     @Bean(name = "entityManagerFactory")

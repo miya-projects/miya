@@ -8,6 +8,8 @@ import com.miya.system.module.role.model.SysRoleSimpleDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Set;
@@ -25,7 +27,7 @@ public class SysUserListDTO extends BaseDTO {
 
     private String phone;
 
-    private SysFile avatar;
+    private String avatar;
 
     private SysUser.Sex sex;
 
@@ -44,6 +46,16 @@ public class SysUserListDTO extends BaseDTO {
     @org.mapstruct.Mapper
     public interface Mapper extends DTOMapper<SysUserListDTO, SysUser> {
         Mapper INSTANCE = Mappers.getMapper(Mapper.class);
+
+        @Mappings(
+                @Mapping(target = "avatar", expression = "java(entity.getAvatar().getUrl())")
+        )
+        @Override
+        SysUserListDTO toDto(SysUser entity);
+
+        default String map(SysFile value){
+            return value.getUrl();
+        }
     }
 
 }

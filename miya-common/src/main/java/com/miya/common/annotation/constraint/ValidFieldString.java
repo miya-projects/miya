@@ -1,7 +1,6 @@
 package com.miya.common.annotation.constraint;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.cron.CronException;
 import cn.hutool.cron.pattern.CronPattern;
@@ -10,8 +9,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintViolationCreationContext;
 import org.hibernate.validator.messageinterpolation.ExpressionLanguageFeatureLevel;
 
 import javax.validation.Constraint;
@@ -119,7 +116,6 @@ public @interface ValidFieldString {
             hibernateContext.disableDefaultConstraintViolation();
             hibernateContext
                     .addExpressionVariable( "validatedValue", value )
-                    .addExpressionVariable( "property", "1111" )
                     // 这里的模版必须定死，不可用户动态输入，防止出现安全问题
                     .buildConstraintViolationWithTemplate(StrUtil.isBlank(this.message)?this.validType.message:this.message)
                     .enableExpressionLanguage(ExpressionLanguageFeatureLevel.BEAN_PROPERTIES)

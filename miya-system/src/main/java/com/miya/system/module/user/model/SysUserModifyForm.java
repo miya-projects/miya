@@ -1,8 +1,6 @@
 package com.miya.system.module.user.model;
 
-import com.miya.common.annotation.FieldMapping;
 import com.miya.common.module.base.BaseForm;
-import com.miya.system.module.oss.model.SysFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -22,7 +20,6 @@ public class SysUserModifyForm extends BaseForm<SysUser> {
     private String name;
 
     @ApiModelProperty("头像文件id")
-    @FieldMapping(mappingClass = SysFile.class)
     private String avatar;
 
     @ApiModelProperty("性别")

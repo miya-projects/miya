@@ -165,6 +165,7 @@ public class SysFileApi {
             }finally {
                 try {
                     pipedOutputStream.close();
+                    pipedInputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

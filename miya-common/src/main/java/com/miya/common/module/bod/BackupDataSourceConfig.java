@@ -5,16 +5,15 @@ import com.miya.common.config.orm.source.DataSourceConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.MySQL57Dialect;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
-import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,7 +26,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 备份数据源配置
@@ -36,7 +37,7 @@ import java.util.*;
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnProperty(value = "config.backup-on-delete.enable", havingValue = "true")
-public class BackupDataSourceConfig implements InitializingBean {
+public class BackupDataSourceConfig {
 
     @Resource
     private DbConfig dbConfig;
@@ -44,21 +45,11 @@ public class BackupDataSourceConfig implements InitializingBean {
     @Resource
     private DataSourceConfig dataSourceConfig;
 
-    Map<String, String> properties = new HashMap<>();
-
-    @Override
-    public void afterPropertiesSet() {
-        properties.put(AvailableSettings.HBM2DDL_AUTO, "update");
-        properties.put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, SpringPhysicalNamingStrategy.class.getName());
-        properties.put(AvailableSettings.DIALECT, MySQL57Dialect.class.getName());
-        properties.put("hibernate.search.enabled", "false");
-        // properties.put(AvailableSettings.SHOW_SQL, "true");
-    }
-
     /**
      * 备份数据库
      */
     @Bean(name = "backupDataSource")
+    @ConditionalOnMissingBean(name = "backupDataSource")
     @ConditionalOnProperty(value = "config.backup-on-delete.enable", havingValue = "true")
     public DataSource backupDataSource() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
@@ -74,18 +65,18 @@ public class BackupDataSourceConfig implements InitializingBean {
     }
 
     @Bean(name = "backupEntityManagerFactory")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "backupEntityManagerFactory")
     @ConditionalOnProperty(value = "config.backup-on-delete.enable", havingValue = "true")
     public LocalContainerEntityManagerFactoryBean backupEntityManagerFactory(ObjectProvider<PersistenceUnitManager> persistenceUnitManager,
                                                                              @Qualifier("backupDataSource") DataSource dataSource) {
         HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setDatabase(Database.MYSQL);
         EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(adapter,
-                this.properties, persistenceUnitManager.getIfAvailable());
+                this.dbConfig.properties, persistenceUnitManager.getIfAvailable());
         return builder
                 .dataSource(dataSource)
                 .packages(dataSourceConfig.getClasses().toArray(new Class[0]))
-                .properties(properties)
+                .properties(this.dbConfig.properties)
                 .persistenceUnit("bodPersistenceUnit")
                 .build();
     }
@@ -110,6 +101,16 @@ public class BackupDataSourceConfig implements InitializingBean {
          * 是否开启备份库
          */
         private boolean enable;
+        private Map<String, String> properties = new HashMap<>();
+
+        {
+            // 默认配置
+            properties.put(AvailableSettings.HBM2DDL_AUTO, "update");
+            properties.put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, CamelCaseToUnderscoresNamingStrategy.class.getName());
+            properties.put(AvailableSettings.DIALECT, MySQL57Dialect.class.getName());
+            properties.put("hibernate.search.enabled", "false");
+            // properties.put(AvailableSettings.SHOW_SQL, "true");
+        }
     }
 
 }

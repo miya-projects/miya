@@ -73,9 +73,9 @@ public class Grid<T> {
     }
 
     public static <T> Grid<T> of(QueryResults<T> queryResults) {
-        return Grid.of((int) Math.ceil(queryResults.getTotal() / queryResults.getLimit()) + 1,
+        return Grid.of((int) Math.ceil(queryResults.getTotal() / (double)queryResults.getLimit()) + 1,
                 (int) queryResults.getLimit() + 1,
-                (int) Math.ceil(queryResults.getOffset() / queryResults.getLimit()),
+                (int) Math.ceil(queryResults.getOffset() / (double)queryResults.getLimit()),
                 queryResults.getTotal(),
                 queryResults.getResults());
     }

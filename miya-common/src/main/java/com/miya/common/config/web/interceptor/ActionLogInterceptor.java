@@ -117,6 +117,7 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
         }
         startTime.remove();
         url.remove();
+        skip.remove();
     }
 
     @Override

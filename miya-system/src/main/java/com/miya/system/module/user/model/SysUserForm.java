@@ -1,11 +1,7 @@
 package com.miya.system.module.user.model;
 
-import com.miya.common.annotation.FieldMapping;
 import com.miya.common.annotation.constraint.ValidFieldString;
 import com.miya.common.module.base.BaseForm;
-import com.miya.system.module.department.SysDepartment;
-import com.miya.system.module.oss.model.SysFile;
-import com.miya.system.module.role.model.SysRole;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -34,16 +30,13 @@ public class SysUserForm extends BaseForm<SysUser> {
     private String phone;
 
     @ApiModelProperty("头像文件id")
-    @FieldMapping(mappingClass = SysFile.class)
     private String avatar;
 
     @ApiModelProperty("性别")
     private SysUser.Sex sex;
 
-    @FieldMapping(mappingClass = SysRole.class)
     private Set<String> roles;
 
-    @FieldMapping(mappingClass = SysDepartment.class)
     private Set<String> departments;
 
 }

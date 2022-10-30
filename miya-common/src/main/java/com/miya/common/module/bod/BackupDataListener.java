@@ -51,6 +51,7 @@ public class BackupDataListener extends EmptyInterceptor {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
+        // todo 报错
         entityManager.merge(entity);
         transaction.commit();
         entityManager.close();

@@ -38,12 +38,12 @@ public class AliyunOssConfig {
         ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setSupportCname(true);
 
-        Supplier<Optional<String>> ossDomain = SpringUtil.getBean(SysConfigService.class)
+        Supplier<Optional<String>> optionalSupplier = SpringUtil.getBean(SysConfigService.class)
                 .getSupplier(SysConfigService.SystemConfigKey.OSS_DOMAIN);
-
+        Optional<String> optional = optionalSupplier.get();
         String endpoint = aliyun.getEndpoint();
-        if (ossDomain.get().isPresent()){
-            String domain = ossDomain.get().get();
+        if (optional.isPresent()){
+            String domain = optional.get();
             if(StrUtil.isNotBlank(domain)){
                 // 数据库的自定义域名配置优先级高于配置文件。
                 log.info("阿里云OSS：使用自定义域名: {}", domain);

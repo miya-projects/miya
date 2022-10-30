@@ -37,7 +37,7 @@ public class AuditingLogListener extends EmptyInterceptor {
     @SneakyThrows({IllegalArgumentException.class, IllegalAccessException.class})
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PostPersist
-    void postPersist(Object entity) {
+    public void postPersist(Object entity) {
         Class<?> aClass = entity.getClass();
         String summary = StrUtil.format("新增了{}表数据", aClass.getName());
         Field[] declaredFields = ClassUtil.getDeclaredFields(entity.getClass());
@@ -108,7 +108,7 @@ public class AuditingLogListener extends EmptyInterceptor {
 
     @PostRemove
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void postRemove(Object entity) {
+    public void postRemove(Object entity) {
         Class<?> aClass = entity.getClass();
         String summary = StrUtil.format("删除了{}表数据", aClass.getName());
         getLogService().log(LOG_TYPE, summary, "删除", ReflectUtil.getFieldValue(entity, "id").toString(), null);

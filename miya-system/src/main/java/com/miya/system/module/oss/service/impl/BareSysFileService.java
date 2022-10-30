@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import com.miya.system.module.oss.OssConfigProperties;
 import com.miya.system.module.oss.SysFileRepository;
 import com.miya.system.module.oss.model.SysFile;
@@ -155,7 +156,8 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
     @Override
     public String getUrl(SysFile sysFile) {
         try {
-            return new URL(new URL(backendDomain.get().orElse("")), "upload/" + FileUtil.subPath(uploadAbsolutePath, sysFile.getPath())).toString();
+            String url = URLUtil.completeUrl(URLUtil.completeUrl(backendDomain.get().orElse(""), "upload/"), FileUtil.subPath(uploadAbsolutePath, sysFile.getPath()));
+            return new URL(url).toString();
         } catch (MalformedURLException e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return backendDomain.get().orElse("");
