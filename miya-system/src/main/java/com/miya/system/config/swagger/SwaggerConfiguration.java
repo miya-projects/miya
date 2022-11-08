@@ -38,6 +38,7 @@ import springfox.documentation.schema.AlternateTypeRuleConvention;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.EnumTypeDeterminer;
 import springfox.documentation.spi.service.ExpandedParameterBuilderPlugin;
 import springfox.documentation.spi.service.ParameterBuilderPlugin;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -288,8 +289,8 @@ public class SwaggerConfiguration {
     }
 
     @Bean
-    public QuerydslPredicateReader querydslPredicateReader(TypeResolver resolver, QuerydslBindingsFactory querydslBindingsFactory){
-        return new QuerydslPredicateReader(resolver, querydslBindingsFactory);
+    public QuerydslPredicateReader querydslPredicateReader(TypeResolver resolver, QuerydslBindingsFactory querydslBindingsFactory, EnumTypeDeterminer enumTypeDeterminer){
+        return new QuerydslPredicateReader(resolver, querydslBindingsFactory, enumTypeDeterminer);
     }
 
     /**

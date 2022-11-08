@@ -4,10 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.DatePath;
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.*;
 import lombok.NonNull;
 import org.springframework.data.querydsl.binding.MultiValueBinding;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -41,6 +38,7 @@ public class DefaultQuerydslBinder {
         bindings.bind(String.class)
                 .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
 
+        bindings.excluding(QBaseEntity.baseEntity.createdUser);
     }
 
     static class DateMultiValueBinding implements MultiValueBinding<Path<Date>, Date> {
@@ -54,6 +52,9 @@ public class DefaultQuerydslBinder {
             Iterator<? extends Date> iterator = value.iterator();
             if (value.size() == 1) {
                 Date date = iterator.next();
+                if (date == null){
+                    return Optional.empty();
+                }
                 Date dateTimeStart = DateUtil.beginOfDay(date).toJdkDate();
                 Date dateTimeEnd = DateUtil.endOfDay(date).toJdkDate();
                 return Optional.of(dateTimePath.between(dateTimeStart, dateTimeEnd));
@@ -93,7 +94,6 @@ public class DefaultQuerydslBinder {
                 if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
                     return Optional.empty();
                 }
-                // 开始日期 <= 记录日期 <= 结束日期
                 booleanBuilder.and(localDateDatePath.between(startDate, endDate));
                 return Optional.of(booleanBuilder);
             }

@@ -1,30 +1,36 @@
 package com.miya.system.config.swagger.plugin;
 
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
-//todo
 
 /**
  * 为api接口合理命名
  */
 @Component
 @Order
+@Slf4j
 public class CustomOperationNicknameReader implements OperationBuilderPlugin {
     @Override
     public void apply(OperationContext context) {
-        //Create your own transformation to format the name in the way
-        //that you prefer
-        String operationNameStem = transformName(context.getName());
-        //Update the method name stem that is used to generate a unique id
+        // 重命名tag
+        String name = StrUtil.toCamelCase(context.getGroupName().replaceAll("-", "_"));
+        name = name.substring(0, name.lastIndexOf("Api"));
+
+        // 重命名operateId
+        String operationNameStem = transformName(name + StrUtil.upperFirst(context.getName()));
         context.operationBuilder().codegenMethodNameStem(operationNameStem);
     }
 
     private String transformName(String name) {
-        return name;
+        log.info(name);
+        return StrUtil.toSymbolCase(name, '-');
+        // return name;
     }
 
     @Override

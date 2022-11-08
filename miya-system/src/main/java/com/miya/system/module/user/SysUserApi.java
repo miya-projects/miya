@@ -8,8 +8,8 @@ import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserDetailDTO;
-import com.miya.system.module.user.model.SysUserListDTO;
 import com.miya.system.module.user.model.SysUserForm;
+import com.miya.system.module.user.model.SysUserListDTO;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -59,6 +59,14 @@ public class SysUserApi extends BaseApi {
         // ).from(qSysUser).where(predicate);
         // Page<SysUserDTO> page = PageableExecutionUtils.getPage(query.fetch(), pageRequest, () -> sysUserRepository.count(predicate));
         // SimpleExpression<SysUser> wqe = QSysUser.sysUser.as("wqe");
+
+        // qf.select(
+        //         Projections.bean(SysUserListDTO.class, QSysUser.sysUser.name)
+        // ).from(QSysUser.sysUser).fetch()
+        // Projections.constructor()
+
+        // QBean qBean = new QBean(SysUser.class);
+        // new DefaultRepositoryInvokerFactory(new Repositories(SpringUtil.getApplicationContext()), SpringUtil.getBean(ConversionService.class)).getInvokerFor(SysUser.class).invokeFindById("1");
         Page<SysUser> all = sysUserRepository.findAll(predicate, pageRequest);
         return R.successWithData(Grid.of(all.map(SysUserListDTO::of)));
     }

@@ -22,7 +22,7 @@ import java.util.List;
  * api方式增加swagger接口
  */
 @Component
-public class SwaggerAddtion implements ApiListingScannerPlugin {
+public class SwaggerAddition implements ApiListingScannerPlugin {
     @Override
     public List<ApiDescription> apply(DocumentationContext documentationContext) {
         return new ArrayList<>(
@@ -30,21 +30,22 @@ public class SwaggerAddtion implements ApiListingScannerPlugin {
                         new ApiDescriptionBuilder(
                                 Ordering.compound(Lists.newArrayList((o1, o2) -> 1))
                         ).path("/api/logout").description("登出").hidden(false)
-                          .operations(
-                                  Lists.newArrayList(
-                                  new OperationBuilder(new CachingOperationNameGenerator())
-                                          .produces(Sets.newHashSet())
-                                          .method(HttpMethod.POST)
-                                          .consumes(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE))
-                                          .produces(Sets.newHashSet("*/*"))
-                                          .summary("登出")
-                                          .notes("登出")//方法描述
-                                          .tags(Sets.newHashSet("用户"))
-                                          .build()
-                                  )
-                          )
                                 .groupName("系统")
-                        .build()
+                                .operations(
+                                        Lists.newArrayList(
+                                                new OperationBuilder(new CachingOperationNameGenerator())
+                                                        .produces(Sets.newHashSet())
+                                                        .method(HttpMethod.POST)
+                                                        .consumes(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE))
+                                                        .produces(Sets.newHashSet("*/*"))
+                                                        .summary("登出")
+                                                        .notes("登出")//方法描述
+                                                        .tags(Sets.newHashSet("用户"))
+                                                        .build()
+                                        )
+                                )
+                                .groupName("系统")
+                                .build()
                 ));
     }
 
