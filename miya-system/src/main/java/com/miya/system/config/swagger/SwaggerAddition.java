@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ApiDescriptionBuilder;
 import springfox.documentation.builders.OperationBuilder;
 import springfox.documentation.service.ApiDescription;
+import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.ApiListingScannerPlugin;
 import springfox.documentation.spi.service.contexts.DocumentationContext;
@@ -36,11 +37,20 @@ public class SwaggerAddition implements ApiListingScannerPlugin {
                                                 new OperationBuilder(new CachingOperationNameGenerator())
                                                         .produces(Sets.newHashSet())
                                                         .method(HttpMethod.POST)
-                                                        .consumes(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE))
-                                                        .produces(Sets.newHashSet("*/*"))
                                                         .summary("登出")
                                                         .notes("登出")//方法描述
                                                         .tags(Sets.newHashSet("用户"))
+                                                        .extensions(Arrays.asList(new VendorExtension() {
+                                                            @Override
+                                                            public String getName() {
+                                                                return "x-client-method";
+                                                            }
+
+                                                            @Override
+                                                            public Object getValue() {
+                                                                return "logout";
+                                                            }
+                                                        }))
                                                         .build()
                                         )
                                 )

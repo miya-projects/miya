@@ -28,7 +28,6 @@ public class CustomOperationNicknameReader implements OperationBuilderPlugin {
     }
 
     private String transformName(String name) {
-        log.info(name);
         return StrUtil.toSymbolCase(name, '-');
         // return name;
     }

@@ -156,7 +156,7 @@ public class QuerydslPredicateReader implements OperationBuilderPlugin {
                 .type(resolved)
                 .modelRef(new ModelRef(typeName, itemModel))
                 .allowableValues(allowable)
-                .parameterType("form")
+                .parameterType("query")
                 .order(DEFAULT_PRECEDENCE)
                 .parameterAccess(null);
     }

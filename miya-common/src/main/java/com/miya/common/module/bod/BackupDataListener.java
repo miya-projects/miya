@@ -40,7 +40,7 @@ public class BackupDataListener extends EmptyInterceptor {
         }
         Class<?> entityClass = entity.getClass();
 
-        if (!isBackup(entityClass)){
+        if (!isNeedBackup(entityClass)){
             return;
         }
 
@@ -62,7 +62,7 @@ public class BackupDataListener extends EmptyInterceptor {
      * @param entityClass
      * @return
      */
-    private boolean isBackup(Class<?> entityClass) {
+    private boolean isNeedBackup(Class<?> entityClass) {
         return CACHE_MAP.computeIfAbsent(entityClass, key -> {
             BackupOnDelete backupOnDelete = AnnotationUtil.getAnnotation(entityClass, BackupOnDelete.class);
             return backupOnDelete != null;

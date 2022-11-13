@@ -34,7 +34,7 @@ public abstract class BaseForm<PO> {
      * 将form数据合并到新=的po中，如果类型不一致，使用spring类型转换系统转换
      * @return PO
      */
-    @SneakyThrows
+    @SneakyThrows({IllegalAccessException.class, InstantiationException.class})
     public PO mergeToNewPo() {
         Type genType = getClass().getGenericSuperclass();
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
@@ -49,7 +49,6 @@ public abstract class BaseForm<PO> {
      * 将form数据合并到指定的po中，如果类型不一致，使用spring类型转换系统转换
      * @param t 已持久化的po
      */
-    @SneakyThrows
     public void mergeToPo(PO t) {
         // * 获取子类泛型class
         Class<PO> entityClass = CastUtils.cast(ClassUtil.getTypeArgument(getClass()));
@@ -76,13 +75,11 @@ public abstract class BaseForm<PO> {
                 .collect(Collectors.toList());
 
         List<String> ignoreProperties = new ArrayList<>();
-
         for (Field field : fieldsInFormDiffType) {
             Object o = conversionService.convert(ReflectUtil.getFieldValue(this, field), ReflectUtil.getField(entityClass, field.getName()).getType());
             ReflectUtil.setFieldValue(t, field.getName(), o);
             ignoreProperties.add(field.getName());
         }
-        CollUtil.create(Set.class);
 
         // 在form中集合类型字段
         List<Field> fieldsInFormCollType = Arrays.stream(declaredFieldsForForm)

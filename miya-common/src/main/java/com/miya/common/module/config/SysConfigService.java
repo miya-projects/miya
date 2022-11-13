@@ -143,7 +143,7 @@ public class SysConfigService implements SystemInit {
      */
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
     public Supplier<Optional<String>> getSupplier(SystemConfigKey key) {
-        return () -> get(key.name());
+        return () -> SpringUtil.getBean(SysConfigService.class).get(key.name());
     }
 
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")

@@ -1,6 +1,7 @@
 package com.miya.system.config.swagger;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
@@ -177,6 +178,8 @@ public class SwaggerConfiguration {
                         // .contact(new Contact(configService.get(""), "https://rxxy.github.io", ""))
                         .version(projectConfiguration.getVersion())
                         .build())
+                .produces(CollUtil.newHashSet("application/json"))
+                .consumes(CollUtil.newHashSet("application/x-www-form-urlencoded"))
                 .groupName(title)
                 .ignoredParameterTypes(
                         AuthenticationPrincipal.class,
@@ -322,10 +325,10 @@ public class SwaggerConfiguration {
     @ApiModel
     @Data
     static class Page {
-        @ApiModelProperty("第page页,从0开始计数")
+        @ApiModelProperty(value = "第page页,从0开始计数", example = "0")
         private Integer page;
 
-        @ApiModelProperty("每页数据数量")
+        @ApiModelProperty(value = "每页数据数量", example = "20")
         private Integer size;
 
         @ApiModelProperty(value = "按属性排序,格式:属性,[asc|desc]")
