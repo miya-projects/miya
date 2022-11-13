@@ -103,7 +103,7 @@ public class SysConfigApi extends BaseApi {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
-        long count = sysConfigRepository.count(QSysConfig.sysConfig.key.eq(sysConfigForm.getSkey())
+        long count = sysConfigRepository.count(QSysConfig.sysConfig.key.eq(sysConfigForm.getKey())
                 .and(QSysConfig.sysConfig.id.ne(sysConfig.getId())));
         if (count > 0) {
             return R.errorWithMsg("key重复");
@@ -124,7 +124,7 @@ public class SysConfigApi extends BaseApi {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
-        boolean exists = sysConfigRepository.exists(QSysConfig.sysConfig.key.eq(sysConfigForm.getSkey()));
+        boolean exists = sysConfigRepository.exists(QSysConfig.sysConfig.key.eq(sysConfigForm.getKey()));
         if (exists) {
             return R.errorWithMsg("key重复");
         }

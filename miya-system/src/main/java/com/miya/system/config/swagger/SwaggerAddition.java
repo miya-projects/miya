@@ -36,8 +36,6 @@ public class SwaggerAddition implements ApiListingScannerPlugin {
                                                 new OperationBuilder(new CachingOperationNameGenerator())
                                                         .produces(Sets.newHashSet())
                                                         .method(HttpMethod.POST)
-                                                        .consumes(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE))
-                                                        .produces(Sets.newHashSet("*/*"))
                                                         .summary("登出")
                                                         .notes("登出")//方法描述
                                                         .tags(Sets.newHashSet("用户"))
