@@ -60,8 +60,6 @@ public class ExtClientMethodNameReader implements OperationBuilderPlugin {
         context.operationBuilder()
                 // .produces(CollUtil.newHashSet(result.stream().map(MimeType::toString).collect(Collectors.toSet())))
                 .extensions(CastUtils.cast(extensions));
-        context.operationBuilder()
-                .consumes(CollUtil.newHashSet("application/x-www-form-urlencoded"));
     }
 
     @Override

@@ -1,18 +1,16 @@
 package com.miya.system.module.notice;
 
-import com.miya.common.module.base.BaseEntity;
-import com.miya.common.service.mapper.DTOMapper;
+import com.miya.common.module.base.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.factory.Mappers;
 
 import java.util.Map;
 
 @Getter
 @Setter
 @ApiModel
-public class SysNoticeDTO extends BaseEntity {
+public class SysNoticeDTO extends BaseDTO {
 
     /**
      * 通知标题
@@ -48,12 +46,7 @@ public class SysNoticeDTO extends BaseEntity {
     }
 
     public static SysNoticeDTO of(SysNotice sysDict) {
-        return SysNoticeDTO.Mapper.INSTANCE.toDto(sysDict);
-    }
-
-    @org.mapstruct.Mapper
-    public interface Mapper extends DTOMapper<SysNoticeDTO, SysNotice> {
-        SysNoticeDTO.Mapper INSTANCE = Mappers.getMapper(SysNoticeDTO.Mapper.class);
+        return modelMapper.map(sysDict, SysNoticeDTO.class);
     }
 
 }

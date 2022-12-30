@@ -1,6 +1,5 @@
 package com.miya.system.module.user.model;
 
-import com.miya.common.service.mapper.DTOMapper;
 import com.miya.common.module.base.BaseDTO;
 import com.miya.system.module.department.dto.SysDepartmentSimpleDTO;
 import com.miya.system.module.oss.model.SysFile;
@@ -8,10 +7,8 @@ import com.miya.system.module.role.model.SysRoleSimpleDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
-
+import org.modelmapper.TypeMap;
+import java.util.Optional;
 import java.util.Set;
 
 @ApiModel
@@ -39,23 +36,16 @@ public class SysUserListDTO extends BaseDTO {
 
     private boolean isSuperAdmin;
 
+     static {
+         TypeMap<SysUser, SysUserListDTO> typeMap = modelMapper.typeMap(SysUser.class, SysUserListDTO.class);
+         typeMap.addMapping(user -> {
+                     return Optional.ofNullable(user.getAvatar()).map(SysFile::getUrl).orElse(null);
+                 },
+         SysUserListDTO::setAvatar);
+     }
+
     public static SysUserListDTO of(SysUser user) {
-        return Mapper.INSTANCE.toDto(user);
-    }
-
-    @org.mapstruct.Mapper
-    public interface Mapper extends DTOMapper<SysUserListDTO, SysUser> {
-        Mapper INSTANCE = Mappers.getMapper(Mapper.class);
-
-        @Mappings(
-                @Mapping(target = "avatar", expression = "java(entity.getAvatar().getUrl())")
-        )
-        @Override
-        SysUserListDTO toDto(SysUser entity);
-
-        default String map(SysFile value){
-            return value.getUrl();
-        }
+        return modelMapper.map(user, SysUserListDTO.class);
     }
 
 }
