@@ -1,12 +1,10 @@
 package com.miya.system.module.dict.model;
 
-import com.miya.common.service.mapper.DTOMapper;
 import com.miya.common.module.base.BaseDTO;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.factory.Mappers;
 
 @ApiModel
 @Getter
@@ -27,11 +25,7 @@ public class SysDictDTO extends BaseDTO {
 
 
     public static SysDictDTO of(SysDict sysDict) {
-        return Mapper.INSTANCE.toDto(sysDict);
+        return modelMapper.map(sysDict, SysDictDTO.class);
     }
 
-    @org.mapstruct.Mapper
-    public interface Mapper extends DTOMapper<SysDictDTO, SysDict> {
-        Mapper INSTANCE = Mappers.getMapper(Mapper.class);
-    }
 }

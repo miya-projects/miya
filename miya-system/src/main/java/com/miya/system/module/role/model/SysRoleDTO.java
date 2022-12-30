@@ -1,13 +1,11 @@
 package com.miya.system.module.role.model;
 
-import com.miya.common.service.mapper.DTOMapper;
-import com.miya.system.config.business.Business;
 import com.miya.common.module.base.BaseDTO;
+import com.miya.system.config.business.Business;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.factory.Mappers;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
@@ -46,11 +44,7 @@ public class SysRoleDTO extends BaseDTO {
     }
 
     public static SysRoleDTO of(SysRole sysRole) {
-        return Mapper.INSTANCE.toDto(sysRole);
+        return modelMapper.map(sysRole, SysRoleDTO.class);
     }
 
-    @org.mapstruct.Mapper
-    public interface Mapper extends DTOMapper<SysRoleDTO, SysRole> {
-        Mapper INSTANCE = Mappers.getMapper(Mapper.class);
-    }
 }

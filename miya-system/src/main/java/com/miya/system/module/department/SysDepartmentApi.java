@@ -6,7 +6,6 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseApi;
 import com.miya.system.module.department.dto.SysDepartmentDTO;
 import com.miya.system.module.department.form.SysDepartmentForm;
-import com.miya.system.module.user.SysUserRepository;
 import com.miya.system.module.user.model.SysUser;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;

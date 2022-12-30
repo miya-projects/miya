@@ -1,18 +1,17 @@
 package com.miya.system.module.download;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.miya.common.service.mapper.DTOMapper;
+import com.miya.common.module.base.BaseDTO;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.user.model.SysUser;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.factory.Mappers;
 import java.util.Date;
 import java.util.Optional;
 
 @Getter
 @Setter
-public class SysDownloadRecordDTO {
+public class SysDownloadRecordDTO extends BaseDTO {
 
     private Date createdTime;
 
@@ -41,13 +40,7 @@ public class SysDownloadRecordDTO {
     }
 
     public static SysDownloadRecordDTO of(SysDownloadRecord downloadRecord) {
-        return SysDownloadRecordDTO.Mapper.INSTANCE.toDto(downloadRecord);
+        return modelMapper.map(downloadRecord, SysDownloadRecordDTO.class);
     }
-
-    @org.mapstruct.Mapper
-    public interface Mapper extends DTOMapper<SysDownloadRecordDTO, SysDownloadRecord> {
-        SysDownloadRecordDTO.Mapper INSTANCE = Mappers.getMapper(SysDownloadRecordDTO.Mapper.class);
-    }
-
 
 }
