@@ -2,13 +2,11 @@ package com.miya.system.module.user.model;
 
 import com.miya.common.module.base.BaseDTO;
 import com.miya.system.module.department.dto.SysDepartmentSimpleDTO;
-import com.miya.system.module.oss.model.SysFile;
+import com.miya.system.module.oss.model.SysFileDTO;
 import com.miya.system.module.role.model.SysRoleSimpleDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.modelmapper.TypeMap;
-import java.util.Optional;
 import java.util.Set;
 
 @ApiModel
@@ -24,7 +22,7 @@ public class SysUserListDTO extends BaseDTO {
 
     private String phone;
 
-    private String avatar;
+    private SysFileDTO avatar;
 
     private SysUser.Sex sex;
 
@@ -35,14 +33,6 @@ public class SysUserListDTO extends BaseDTO {
     private Set<SysDepartmentSimpleDTO> departments;
 
     private boolean isSuperAdmin;
-
-     static {
-         TypeMap<SysUser, SysUserListDTO> typeMap = modelMapper.typeMap(SysUser.class, SysUserListDTO.class);
-         typeMap.addMapping(user -> {
-                     return Optional.ofNullable(user.getAvatar()).map(SysFile::getUrl).orElse(null);
-                 },
-         SysUserListDTO::setAvatar);
-     }
 
     public static SysUserListDTO of(SysUser user) {
         return modelMapper.map(user, SysUserListDTO.class);
