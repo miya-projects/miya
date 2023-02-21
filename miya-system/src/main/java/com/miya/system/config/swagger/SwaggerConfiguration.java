@@ -201,14 +201,15 @@ public class SwaggerConfiguration {
      * 全局参数
      */
     private List<Parameter> globalOperationParameters(){
-        return Collections.singletonList(new ParameterBuilder()
-                .name("Authorization")
-                .description("用户jwt token")
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .defaultValue("Bearer ")
-                .required(false)
-                .build());
+        return Collections.emptyList();
+        // return Collections.singletonList(new ParameterBuilder()
+        //         .name("Authorization")
+        //         .description("用户jwt token")
+        //         .modelRef(new ModelRef("string"))
+        //         .parameterType("header")
+        //         .defaultValue("Bearer ")
+        //         .required(false)
+        //         .build());
     }
 
     // @Bean

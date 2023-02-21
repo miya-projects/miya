@@ -195,6 +195,18 @@ public class SysUserService extends BaseService implements SystemInit {
         return R.success();
     }
 
+    /**
+     * 以他人的身份登录
+     * @param sysUser   被登录的用户
+     * @return  token
+     */
+    public LoginRes loginAs(SysUser sysUser) {
+        // token有效期 30分钟
+        DateTime expiredDate = DateUtil.offsetMinute(new Date(), 30);
+        String token = generateToken(sysUser, expiredDate, LoginWay.USERNAME_AND_PASSWORD);
+        return LoginRes.builder().token(token).expiredDate(expiredDate).build();
+    }
+
 
     /**
      * 登录接口返回的dto

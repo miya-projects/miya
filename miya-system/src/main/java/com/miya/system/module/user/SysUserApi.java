@@ -146,4 +146,14 @@ public class SysUserApi extends BaseApi {
         return R.successWithData(sysUserService.resetPassword(sysUser));
     }
 
+    /**
+     * 以他人的身份登录
+     */
+    @ApiOperation("以他人的身份登录")
+    @PutMapping("{id}/loginAs")
+    @Acl(business = "sys:user:loginAs")
+    public R<SysUserService.LoginRes> loginAs(@NotNull(message = "id不合法") @PathVariable(value = "id") SysUser sysUser) {
+        return R.successWithData(sysUserService.loginAs(sysUser));
+    }
+
 }

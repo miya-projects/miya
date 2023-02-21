@@ -124,13 +124,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({MissingServletRequestParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> missingServletRequestParameterException(HttpServletResponse response, MissingServletRequestParameterException e) {
-        return R.errorWithMsg(StrUtil.format("参数 {}，是必须的", e.getParameterName()));
+        return R.errorWithMsg(StrUtil.format("参数{}是必须的", e.getParameterName()));
     }
 
     @ExceptionHandler({MissingPathVariableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> missingPathVariableException(HttpServletResponse response, MissingPathVariableException e) {
-        return R.errorWithMsg(StrUtil.format("参数 {}，是必须的", e.getVariableName()));
+        return R.errorWithMsg(StrUtil.format("参数{}是必须的", e.getVariableName()));
     }
 
     @ExceptionHandler({MultipartException.class})
