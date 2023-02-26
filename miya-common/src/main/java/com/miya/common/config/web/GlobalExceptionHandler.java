@@ -8,6 +8,7 @@ import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.util.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -146,5 +147,14 @@ public class GlobalExceptionHandler {
         response.getWriter().write(Objects.requireNonNull(JSONUtils.toJson(r)));
         response.setContentType(ContentType.JSON.toString());
     }
+
+    /**
+     * 忽略客户端中断异常
+     * @param response
+     * @param e
+     */
+    @ExceptionHandler({ClientAbortException.class})
+    public void httpMediaTypeNotAcceptableException(HttpServletResponse response, ClientAbortException e) {}
+
 
 }
