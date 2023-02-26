@@ -80,7 +80,7 @@ public class KeyValueStoreInDb implements KeyValueStore {
             throw new RuntimeException("value不可为空");
         }
         Iterable<SysCache> all = cacheRepository.findAll(QSysCache.sysCache.sKey.eq(key));
-        cacheRepository.deleteAll(all);
+        cacheRepository.deleteAllInBatch(all);
         //设置时统一json化
         SysCache sysCache = new SysCache(key, JSONUtil.toJsonStr(value), expirationDate);
         cacheRepository.save(sysCache);

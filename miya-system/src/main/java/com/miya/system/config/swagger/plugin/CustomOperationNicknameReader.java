@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -16,11 +18,17 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 @Order
 @Slf4j
 public class CustomOperationNicknameReader implements OperationBuilderPlugin {
+
+    Pattern pattern = Pattern.compile("^(.+)(?:Api|Controller)$");
+
     @Override
     public void apply(OperationContext context) {
         // 重命名tag
         String name = StrUtil.toCamelCase(context.getGroupName().replaceAll("-", "_"));
-        name = name.substring(0, name.lastIndexOf("Api"));
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.matches()) {
+            name = name.substring(0, name.lastIndexOf("Api"));
+        }
 
         // 重命名operateId
         String operationNameStem = transformName(name + StrUtil.upperFirst(context.getName()));

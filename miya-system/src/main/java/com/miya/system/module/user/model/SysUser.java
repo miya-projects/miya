@@ -61,17 +61,17 @@ public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
     @Column(columnDefinition = "enum('MALE', 'FEMALE')")
     private Sex sex;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "department_id")}, name = "sys_user_department")
     private Set<SysDepartment> departments;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "role_id")}, name = "sys_user_role")
     private Set<SysRole> roles;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
     @NotFound(action = NotFoundAction.IGNORE)
     private SysFile avatar;
