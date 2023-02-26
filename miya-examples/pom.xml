@@ -129,6 +129,9 @@
                         <labels>
                             <app>miya-examples</app>
                         </labels>
+                        <environment>
+                            <TZ>Asia/Shanghai</TZ>
+                        </environment>
                         <format>OCI</format>
                     </container>
                 </configuration>

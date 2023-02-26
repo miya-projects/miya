@@ -241,6 +241,9 @@
                             <app>${project.name}</app>
                         </labels>
                         <format>OCI</format>
+                        <environment>
+                            <TZ>Asia/Shanghai</TZ>
+                        </environment>
                     </container>
                 </configuration>
             </plugin>
