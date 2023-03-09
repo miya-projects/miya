@@ -1,8 +1,11 @@
 package com.miya.common.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.PropDesc;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miya.common.config.web.jwt.JwtPayload;
@@ -20,20 +23,24 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.Hibernate;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.data.repository.support.DefaultRepositoryInvokerFactory;
+import org.springframework.data.repository.support.Repositories;
+import org.springframework.data.repository.support.RepositoryInvoker;
 import org.springframework.security.authentication.BadCredentialsException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author 杨超辉
  */
 @Slf4j
-public class JwtTokenService implements Serializable, SystemInit, TokenService {
+public class JwtTokenService implements Serializable, SystemInit, TokenService, ApplicationContextAware {
     private static final long serialVersionUID = -3301605591108950415L;
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_ID = "id";
@@ -49,7 +56,6 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
 
     private final SysConfigService configService;
     private final KeyValueStore keyValueStore;
-    private final EntityManager entityManager;
 
 
 
@@ -62,10 +68,9 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
         this.secret = secStr.getBytes();
     }
 
-    public JwtTokenService(SysConfigService configService, KeyValueStore keyValueStore, EntityManager entityManager){
+    public JwtTokenService(SysConfigService configService, KeyValueStore keyValueStore){
         this.configService = configService;
         this.keyValueStore = keyValueStore;
-        this.entityManager = entityManager;
         String sec = configService.get(JWT_SECRET_KEY).orElseGet(() -> {
             log.info("未设置JWT密钥，生成一个");
             String secStr = RandomUtil.randomString(18);
@@ -194,16 +199,30 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
     }
 
 
+    Repositories repositories;
+    DefaultRepositoryInvokerFactory defaultRepositoryInvokerFactory;
 
     /**
      * 根据jwtPayload获取用户对象
      * @param jwtPayload
      */
-    private Object getUserByJwtPayload(JwtPayload jwtPayload){
-        String jpql = "from " + jwtPayload.getUserClass().getName() + " where id = :id";
-        Query query = entityManager.createQuery(jpql);
-        query.setParameter("id", jwtPayload.getUserId());
-        return query.getSingleResult();
+    @Transactional
+    public Object getUserByJwtPayload(JwtPayload jwtPayload) {
+        RepositoryInvoker invokerFor = defaultRepositoryInvokerFactory.getInvokerFor(jwtPayload.getUserClass());
+        Optional<Object> userOptional = invokerFor.invokeFindById(jwtPayload.getUserId());
+        Object user = userOptional.orElse(null);
+        if (user != null) {
+            // 这里把懒加载的属性初始化一下，注入后可以直接使用，偷懒的做法，还有一种办法是不在service以外的地方使用PO，进行一次对象转换
+            Collection<PropDesc> props = BeanUtil.getBeanDesc(user.getClass()).getProps();
+            for (PropDesc prop : props) {
+                Class<?> type = prop.getField().getType();
+                if (type.isAssignableFrom(Set.class) || type.isAssignableFrom(Collection.class)) {
+                    Set set = ReflectUtil.invoke(user,  prop.getGetter());
+                    Hibernate.initialize(set);
+                }
+            }
+        }
+        return user;
     }
 
     @Override
@@ -212,13 +231,13 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
         if (Objects.isNull(keyValueStore.get(getKey(payload)))){
             throw new BadCredentialsException("token不合法哦");
         }
-        return getUserByJwtPayload(payload);
+        return SpringUtil.getBean(JwtTokenService.class).getUserByJwtPayload(payload);
     }
 
     @Override
     public String reFlushToken(String token, Date expirationDate) throws TokenExpirationException {
         JwtPayload jwtPayload = getPayload(token);
-        Object user = getUserByJwtPayload(getPayload(token));
+        Object user = SpringUtil.getBean(JwtTokenService.class).getUserByJwtPayload(getPayload(token));
         if(Objects.isNull(user)){
             throw new TokenExpirationException(token);
         }
@@ -248,6 +267,12 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService {
         //        return StrUtil.format("{}-{}", jwtPayload.getUserId(), jwtPayload.getLoginTime().getTime());
         return CacheKey.of(() -> "token:", key);
 
+    }
+
+    @Override
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        repositories = new Repositories(applicationContext);
+        defaultRepositoryInvokerFactory = new DefaultRepositoryInvokerFactory(repositories, DefaultConversionService.getSharedInstance());
     }
 }
 

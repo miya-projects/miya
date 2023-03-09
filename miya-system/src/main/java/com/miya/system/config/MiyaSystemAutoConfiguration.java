@@ -13,9 +13,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +46,6 @@ public class MiyaSystemAutoConfiguration {
         return new KeyValueStoreInDb(cacheRepository);
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     /**
      * todo 注入了多个KeyValueStore应该如何选择？
      *
@@ -59,7 +53,7 @@ public class MiyaSystemAutoConfiguration {
      */
     @Bean
     public JwtTokenService tokenStore(SysConfigService configService, KeyValueStore keyValueStore) {
-        return new JwtTokenService(configService, keyValueStore, entityManager);
+        return new JwtTokenService(configService, keyValueStore);
     }
 
     // @Bean

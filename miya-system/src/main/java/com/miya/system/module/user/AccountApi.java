@@ -3,6 +3,7 @@ package com.miya.system.module.user;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.annotation.Acl;
 import com.miya.common.annotation.RequestLimit;
 import com.miya.common.model.dto.base.R;
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -93,7 +95,6 @@ public class AccountApi {
         //        SysUserForm sysUserForm = qf.select(
         //                Projections.bean(SysUserForm.class, qSysUser)
         //        ).from(qSysUser).where(qSysUser.id.eq(sysUser.getId())).fetchOne();
-
         return R.successWithData(MapUtil.<String, Object>of(
                 Pair.of("user", SysUserDetailDTO.of(sysUser)),
                 Pair.of("systemMeta", sysConfigService.getSystemMeta()),

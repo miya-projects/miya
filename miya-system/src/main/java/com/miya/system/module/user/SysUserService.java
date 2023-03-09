@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.auth.way.GeneralAuthentication;
 import com.miya.common.auth.way.LoginDevice;
 import com.miya.common.auth.way.LoginWay;
@@ -92,7 +93,7 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param userForm
      */
     public R<?> save(SysUserForm userForm) {
-        return saveBySocial(userForm, CastUtils.cast(Collections.EMPTY_LIST));
+        return SpringUtil.getBean(SysUserService.class).saveBySocial(userForm, CastUtils.cast(Collections.EMPTY_LIST));
     }
 
     /**

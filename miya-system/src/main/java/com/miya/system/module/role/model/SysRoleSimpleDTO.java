@@ -1,6 +1,6 @@
 package com.miya.system.module.role.model;
 
-import com.miya.common.module.base.BaseDTO;
+import com.miya.common.module.base.Convertable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -9,7 +9,9 @@ import lombok.Setter;
 @ApiModel
 @Getter
 @Setter
-public class SysRoleSimpleDTO extends BaseDTO {
+public class SysRoleSimpleDTO extends Convertable {
+
+    private String id;
 
     @ApiModelProperty("角色名")
     private String name;
