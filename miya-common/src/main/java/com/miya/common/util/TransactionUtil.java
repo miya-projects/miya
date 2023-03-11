@@ -1,13 +1,67 @@
 package com.miya.common.util;
 
+import cn.hutool.extra.spring.SpringUtil;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 /**
  * 事务相关工具类
  */
-public class TransactionUtil {
+@Component
+public class TransactionUtil implements SmartInitializingSingleton {
 
+    /**
+     * 类自身实例
+     */
+    public static TransactionUtil INSTANCE;
+
+    // @Autowired
+    // public void setSelf(TransactionUtil self) {
+    //     INSTANCE = self;
+    // }
+
+
+    // public TransactionUtil() {
+    //     if (INSTANCE != null) {
+    //         throw new IllegalStateException(this.getClass().toString() + "是单例，不可实例化多次");
+    //     }
+    //     INSTANCE = this;
+    // }
+
+    /**
+     * 利用spring 机制和jdk8的Consumer机制实现只消费的事务
+     */
+    @Transactional(propagation = REQUIRES_NEW, rollbackFor = Exception.class) //可以根据实际业务情况，指定明确的回滚异常
+    public void transactional(Runnable runnable) {
+
+        runnable.run();
+    }
+
+    /**
+     * 利用spring 机制和jdk8的Consumer机制实现只消费的事务
+     */
+    @Transactional(propagation = REQUIRES_NEW, rollbackFor = Exception.class) //可以根据实际业务情况，指定明确的回滚异常
+    public <T> void transactional(Consumer<T> consumer, T t) {
+        consumer.accept(t);
+    }
+
+    @Transactional(propagation = REQUIRES_NEW, rollbackFor = Exception.class) //可以根据实际业务情况，指定明确的回滚异常
+    public <T, R> R transactional(Function<T, R> function, T t) {
+        return function.apply(t);
+    }
+
+    @Transactional(propagation = REQUIRES_NEW, rollbackFor = Exception.class)
+    public <R> R transactional(Supplier<R> function) {
+        return function.get();
+    }
 
     /**
      * TODO 待测试
@@ -43,5 +97,9 @@ public class TransactionUtil {
         }
     }
 
+    @Override
+    public void afterSingletonsInstantiated() {
+        INSTANCE = SpringUtil.getBean(TransactionUtil.class);
+    }
 }
 

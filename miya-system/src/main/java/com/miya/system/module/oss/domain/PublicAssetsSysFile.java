@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 @Slf4j
 public class PublicAssetsSysFile extends SysFile {
 
-    private Supplier<Optional<String>> backendDomainSupplier;
+    private Supplier<String> backendDomainSupplier;
     public PublicAssetsSysFile(String path){
         this(path, FileUtil.mainName(path));
     }
@@ -34,7 +34,7 @@ public class PublicAssetsSysFile extends SysFile {
         if (backendDomainSupplier == null){
             backendDomainSupplier = SpringUtil.getBean(SysConfigService.class).getSupplier(SysConfigService.SystemConfigKey.BACKEND_DOMAIN);
         }
-        String backendDomain = backendDomainSupplier.get().orElse("");
+        String backendDomain = backendDomainSupplier.get();
         try {
             return new URL(new URL(backendDomain), getPath()).toString();
         } catch (MalformedURLException e) {

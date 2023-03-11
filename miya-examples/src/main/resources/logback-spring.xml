@@ -34,7 +34,8 @@
     <logger name="org.apache" level="warn"/>
 <!--    <logger name="org.mybatis" level="INFO"/>-->
 <!--    输出hibernate sql参数-->
-<!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />-->
+    <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />-->
+<!--    <logger name="org.hibernate.SQL"  level="DEBUG" />-->
 <!--    swagger-->
     <logger name="springfox.documentation.spring.web" level="warn" />
     <logger name="com.miya.common.config.web.RepeatableRequestMappingHandlerMapping" level="info" />
@@ -48,8 +49,31 @@
     </appender>
 
     <springProfile name="!prod">
+<!--        <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--                <FileNamePattern>D:/logs/%d{yyyy-MM, aux}/error-%d{yyyy-MM-dd}.log</FileNamePattern>-->
+<!--                &lt;!&ndash; 保留10天日志 &ndash;&gt;-->
+<!--                <maxHistory>10</maxHistory>-->
+<!--                &lt;!&ndash;日志文件大小上限&ndash;&gt;-->
+<!--                <totalSizeCap>1GB</totalSizeCap>-->
+<!--            </rollingPolicy>-->
+<!--            <encoder>-->
+<!--                <pattern>${FILE_LOG_PATTERN}</pattern>-->
+<!--            </encoder>-->
+<!--            &lt;!&ndash;        临界值过滤器，过滤掉低于指定临界值的日志&ndash;&gt;-->
+<!--            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--                <level>error</level>-->
+<!--            </filter>-->
+<!--            <filter class="ch.qos.logback.classic.filter.LevelFilter">&ndash;&gt;-->
+<!--                <level>error</level>-->
+<!--                <onMatch>ACCEPT</onMatch>-->
+<!--                <onMismatch>DENY</onMismatch>-->
+<!--            </filter>-->
+<!--        </appender>-->
+
         <root level="info">
             <appender-ref ref="console"/>
+<!--            <appender-ref ref="file"/>-->
         </root>
     </springProfile>
 

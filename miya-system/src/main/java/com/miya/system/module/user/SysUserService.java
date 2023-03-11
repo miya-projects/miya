@@ -6,6 +6,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.http.ContentType;
+import cn.hutool.json.JSONUtil;
 import com.miya.common.auth.way.GeneralAuthentication;
 import com.miya.common.auth.way.LoginDevice;
 import com.miya.common.auth.way.LoginWay;
@@ -17,13 +19,16 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.common.module.base.BaseService;
 import com.miya.common.module.cache.KeyValueStore;
+import com.miya.common.module.config.SysConfigService;
 import com.miya.common.module.init.SystemInit;
 import com.miya.common.module.init.SystemInitErrorException;
 import com.miya.common.module.sms.CacheKeys;
 import com.miya.common.service.JwtTokenService;
+import com.miya.common.util.TransactionUtil;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.business.Business;
 import com.miya.system.module.download.DownloadService;
+import com.miya.system.module.download.SimpleDownloadTask;
 import com.miya.system.module.user.event.UserLoginEvent;
 import com.miya.system.module.user.event.UserModifyEvent;
 import com.miya.system.module.user.model.*;
@@ -36,16 +41,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.springframework.data.util.CastUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -55,7 +60,6 @@ import java.util.stream.Collectors;
  * 用户服务
  */
 @Slf4j
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class SysUserService extends BaseService implements SystemInit {
@@ -68,6 +72,7 @@ public class SysUserService extends BaseService implements SystemInit {
     private final JwtTokenService jwtTokenService;
     private final MiyaSystemUserConfig customizer;
     private final DownloadService downloadService;
+    private final SysConfigService configService;
 
     private static final QSysUser qSysUser = QSysUser.sysUser;
 
@@ -375,6 +380,9 @@ public class SysUserService extends BaseService implements SystemInit {
     @Override
     public void init() throws SystemInitErrorException {
         // 超管帐号
+        if (sysUserRepository.existsById("1")) {
+            return;
+        }
         SysUserForm form = new SysUserForm();
         form.setName("Admin");
         form.setUsername("admin");
@@ -390,17 +398,37 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param predicate 筛选条件
      * @param response http响应
      */
-    public void export(Predicate predicate, HttpServletResponse response) throws IOException {
-        URL resource = ResourceUtil.getResource("excel-export-template/user.xlsx");
-        String fileName = "用户导出.xlsx";
-        Iterable<SysUser> users = sysUserRepository.findAll(predicate);
-        ArrayList<SysUser> userList = ListUtil.toList(users);
-        Context context = new Context();
-        context.putVar("items", userList);
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
-        response.setContentType("application/octet-stream");
-        JxlsHelper.getInstance().processTemplate(resource.openStream(), response.getOutputStream(), context);
-        downloadService.generateTask("后台用户数据", fileName);
+    public void export(Predicate predicate, HttpServletResponse response, SysUser user) {
+        SimpleDownloadTask downloadTask = new SimpleDownloadTask("后台用户数据", "用户.xlsx", user, () -> {
+            URL resource = ResourceUtil.getResource("excel-export-template/user.xlsx");
+            List<SysUserForExport> userList = SpringUtil.getBean(TransactionUtil.class).transactional(() -> {
+                Iterable<SysUser> users = sysUserRepository.findAll(predicate);
+                return ListUtil.toList(users).stream().map(SysUserForExport::of).collect(Collectors.toList());
+            });
+            Context context = new Context();
+            context.putVar("items", userList);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            try {
+                JxlsHelper.getInstance().processTemplate(resource.openStream(), stream, context);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return new ByteArrayInputStream(stream.toByteArray());
+        });
+        String exportWay = configService.get(SysConfigService.SystemConfigKey.EXPORT_WAY);
+        if (exportWay.equalsIgnoreCase("async")){
+            downloadService.executeAsync(downloadTask);
+            response.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.toString());
+            try {
+                response.getWriter().write(JSONUtil.toJsonStr(R.success()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else if (exportWay.equalsIgnoreCase("sync")) {
+            downloadService.execute(downloadTask);
+        } else {
+          throw new ErrorMsgException("未正确配置导出方式，请先配置EXPORT_WAY后再进行导出");
+        }
     }
 
 }

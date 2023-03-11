@@ -1,5 +1,7 @@
 package com.miya.system.module.download;
 
+import com.miya.system.module.user.model.SysUser;
+
 import java.io.InputStream;
 import java.util.function.Supplier;
 
@@ -18,4 +20,8 @@ public interface DownloadTask extends Supplier<InputStream> {
      */
     String getFileName();
 
+    /**
+     * 导出用户
+     */
+    SysUser getUser();
 }

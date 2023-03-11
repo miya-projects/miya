@@ -3,7 +3,6 @@ package com.miya.system.module.user;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.annotation.Acl;
 import com.miya.common.annotation.RequestLimit;
 import com.miya.common.model.dto.base.R;
@@ -110,7 +109,6 @@ public class AccountApi {
         return R.success();
     }
 
-    @Acl
     @PutMapping(value = "password")
     @ApiOperation("当前用户使用旧密码修改密码")
     public R<?> modifyPassword(@ApiParam("旧密码") @NotBlank(message = "旧密码不能为空") String password,
@@ -120,7 +118,6 @@ public class AccountApi {
         return R.success();
     }
 
-    @Acl
     @PutMapping
     @ApiOperation(value = "个人信息修改", notes = "修改当前用户的信息")
     public R<?> update(@Validated SysUserModifyForm userModifyForm,

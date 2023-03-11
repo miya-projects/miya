@@ -11,10 +11,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
@@ -37,19 +38,24 @@ import java.util.function.Supplier;
 public class SysConfigService implements SystemInit {
 
     private final SysConfigRepository configRepository;
-
-    @Value("${server.port}")
-    private int port;
+    private final ConversionService conversionService = DefaultConversionService.getSharedInstance();
 
     @Override
     public void init() throws SystemInitErrorException {
-        Optional<String> isInitialize = get(SystemConfigKey.IS_INITIALIZE);
-        if (!isInitialize.isPresent()) {
+        Boolean isInitialize = get(SystemConfigKey.IS_INITIALIZE);
+        if (!isInitialize) {
             // 还未初始化，进行初始化
-            put(SystemConfigKey.SYSTEM_NAME.name(), "MIYA", SystemConfigKey.SYSTEM_NAME.name, "SYSTEM");
-            put(SystemConfigKey.SYSTEM_VERSION.name(), "1.0", SystemConfigKey.SYSTEM_VERSION.name, "SYSTEM");
-            put(SystemConfigKey.BACKEND_DOMAIN.name(), "http://localhost:8080", SystemConfigKey.BACKEND_DOMAIN.name, "SYSTEM");
-            put(SystemConfigKey.OSS_DOMAIN.name(), "", SystemConfigKey.OSS_DOMAIN.name, "SYSTEM");
+            for (SystemConfigKey configKey : SystemConfigKey.values()) {
+                put(configKey.name(), configKey.defaultValue, configKey.name, "SYSTEM");
+            }
+        } else {
+            // 增量更新
+            for (SystemConfigKey configKey : SystemConfigKey.values()) {
+                Optional<String> valueOptional = get(configKey.name());
+                if (!valueOptional.isPresent()) {
+                    put(configKey.name(), configKey.defaultValue, configKey.name, "SYSTEM");
+                }
+            }
         }
     }
 
@@ -70,13 +76,24 @@ public class SysConfigService implements SystemInit {
     @AllArgsConstructor
     @Getter
     public enum SystemConfigKey implements Serializable {
-        IS_INITIALIZE("是否初始化完毕"),
-        SYSTEM_NAME("系统名称"),
-        SYSTEM_VERSION("系统版本"),
-        BACKEND_DOMAIN("后端域名(让后端知道怎么可以访问到自己)"),
-        OSS_DOMAIN("OSS域名，设置后文件访问将直接使用该域名，需自行配置OSS后端");
+        IS_INITIALIZE("是否初始化完毕", Boolean.class, "false"),
+        SYSTEM_NAME("系统名称", String.class, "MIYA"),
+        SYSTEM_VERSION("系统版本", String.class, "0.0.1"),
+        BACKEND_DOMAIN("后端域名(让后端知道怎么可以访问到自己)", String.class, "http://localhost:8080"),
+        OSS_DOMAIN("OSS域名，设置后文件访问将直接使用该域名，需自行配置OSS后端", String.class, ""),
+        EXPORT_WAY("文件导出方式，async(异步)sync(同步), 默认同步", String.class, "sync"),
+        ;
 
         private final String name;
+
+        /**
+         * 值的类型
+         */
+        private final Class valueType;
+        /**
+         * 默认值
+         */
+        private final String defaultValue;
 
         public Object getValue() {
             SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
@@ -106,49 +123,27 @@ public class SysConfigService implements SystemInit {
     public static class SystemMeta {
         private final String systemName;
         private final String version;
+        private final String exportWay;
     }
 
     /**
      * 获取系统元信息
      */
     public SystemMeta getSystemMeta() {
-        return new SystemMeta(getSystemName(), get("SYSTEM_VERSION").orElse("0.0.1"));
-    }
-
-    /**
-     * 获取系统名称
-     */
-    public String getSystemName() {
-        return get(SystemConfigKey.SYSTEM_NAME).orElse("MiYa");
-    }
-
-    /**
-     * 获取后端可访问前缀
-     * eg: https://www.website.com/sdf
-     */
-    public String getBackendDomain() {
-        return get(SystemConfigKey.BACKEND_DOMAIN).orElse(getDefaultDomain());
-    }
-
-    /**
-     * 获取默认后端域名
-     */
-    private String getDefaultDomain() {
-        return "http://localhost:" + this.port;
+        return new SystemMeta(get(SystemConfigKey.SYSTEM_NAME), get(SystemConfigKey.SYSTEM_VERSION), get(SystemConfigKey.EXPORT_WAY));
     }
 
     /**
      * 返回supplier包装过的参数，推荐使用，每次get都会重新加载参数(缓存或DB)。且低依赖(不用依赖于整个configService)。
      * @param key
      */
-    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
-    public Supplier<Optional<String>> getSupplier(SystemConfigKey key) {
-        return () -> SpringUtil.getBean(SysConfigService.class).get(key.name());
+    public <T> Supplier<T> getSupplier(SystemConfigKey key) {
+        return () -> SpringUtil.getBean(SysConfigService.class).get(key);
     }
 
-    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
-    public Optional<String> get(SystemConfigKey key) {
-        return get(key.name());
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key.name()")
+    public <T> T get(SystemConfigKey key) {
+        return (T)get(key.name(), key.getValueType()).orElse(key.defaultValue);
     }
 
     /**
@@ -160,6 +155,17 @@ public class SysConfigService implements SystemInit {
     public Optional<String> get(String key) {
         Optional<SysConfig> config = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
         return config.map(SysConfig::getVal);
+    }
+
+    /**
+     * 获取配置项
+     * @param key
+     */
+    @ManagedOperation
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
+    public <T> Optional<T> get(String key, Class<T> valueType) {
+        Optional<SysConfig> config = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
+        return config.map(SysConfig::getVal).map(value -> conversionService.convert(value, valueType));
     }
 
     /**
@@ -204,7 +210,7 @@ public class SysConfigService implements SystemInit {
     @PostConstruct
     public void afterPropertiesSet() {
         if (!get(SystemConfigKey.BACKEND_DOMAIN.name()).isPresent()) {
-            log.warn("未配置后端访问域名，将使用默认值{}", getDefaultDomain());
+            log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKey.BACKEND_DOMAIN.defaultValue);
         }
     }
 }

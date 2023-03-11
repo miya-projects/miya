@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.CastUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -95,33 +95,14 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
     }
 
     @GetMapping("users")
-    @ApiOperation(value = "查询所有用户")
-    public R<List<DropDownItemDTO>> users(@ApiParam("搜索用户名") String key) {
+    @ApiOperation(value = "查询用户", notes = "最多返回10个")
+    public R<List<DropDownItemDTO>> users(@ApiParam("搜索用户名") String key, @ApiParam("角色") SysDefaultRoles role) {
         BooleanBuilder bb = new BooleanBuilder();
-        Optional.ofNullable(key).ifPresent(k -> bb.and(QSysUser.sysUser.name.contains(key)));
-        Iterable<SysUser> all = sysUserRepository.findAll(bb);
-        List<DropDownItemDTO> result = StreamSupport.stream(all.spliterator(), false).map(user -> {
-            DropDownItemDTO dropDownItem = new DropDownItemDTO();
-            dropDownItem.setLabel(user.getName());
-            dropDownItem.setValue(user.getId());
-            return dropDownItem;
-        }).collect(Collectors.toList());
-        return R.successWithData(result);
-    }
-
-    @GetMapping("usersForRole")
-    @ApiOperation(value = "查询指定角色的用户")
-    public R<List<DropDownItemDTO>> usersForRole(@ApiParam("搜索用户名") String key, @NotBlank String role) {
-        SysDefaultRoles sysDefaultRoles;
-        try {
-            sysDefaultRoles = SysDefaultRoles.valueOf(role);
-        }catch (IllegalArgumentException e){
-            return R.errorWithMsg("角色不存在");
+        if (role != null){
+            bb.and(QSysUser.sysUser.roles.contains(role.getSysRole()));
         }
-        BooleanBuilder bb = new BooleanBuilder();
         Optional.ofNullable(key).ifPresent(k -> bb.and(QSysUser.sysUser.name.contains(key)));
-        bb.and(QSysUser.sysUser.roles.contains(sysDefaultRoles.getSysRole()));
-        Iterable<SysUser> all = sysUserRepository.findAll(bb);
+        Iterable<SysUser> all = sysUserRepository.findAll(bb, PageRequest.of(0, 10));
         List<DropDownItemDTO> result = StreamSupport.stream(all.spliterator(), false).map(user -> {
             DropDownItemDTO dropDownItem = new DropDownItemDTO();
             dropDownItem.setLabel(user.getName());

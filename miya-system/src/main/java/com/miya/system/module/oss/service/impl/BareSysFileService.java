@@ -2,6 +2,7 @@ package com.miya.system.module.oss.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
@@ -12,7 +13,6 @@ import com.miya.system.module.oss.service.SysFileService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,14 +40,14 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
     /**
      * 访问到系统的域名， eg: http://localhost:8080/
      */
-    private final Supplier<Optional<String>> backendDomain;
+    private final Supplier<String> backendDomain;
 
     /**
      * 文件存储的服务器目录，绝对路径
      */
     private final String uploadAbsolutePath;
 
-    public BareSysFileService(SysFileRepository sysFileRepository, OssConfigProperties.Bare bare, Supplier<Optional<String>> backendDomain) {
+    public BareSysFileService(SysFileRepository sysFileRepository, OssConfigProperties.Bare bare, Supplier<String> backendDomain) {
         this.sysFileRepository = sysFileRepository;
         this.bare = bare;
         this.backendDomain = backendDomain;
@@ -125,13 +125,7 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
                 InputStream i = inputStream;
                 FileOutputStream fileOutputStream = new FileOutputStream(destFile)
         ) {
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(i);
-            byte[] buf = new byte[1024];
-            int length;
-            while ((length = bufferedInputStream.read(buf, 0, 1024)) != -1) {
-                fileOutputStream.write(buf, 0, length);
-                size += length;
-            }
+            size = IoUtil.copy(i, fileOutputStream);
         }
         sysFile.setSize(size);
         sysFile.setSimpleSize(FileUtil.readableFileSize(size));
@@ -156,18 +150,18 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
     @Override
     public String getUrl(SysFile sysFile) {
         try {
-            String url = URLUtil.completeUrl(URLUtil.completeUrl(backendDomain.get().orElse(""), "upload/"), FileUtil.subPath(uploadAbsolutePath, sysFile.getPath()));
+            String url = URLUtil.completeUrl(URLUtil.completeUrl(backendDomain.get(), "upload/"), FileUtil.subPath(uploadAbsolutePath, sysFile.getPath()));
             return new URL(url).toString();
         } catch (MalformedURLException e) {
             log.error(ExceptionUtils.getStackTrace(e));
-            return backendDomain.get().orElse("");
+            return backendDomain.get();
         }
     }
 
     @Override
     @SneakyThrows(IOException.class)
     public InputStream openStream(SysFile sysFile) {
-        return Files.newInputStream(Paths.get(sysFile.getPath()));
+        return Files.newInputStream(Paths.get(uploadAbsolutePath, sysFile.getPath()));
     }
 
     @Override

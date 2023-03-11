@@ -2,12 +2,14 @@ package com.miya.system.module.download;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.ExecutorBuilder;
+import com.miya.common.util.TransactionUtil;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
 import com.miya.system.module.user.model.SysUser;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -64,7 +68,8 @@ public class DownloadService {
      * 同步运行一个导出下载任务 顺便记录日志
      * @param task
      */
-    public void execute(DownloadTask task) throws IOException {
+    @SneakyThrows(IOException.class)
+    public void execute(DownloadTask task) {
         ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             throw new IllegalStateException("不可在非web环境中运行同步下载任务");
@@ -73,34 +78,61 @@ public class DownloadService {
         if (response == null){
             throw new IllegalStateException("当前线程请求已失去");
         }
-        ServletOutputStream outputStream = response.getOutputStream();
-        InputStream inputStream = task.get();
-
-        // todo 下载
-        // response.setContentType("");
-
-
-        IoUtil.copy(inputStream, outputStream);
-        outputStream.close();
-        inputStream.close();
+        final SysDownloadRecord record = TransactionUtil.INSTANCE.transactional(() -> newDownloadRecord(task));
+        downloadRecordRepository.save(record);
+        log.info("[{}]开始导出", task.getName());
+        SysFile file = fileService.upload(task.getFileName(), task.get());
+        TransactionUtil.INSTANCE.transactional(() -> {
+            record.setFile(file);
+            record.setStatus(SysDownloadRecord.Status.COMPLETED);
+            record.setCompletedTime(new Date());
+            downloadRecordRepository.save(record);
+        });
+        log.info("[{}]导出完毕", task.getName());
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(task.getFileName(), "utf-8"));
+        response.setContentType("application/octet-stream");
+        IoUtil.copy(fileService.openStream(file), response.getOutputStream());
     }
 
     /**
      * 异步运行一个导出下载任务
      * @param task
      */
-    public void executeAsync(DownloadTask task){
-        SysDownloadRecord record = new SysDownloadRecord();
-        record.setName(task.getName());
-        record.setFileName(task.getFileName());
-
-        CompletableFuture<InputStream> future = CompletableFuture.supplyAsync(task, poolExecutor);
+    public void executeAsync(DownloadTask task) {
+        // 保存po必须单独一个事务，以便在下面异步执行更新前提交事务
+        final SysDownloadRecord record = TransactionUtil.INSTANCE.transactional(() -> newDownloadRecord(task));
+        log.info("[{}]开始导出", task.getName());
+        CompletableFuture<InputStream> future = CompletableFuture.supplyAsync(() -> {
+            record.setStatus(SysDownloadRecord.Status.PROCESSING);
+            downloadRecordRepository.save(record);
+            return task.get();
+        }, poolExecutor);
         future.thenAccept(stream -> {
             SysFile file = fileService.upload(task.getFileName(), stream);
             record.setFile(file);
             record.setStatus(SysDownloadRecord.Status.COMPLETED);
+            record.setCompletedTime(new Date());
             downloadRecordRepository.save(record);
+            log.info("[{}]导出完毕", task.getName());
+        }).exceptionally(e -> {
+            log.error("[{}]导出失败",task.getName(), e);
+            record.setStatus(SysDownloadRecord.Status.FAILED);
+            downloadRecordRepository.save(record);
+            return null;
         });
+    }
+
+    /**
+     * 创建新的下载记录
+     * @param task
+     */
+    public SysDownloadRecord newDownloadRecord(DownloadTask task) {
+        SysDownloadRecord record = new SysDownloadRecord();
+        record.setName(task.getName());
+        record.setFileName(task.getFileName());
+        record.setUser(task.getUser());
+        record = downloadRecordRepository.save(record);
+        return record;
     }
 
 

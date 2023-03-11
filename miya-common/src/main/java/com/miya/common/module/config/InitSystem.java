@@ -29,8 +29,8 @@ public class InitSystem {
     public void init(){
         String ddlauto = jr.getProperties().get(AvailableSettings.HBM2DDL_AUTO);
         if (ddl.contains(ddlauto)){
-            Optional<String> isInitialize = sysConfigService.get(SysConfigService.SystemConfigKey.IS_INITIALIZE);
-            if (!isInitialize.isPresent()) {
+            Boolean isInitialize = sysConfigService.get(SysConfigService.SystemConfigKey.IS_INITIALIZE);
+            if (!isInitialize) {
                 log.info("正在初始化系统...");
                 // 系统还未初始化，需要初始化
                 for (SystemInit systemInit : systemInits) {

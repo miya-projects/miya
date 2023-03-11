@@ -21,8 +21,8 @@ import java.util.Date;
 public class SysDownloadRecord extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "enum('PROCESSING', 'COMPLETED', 'DOWNLOAD')")
-    private Status status = Status.PROCESSING;
+    @Column(name = "status", columnDefinition = "enum('WAITING', 'PROCESSING', 'COMPLETED', 'DOWNLOAD', 'FAILED')")
+    private Status status = Status.WAITING;
 
     /**
      * 下载内容
@@ -32,6 +32,9 @@ public class SysDownloadRecord extends BaseEntity {
 
     @Column(name = "download_time")
     private Date downloadTime;
+
+    @Column(name = "completed_time")
+    private Date completedTime;
 
     @Column(name = "file_name", length = 100)
     private String fileName;
@@ -56,9 +59,12 @@ public class SysDownloadRecord extends BaseEntity {
     @Getter
     @RequiredArgsConstructor
     public enum Status implements ReadableEnum {
+
+        WAITING("等待中"),
         PROCESSING("处理中"),
-        COMPLETED("处理完成，待下载"),
-        DOWNLOAD("已下载");
+        COMPLETED("待下载"),
+        DOWNLOAD("已下载"),
+        FAILED("处理失败");
         private final String name;
     }
 

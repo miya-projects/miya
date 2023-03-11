@@ -11,4 +11,8 @@ import lombok.Setter;
 public class SysDepartmentSimpleDTO extends BaseDTO {
     private String name;
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

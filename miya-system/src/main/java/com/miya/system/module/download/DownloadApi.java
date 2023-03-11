@@ -17,7 +17,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 
 @Slf4j
 @RestController
@@ -52,22 +51,6 @@ public class DownloadApi {
     @ApiOperation("创建一个下载(测试)")
     @PostMapping
     public R<?> createDownload(){
-        DownloadTask downloadTask = new DownloadTask() {
-            @Override
-            public InputStream get() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-
-            @Override
-            public String getFileName() {
-                return null;
-            }
-        };
         // downloadService.execute(downloadTask);
         return R.success();
     }

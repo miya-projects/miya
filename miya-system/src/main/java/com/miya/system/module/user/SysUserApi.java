@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
@@ -78,8 +79,9 @@ public class SysUserApi extends BaseApi {
     @GetMapping("export")
     @Acl(business = "sys:user:download")
     public void export(
+            @AuthenticationPrincipal SysUser user,
             @QuerydslPredicate(root = SysUser.class) Predicate predicate, HttpServletResponse response) throws IOException {
-        sysUserService.export(predicate, response);
+        sysUserService.export(predicate, response, user);
     }
 
     @PostMapping

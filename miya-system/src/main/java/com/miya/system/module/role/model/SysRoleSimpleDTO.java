@@ -20,4 +20,8 @@ public class SysRoleSimpleDTO extends Convertable {
         return modelMapper.map(sysRole, SysRoleSimpleDTO.class);
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

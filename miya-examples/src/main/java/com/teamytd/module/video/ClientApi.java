@@ -37,20 +37,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class ClientApi {
 
-    public void df(){
-        DownloadTask task = new SimpleDownloadTask("a.xls") {
-            @Override
-            public InputStream get() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-
-        };
-    }
 
     @PostMapping("testConvert")
     @ApiOperation("test")

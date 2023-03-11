@@ -7,6 +7,7 @@ import com.miya.common.module.cache.CacheConfig;
 import com.miya.common.module.config.InitSystem;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.common.module.sms.SmsConfig;
+import com.miya.common.util.TransactionUtil;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,8 @@ import javax.validation.Validator;
         CommonDataSourceConfig.class,
         BackupDataSourceConfig.class,
         SysConfigService.class,
-        InitSystem.class
+        InitSystem.class,
+        TransactionUtil.class
 })
 @Configuration
 @AutoConfigureBefore(ValidationAutoConfiguration.class)
