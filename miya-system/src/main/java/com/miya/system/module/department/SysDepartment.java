@@ -36,8 +36,7 @@ public class SysDepartment extends BaseEntity {
     @JoinColumn(name = "pid")
     private SysDepartment parent;
 
-    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "pid")
+    @OneToMany(orphanRemoval = true, mappedBy = "parent")
     private List<SysDepartment> children;
 
     @Type(type = "json")

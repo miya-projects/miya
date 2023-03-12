@@ -52,7 +52,7 @@ public class SysNoticeService {
             SysNoticeUser sysNoticeUser = new SysNoticeUser();
             SysNoticeUser.SysNoticeUserId sysNoticeUserId = new SysNoticeUser.SysNoticeUserId();
             sysNoticeUserId.setSysUser(user);
-            sysNoticeUserId.setSysNotice(sysNoticeRepository.getById(noticeId));
+            sysNoticeUserId.setSysNotice(sysNoticeRepository.getReferenceById(noticeId));
             sysNoticeUser.setId(sysNoticeUserId);
             sysNoticeUser.setRead(true);
             sysNoticeUserRepository.save(sysNoticeUser);
@@ -102,7 +102,7 @@ public class SysNoticeService {
         userIds.forEach(id -> {
             SysNoticeUser sysNoticeUser = new SysNoticeUser();
             SysNoticeUser.SysNoticeUserId sysNoticeUserId = new SysNoticeUser.SysNoticeUserId();
-            sysNoticeUserId.setSysUser(sysUserRepository.getById(id));
+            sysNoticeUserId.setSysUser(sysUserRepository.getReferenceById(id));
             sysNoticeUserId.setSysNotice(sysNotice);
             sysNoticeUser.setId(sysNoticeUserId);
             list.add(sysNoticeUser);

@@ -1,6 +1,5 @@
 package com.miya.system.module.common;
 
-import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.MapUtil;
 import com.miya.common.annotation.Acl;
 import com.miya.common.model.dto.base.R;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.function.Supplier;
 
+import static cn.hutool.core.map.MapUtil.entry;
 /**
  * 用于为服务监控程序提供健康检查，如traefik,k8s等
  */
@@ -53,9 +53,9 @@ public class MonitorAndMaintenanceApi {
     @GetMapping(value = "/version")
     @CrossOrigin(originPatterns = "*", allowCredentials = "true", methods = {RequestMethod.GET})
     public R<?> version() {
-        return R.successWithData(MapUtil.<String, String>of(
-                Pair.of("name", systemName.get()),
-                Pair.of("version", version.get())
+        return R.successWithData(MapUtil.<String, String>ofEntries(
+                entry("name", systemName.get()),
+                entry("version", version.get())
         ));
     }
 

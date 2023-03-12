@@ -26,7 +26,10 @@ public class MinioConfig {
     @ConditionalOnProperty(prefix = "config.oss.minio", name = {"endpoint", "accessKey", "secretKey"})
     public MinioClient minioClient(){
         OssConfigProperties.Minio minio = ossConfigProperties.getMinio();
-        return new MinioClient(minio.getEndpoint(), minio.getAccessKey(), minio.getSecretKey());
+        return MinioClient.builder()
+                .endpoint(minio.getEndpoint())
+                .credentials(minio.getAccessKey(), minio.getSecretKey())
+                .build();
     }
 
     @Bean

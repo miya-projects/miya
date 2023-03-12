@@ -4,13 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
-import com.miya.system.module.oss.OssConfigProperties;
 import com.miya.system.module.oss.SysFileRepository;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
-import io.minio.MinioClient;
-import io.minio.ObjectStat;
-import io.minio.PutObjectOptions;
+import io.minio.*;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,7 +16,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -30,7 +26,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
-import static io.minio.PutObjectOptions.MAX_PART_SIZE;
+import static io.minio.ObjectWriteArgs.MAX_PART_SIZE;
 
 /**
  * 杨超辉
@@ -48,10 +44,16 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     @Override
     public void afterPropertiesSet() {
         try {
-            boolean isExist = minioClient.bucketExists(bucketName);
+            BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
+                    .bucket(bucketName)
+                    .build();
+            boolean isExist = minioClient.bucketExists(bucketExistsArgs);
             if (!isExist) {
                 log.info("bucket {} not exits, try creating...", bucketName);
-                minioClient.makeBucket(bucketName);
+                MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder()
+                        .bucket(bucketName)
+                        .build();
+                minioClient.makeBucket(makeBucketArgs);
                 log.info("bucket {} not create success!", bucketName);
             }
         } catch (Exception e) {
@@ -68,12 +70,14 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public void upload(File file, String objectName, boolean override) {
-        PutObjectOptions putObjectOptions =
-                new PutObjectOptions(file.length(), -1);
         if (!override && exist(objectName)) {
             return;
         }
-        minioClient.putObject(bucketName, objectName, Files.newInputStream(file.toPath()), putObjectOptions);
+        PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .stream(Files.newInputStream(file.toPath()), file.length(), MAX_PART_SIZE).build();
+        minioClient.putObject(putObjectArgs);
     }
 
 
@@ -81,9 +85,13 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      * 获取对象信息
      * @param objectName    对象名
      */
-    public ObjectStat objectStat(String objectName){
+    public StatObjectResponse objectStat(String objectName){
         try {
-            return minioClient.statObject(bucketName, objectName);
+            StatObjectArgs statObjectArgs = StatObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .build();
+            return minioClient.statObject(statObjectArgs);
         } catch (Exception e) {
             log.trace(ExceptionUtils.getStackTrace(e));
         }
@@ -95,13 +103,8 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      * @param objectName 对象名
      */
     private boolean exist(String objectName) {
-        ObjectStat objectStat = null;
-        try {
-            objectStat = minioClient.statObject(bucketName, objectName);
-        } catch (Exception e) {
-            log.trace(ExceptionUtils.getStackTrace(e));
-        }
-        return Objects.nonNull(objectStat);
+        StatObjectResponse statObjectResponse = objectStat(objectName);
+        return Objects.nonNull(statObjectResponse);
     }
 
     /**
@@ -109,17 +112,19 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      * @param objectName
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
-    public String presignedGetObject(String objectName) {
-        return minioClient.presignedGetObject(bucketName, objectName);
+    public String getPresignedObjectUrl(String objectName) {
+        return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .build());
     }
 
     /**
      * 获取对象url
      * @param objectName
      */
-    @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String getObjectUrl(String objectName) {
-        return minioClient.getObjectUrl(bucketName, objectName);
+        return getPresignedObjectUrl(objectName);
     }
 
     /**
@@ -130,7 +135,11 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      */
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String getObjectUrl(String objectName, Duration duration) {
-        return minioClient.presignedGetObject(bucketName, objectName, (int) duration.toMillis());
+        return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .expiry((int)duration.toMillis())
+                .build());
     }
 
     /**
@@ -138,14 +147,13 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
      * @param objectName
      * @param expireDate 过期时间 必须在int类型存储长度范围内，超过将会被截断
      */
-    @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public String getObjectUrl(String objectName, Date expireDate) {
         Date now = new Date();
         int duration = 0;
         if (DateUtil.compare(expireDate, now) > 0) {
             duration = (int) DateUtil.betweenMs(now, expireDate);
         }
-        return minioClient.presignedGetObject(bucketName, objectName, duration);
+        return getObjectUrl(objectName, Duration.ofMillis(duration));
     }
 
     /**
@@ -160,10 +168,12 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     public SysFile upload(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String realFileName = rename(fileName);
-        PutObjectOptions putObjectOptions =
-                new PutObjectOptions(file.getSize(), -1);
-        // putObjectOptions.setContentType(readContentType());
-        minioClient.putObject(bucketName, realFileName, file.getInputStream(), putObjectOptions);
+        PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                .bucket(bucketName)
+                .object(realFileName)
+                .stream(file.getInputStream(), file.getSize(), MAX_PART_SIZE)
+                .build();
+        minioClient.putObject(putObjectArgs);
         SysFile sysFile = new SysFile();
         sysFile.setPath(realFileName)
                 .setFilename(fileName)
@@ -187,15 +197,19 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     @SneakyThrows({MinioException.class, IOException.class, NoSuchAlgorithmException.class, InvalidKeyException.class})
     public SysFile upload(String fileName, InputStream inputStream, String contentType) {
         String objectName = rename(fileName);
-        PutObjectOptions putObjectOptions = new PutObjectOptions(-1, MAX_PART_SIZE);
-        putObjectOptions.setContentType(contentType);
-        minioClient.putObject(bucketName, objectName, inputStream, putObjectOptions);
-        ObjectStat objectStat = objectStat(objectName);
+        PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                .bucket(bucketName)
+                .object(fileName)
+                .contentType(contentType)
+                .stream(inputStream, -1, MAX_PART_SIZE)
+                .build();
+        minioClient.putObject(putObjectArgs);
+        StatObjectResponse statObjectResponse = objectStat(objectName);
         SysFile sysFile = new SysFile();
         sysFile.setPath(objectName)
                 .setFilename(fileName)
-                .setSize(objectStat.length())
-                .setSimpleSize(FileUtil.readableFileSize(objectStat.length()));
+                .setSize(statObjectResponse.size())
+                .setSimpleSize(FileUtil.readableFileSize(statObjectResponse.size()));
         sysFileRepository.save(sysFile);
         return sysFile;
     }
@@ -210,7 +224,11 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
         Optional<SysFile> sysFileOptional = sysFileRepository.findById(id);
         if (sysFileOptional.isPresent()) {
             SysFile sysFile = sysFileOptional.get();
-            minioClient.removeObject(bucketName, sysFile.getPath());
+            RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(sysFile.getPath())
+                    .build();
+            minioClient.removeObject(removeObjectArgs);
             sysFileRepository.delete(sysFile);
         }
     }
@@ -224,7 +242,10 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     @Override
     @SneakyThrows({MinioException.class, IOException.class, InvalidKeyException.class, NoSuchAlgorithmException.class})
     public InputStream openStream(SysFile sysFile) {
-        return minioClient.getObject(bucketName, sysFile.getPath());
+        return minioClient.getObject(GetObjectArgs.builder()
+                .bucket(bucketName)
+                .object(sysFile.getPath())
+                .build());
     }
 
 }
