@@ -62,7 +62,7 @@ public class SysDownloadRecord extends BaseEntity {
 
         WAITING("等待中"),
         PROCESSING("处理中"),
-        COMPLETED("待下载"),
+        COMPLETED("处理完成"),
         DOWNLOAD("已下载"),
         FAILED("处理失败");
         private final String name;

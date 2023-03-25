@@ -4,7 +4,7 @@ import com.miya.common.annotation.Acl;
 import com.miya.common.model.dto.base.Grid;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseEntity;
-import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"下载中心(TODO)"})
 @Validated
 @RequiredArgsConstructor
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @RequestMapping("download")
 public class DownloadApi {
 

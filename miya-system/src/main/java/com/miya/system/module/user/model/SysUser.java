@@ -73,7 +73,6 @@ public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
-    @NotFound(action = NotFoundAction.IGNORE)
     private SysFile avatar;
 
     /**

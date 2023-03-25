@@ -71,8 +71,7 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
 
     @GetMapping(value = "departments")
     @ApiOperation(value = "获取部门列表", notes = "不分页 下拉框使用")
-    public R<?> departments() {
-        // todo
+    public R<List<DropDownItemDTO>> departments() {
         QSysRole qSysRole = QSysRole.sysRole;
         JPAQuery<DropDownItemDTO> query = qf.select(
                 Projections.bean(DropDownItemDTO.class,

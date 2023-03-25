@@ -29,6 +29,7 @@ import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.business.Business;
 import com.miya.system.module.download.DownloadService;
 import com.miya.system.module.download.SimpleDownloadTask;
+import com.miya.system.module.notice.SysNoticeService;
 import com.miya.system.module.user.event.UserLoginEvent;
 import com.miya.system.module.user.event.UserModifyEvent;
 import com.miya.system.module.user.model.*;
@@ -73,6 +74,7 @@ public class SysUserService extends BaseService implements SystemInit {
     private final MiyaSystemUserConfig customizer;
     private final DownloadService downloadService;
     private final SysConfigService configService;
+    private final SysNoticeService sysNoticeService;
 
     private static final QSysUser qSysUser = QSysUser.sysUser;
 
@@ -213,6 +215,14 @@ public class SysUserService extends BaseService implements SystemInit {
         return LoginRes.builder().token(token).expiredDate(expiredDate).build();
     }
 
+    public CurrentSysUserDTO current(SysUserPrincipal sysUserPrincipal) {
+        CurrentSysUserDTO dto = new CurrentSysUserDTO();
+        assert sysUserPrincipal.getId() != null;
+        dto.setUser(SysUserDetailDTO.of(sysUserRepository.getReferenceById(sysUserPrincipal.getId())));
+        dto.setSystemMeta(configService.getSystemMeta());
+        dto.setUnreadNoticeAmount(sysNoticeService.unreadNoticeAmount(sysUserPrincipal.getId()));
+        return dto;
+    }
 
     /**
      * 登录接口返回的dto
@@ -296,19 +306,24 @@ public class SysUserService extends BaseService implements SystemInit {
     }
 
     /**
+     * q: 下面这行代码是什么意思？
+     * a: 这里是将用户信息转换为jwt的payload，然后生成token
+     *
      * 生成token
      * @param sysUser
      */
     private String generateToken(SysUser sysUser, Date expiredDate, LoginWay loginWay) {
+        SysUserPrincipal userPrincipal = SysUserPrincipal.of(sysUser);
         JwtPayload jwtPayload = JwtPayload.builder()
                 .userId(sysUser.getId())
-                .userClass(SysUser.class)
+                .userClass(userPrincipal.getClass())
                 .loginDevice(LoginDevice.PC_WEB)
                 .loginWay(loginWay)
                 .loginTime(new Date())
+                .exp(expiredDate)
                 .build();
         assert sysUser.getId() != null;
-        return tokenService.generateToken(jwtPayload, sysUser.getId(), expiredDate);
+        return tokenService.generateToken(jwtPayload, userPrincipal);
     }
 
     /**
@@ -415,20 +430,7 @@ public class SysUserService extends BaseService implements SystemInit {
             }
             return new ByteArrayInputStream(stream.toByteArray());
         });
-        String exportWay = configService.get(SysConfigService.SystemConfigKey.EXPORT_WAY);
-        if (exportWay.equalsIgnoreCase("async")){
-            downloadService.executeAsync(downloadTask);
-            response.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.toString());
-            try {
-                response.getWriter().write(JSONUtil.toJsonStr(R.success()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }else if (exportWay.equalsIgnoreCase("sync")) {
-            downloadService.execute(downloadTask);
-        } else {
-          throw new ErrorMsgException("未正确配置导出方式，请先配置EXPORT_WAY后再进行导出");
-        }
+        downloadService.export(downloadTask);
     }
 
 }

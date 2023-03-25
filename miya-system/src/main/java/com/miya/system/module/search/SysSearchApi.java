@@ -3,6 +3,7 @@ package com.miya.system.module.search;
 import com.miya.common.annotation.Acl;
 import com.miya.common.model.dto.base.R;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.io.IOException;
 
 @Slf4j
 @Api(tags = {"全文检索(todo)"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 @ResponseBody
 @RequestMapping(value = "search")

@@ -6,10 +6,7 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
-import com.miya.system.module.user.model.SysUser;
-import com.miya.system.module.user.model.SysUserDetailDTO;
-import com.miya.system.module.user.model.SysUserForm;
-import com.miya.system.module.user.model.SysUserListDTO;
+import com.miya.system.module.user.model.*;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +31,7 @@ import java.io.IOException;
 @RestController
 @Slf4j
 @Api(tags = {"用户"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 @RequiredArgsConstructor
 public class SysUserApi extends BaseApi {
@@ -79,9 +76,9 @@ public class SysUserApi extends BaseApi {
     @GetMapping("export")
     @Acl(business = "sys:user:download")
     public void export(
-            @AuthenticationPrincipal SysUser user,
+            @AuthenticationPrincipal SysUserPrincipal user,
             @QuerydslPredicate(root = SysUser.class) Predicate predicate, HttpServletResponse response) throws IOException {
-        sysUserService.export(predicate, response, user);
+        sysUserService.export(predicate, response, user.toPO());
     }
 
     @PostMapping

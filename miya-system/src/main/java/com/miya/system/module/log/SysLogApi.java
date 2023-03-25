@@ -6,6 +6,7 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @Api(tags = {"日志"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 @RequiredArgsConstructor
 public class SysLogApi extends BaseApi {

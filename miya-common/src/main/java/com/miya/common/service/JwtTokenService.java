@@ -1,7 +1,5 @@
 package com.miya.common.service;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.PropDesc;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -23,8 +21,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.hibernate.Hibernate;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -34,13 +32,14 @@ import org.springframework.data.repository.support.RepositoryInvoker;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
  * @author 杨超辉
  */
 @Slf4j
-public class JwtTokenService implements Serializable, SystemInit, TokenService, ApplicationContextAware {
+public class JwtTokenService implements Serializable, SystemInit, TokenService, ApplicationContextAware, SmartInitializingSingleton {
     private static final long serialVersionUID = -3301605591108950415L;
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_ID = "id";
@@ -57,6 +56,7 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     private final SysConfigService configService;
     private final KeyValueStore keyValueStore;
 
+    private static JwtTokenService INSTANCE;
 
 
     @Override
@@ -88,7 +88,7 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     public JwtPayload getPayload(String token) {
         Claims claims = getClaimsFromToken(token);
         try {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
             return mapper.readValue(JSONUtil.toJsonStr(claims), JwtPayload.class);
         } catch (Exception e) {
             throw new RuntimeException(StrUtil.format("token 不合法: {}", token));
@@ -156,26 +156,12 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
 
     /**
      * 生成token
-     * @param claims    token payload
-     * @param expirationDate    token过期时间
+     * @param jwtPayload    token payload
      */
-    private String generateToken(Map<String, Object> claims, Date expirationDate) {
+    public String payloadToToken(JwtPayload jwtPayload) {
+        Map<String, Object> claims = jwtPayload.toClaims();
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
-    }
-
-    /**
-     * 生成token
-     * @param jwtPayload    token payload
-     * @param expirationDate    token过期时间
-     */
-    public String generateToken(JwtPayload jwtPayload, Date expirationDate) {
-        return Jwts.builder()
-                .setClaims(BeanUtil.beanToMap(jwtPayload))
-                .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
@@ -188,9 +174,9 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     public String refreshToken(String token, Date expirationDate) {
         String refreshedToken;
         try {
-            final Claims claims = getClaimsFromToken(token);
-            claims.put(CLAIM_KEY_CREATED, new Date());
-            refreshedToken = generateToken(claims, expirationDate);
+            JwtPayload payload = getPayload(token);
+            payload.setExp(expirationDate);
+            refreshedToken = payloadToToken(payload);
         } catch (Exception e) {
             e.printStackTrace();
             refreshedToken = null;
@@ -208,36 +194,31 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
      */
     @Transactional
     public Object getUserByJwtPayload(JwtPayload jwtPayload) {
-        RepositoryInvoker invokerFor = defaultRepositoryInvokerFactory.getInvokerFor(jwtPayload.getUserClass());
+        Class<?> userPrincipalClass = jwtPayload.getUserClass();
+        Class userClass = ReflectUtil.invokeStatic(ReflectUtil.getMethod(userPrincipalClass, "userType"));
+        RepositoryInvoker invokerFor = defaultRepositoryInvokerFactory.getInvokerFor(userClass);
         Optional<Object> userOptional = invokerFor.invokeFindById(jwtPayload.getUserId());
         Object user = userOptional.orElse(null);
         if (user != null) {
-            // 这里把懒加载的属性初始化一下，注入后可以直接使用，偷懒的做法，还有一种办法是不在service以外的地方使用PO，进行一次对象转换
-            Collection<PropDesc> props = BeanUtil.getBeanDesc(user.getClass()).getProps();
-            for (PropDesc prop : props) {
-                Class<?> type = prop.getField().getType();
-                if (type.isAssignableFrom(Set.class) || type.isAssignableFrom(Collection.class)) {
-                    Set set = ReflectUtil.invoke(user,  prop.getGetter());
-                    Hibernate.initialize(set);
-                }
-            }
+            Method method = ReflectUtil.getMethod(userPrincipalClass, "of", userClass);
+            return ReflectUtil.invokeStatic(method, user);
         }
         return user;
     }
 
     @Override
-    public Object getUserByToken(String token){
+    public Object parseUserFromToken(String token){
         JwtPayload payload = getPayload(token);
         if (Objects.isNull(keyValueStore.get(getKey(payload)))){
             throw new BadCredentialsException("token不合法哦");
         }
-        return SpringUtil.getBean(JwtTokenService.class).getUserByJwtPayload(payload);
+        return INSTANCE.getUserByJwtPayload(payload);
     }
 
     @Override
     public String reFlushToken(String token, Date expirationDate) throws TokenExpirationException {
         JwtPayload jwtPayload = getPayload(token);
-        Object user = SpringUtil.getBean(JwtTokenService.class).getUserByJwtPayload(getPayload(token));
+        Object user = INSTANCE.getUserByJwtPayload(getPayload(token));
         if(Objects.isNull(user)){
             throw new TokenExpirationException(token);
         }
@@ -247,10 +228,9 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     }
 
     @Override
-    public String generateToken(@NonNull JwtPayload jwtPayload, @NonNull Serializable user, Date expirationDate){
-        String token = generateToken(jwtPayload, expirationDate);
-        CacheKey key = getKey(jwtPayload);
-        keyValueStore.set(key, user);
+    public String generateToken(@NonNull JwtPayload jwtPayload, @NonNull Serializable userPrincipal){
+        String token = payloadToToken(jwtPayload);
+        keyValueStore.set(getKey(jwtPayload), userPrincipal);
         return token;
     }
 
@@ -273,6 +253,11 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         repositories = new Repositories(applicationContext);
         defaultRepositoryInvokerFactory = new DefaultRepositoryInvokerFactory(repositories, DefaultConversionService.getSharedInstance());
+    }
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        INSTANCE = SpringUtil.getBean(JwtTokenService.class);
     }
 }
 

@@ -59,7 +59,7 @@ public class ApiRequestLimitInterceptor implements HandlerInterceptor{
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
-
+        response.setStatus(429);
         response.getWriter().print(JSONUtil.toJsonStr(R.errorWithCodeAndMsg(ResponseCode.Common.VISIT_TOO_FAST)));
         return false;
     }

@@ -28,14 +28,14 @@
               value="%date{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %replace(%caller{1}){'\t|Caller.{1}0|\r\n', ''} - %m%n">
     </property>
 
-<!--    <logger name="org.springframework.web" level="WARN"/>-->
+<!--    <logger name="org.springframework.web" level="trace"/>-->
 <!--    <logger name="org.springframework.boot.web.servlet.filter" level="WARN"/>-->
 <!--    <logger name="org.eclipse" level="WARN"/>-->
     <logger name="org.apache" level="warn"/>
 <!--    <logger name="org.mybatis" level="INFO"/>-->
 <!--    输出hibernate sql参数-->
 <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />-->
-<!--    <logger name="org.hibernate.SQL"  level="DEBUG" />-->
+    <logger name="org.hibernate.SQL"  level="DEBUG" />
 <!--    swagger-->
     <logger name="springfox.documentation.spring.web" level="warn" />
     <logger name="com.miya.common.config.web.RepeatableRequestMappingHandlerMapping" level="info" />

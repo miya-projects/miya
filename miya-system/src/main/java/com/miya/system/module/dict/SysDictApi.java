@@ -10,6 +10,7 @@ import com.miya.common.model.dto.base.R;
 import com.miya.system.module.dict.model.*;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.dict.model.SysDictItem;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
@@ -36,7 +37,7 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Api(tags = {"字典"})
 @Validated
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 public class SysDictApi extends BaseApi {
 
     @Resource

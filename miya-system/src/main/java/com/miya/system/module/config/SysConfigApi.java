@@ -8,6 +8,7 @@ import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.common.module.config.*;
 import com.miya.common.module.base.BaseApi;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @Api(tags = {"参数"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 public class SysConfigApi extends BaseApi {
 
@@ -63,7 +64,7 @@ public class SysConfigApi extends BaseApi {
     public R<SysConfig> setup(
             @NotNull String configKey,
             String value,
-            @AuthenticationPrincipal SysUser user) {
+            @AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
@@ -99,7 +100,7 @@ public class SysConfigApi extends BaseApi {
     @PutMapping("{id}")
     public R<SysConfig> update(@NotNull(message = "id不合法") @PathVariable(value = "id") SysConfig sysConfig,
                     @Validated SysConfigForm sysConfigForm,
-                    @AuthenticationPrincipal SysUser user) {
+                    @AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
@@ -120,7 +121,7 @@ public class SysConfigApi extends BaseApi {
     @ApiOperation("新增系统参数")
     public R<SysConfig> save(
             @Validated SysConfigForm sysConfigForm,
-            @AuthenticationPrincipal SysUser user) {
+            @AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
@@ -140,7 +141,7 @@ public class SysConfigApi extends BaseApi {
     @ApiOperation("删除系统参数")
     public R<?> delete(
             @PathVariable String id,
-            @AuthenticationPrincipal SysUser user) {
+            @AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
@@ -153,7 +154,7 @@ public class SysConfigApi extends BaseApi {
      */
     @GetMapping("flush")
     @ApiOperation("重载所有参数")
-    public R<?> flush(@AuthenticationPrincipal SysUser user) {
+    public R<?> flush(@AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }

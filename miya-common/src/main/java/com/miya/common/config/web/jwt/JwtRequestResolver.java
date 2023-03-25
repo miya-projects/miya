@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,7 +70,7 @@ public class JwtRequestResolver {
         try {
             JwtPayload payload = jwtTokenService.getPayload(token);
             generalAuthentication = GeneralAuthentication.getFromToken(payload);
-            generalAuthentication.setUser(jwtTokenService.getUserByToken(token));
+            generalAuthentication.setUser(jwtTokenService.parseUserFromToken(token));
             generalAuthentication.setAuthenticated(true);
         }catch (Exception e){
             log.trace(ExceptionUtils.getStackTrace(e));

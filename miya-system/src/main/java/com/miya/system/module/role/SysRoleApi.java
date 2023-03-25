@@ -10,6 +10,7 @@ import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.role.model.SysRoleDTO;
 import com.miya.system.module.role.model.SysRoleForm;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @Api(tags = {"角色"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 public class SysRoleApi extends BaseApi {
 
@@ -77,7 +78,7 @@ public class SysRoleApi extends BaseApi {
     @Acl(business = "sys:role:edit")
     public R<?> setPermissions(@ApiParam("权限code") String[] codes,
                             @ApiParam("角色id") @NotNull @PathVariable("id") SysRole sysRole,
-                            @AuthenticationPrincipal SysUser sysUser) {
+                            @AuthenticationPrincipal SysUserPrincipal sysUser) {
         if (sysRole.getIsSystem() && !sysUser.isSuperAdmin()){
             // 只有超级管理员才可以配置系统角色的权限
             return R.errorWithCodeAndMsg(SystemErrorCode.OPE_SYSTEM_ROLE);

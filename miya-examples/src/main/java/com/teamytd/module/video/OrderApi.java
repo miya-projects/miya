@@ -18,7 +18,7 @@
 // @RestController
 // @Slf4j
 // @Api(tags = {"订单服务"})
-// @Acl(userType = SysUser.class)
+// @Acl(userType = SysUserPrincipal.class)
 // @Validated
 // @RequiredArgsConstructor
 // public class OrderApi {

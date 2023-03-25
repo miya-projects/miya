@@ -52,7 +52,12 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
         builder.deserializerByType(Date.class, new StdScalarDeserializer<Date>(Date.class){
             @Override
             public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-                return Convert.toDate(p.getValueAsString());
+                String value = p.getValueAsString();
+                try {
+                    return new Date(Long.parseLong(value));
+                } catch (NumberFormatException e) {
+                    return Convert.toDate(value);
+                }
             }
         });
         builder.deserializerByType(LocalDate.class, new StdScalarDeserializer<LocalDate>(LocalDate.class){

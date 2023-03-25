@@ -1,16 +1,13 @@
 package com.miya.system.module.user;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.miya.common.annotation.Acl;
 import com.miya.common.annotation.RequestLimit;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.sms.service.SmsService;
-import com.miya.common.module.config.SysConfigService;
-import com.miya.system.module.notice.SysNoticeService;
 import com.miya.system.module.user.model.SysUser;
-import com.miya.system.module.user.model.SysUserDetailDTO;
 import com.miya.system.module.user.model.SysUserModifyForm;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,8 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
-
-import static cn.hutool.core.map.MapUtil.entry;
 /**
  * @author 杨超辉
  */
@@ -29,7 +24,7 @@ import static cn.hutool.core.map.MapUtil.entry;
 @RequestMapping("user/current")
 @Slf4j
 @Api(tags = {"账户"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 public class AccountApi {
 
@@ -37,10 +32,6 @@ public class AccountApi {
     private SysUserService sysUserService;
     @Resource
     private SmsService smsService;
-    @Resource
-    private SysConfigService sysConfigService;
-    @Resource
-    private SysNoticeService sysNoticeService;
 
     /**
      * 登陆
@@ -84,7 +75,7 @@ public class AccountApi {
 
     @ApiOperation(value = "获取用户信息和偏好配置", notes = "每次重新打开首页便获取一次")
     @GetMapping
-    public R<?> current(@AuthenticationPrincipal final SysUser sysUser) {
+    public R<?> current(@AuthenticationPrincipal final SysUserPrincipal sysUserPrincipal) {
         //        QSysUser qSysUser = QSysUser.sysUser;
         //        Projections.fields();
         //        Criteria.LEFT_JOIN;
@@ -93,16 +84,13 @@ public class AccountApi {
         //        SysUserForm sysUserForm = qf.select(
         //                Projections.bean(SysUserForm.class, qSysUser)
         //        ).from(qSysUser).where(qSysUser.id.eq(sysUser.getId())).fetchOne();
-        return R.successWithData(MapUtil.<String, Object>ofEntries(
-                entry("user", SysUserDetailDTO.of(sysUser)),
-                entry("systemMeta", sysConfigService.getSystemMeta()),
-                entry("unreadNoticeAmount", sysNoticeService.unreadNoticeAmount(sysUser.getId()))
-        ));
+        return R.successWithData(sysUserService.current(sysUserPrincipal));
     }
 
     @PutMapping("preferences")
     @ApiOperation(value = "用户偏好配置修改(前端)")
-    public R<?> preferences(@NotBlank String preferences, @AuthenticationPrincipal final SysUser sysUser) {
+    public R<?> preferences(@NotBlank String preferences, @AuthenticationPrincipal final SysUserPrincipal sysUserPrincipal) {
+        SysUser sysUser = sysUserPrincipal.toPO();
         sysUser.getPreferences().setFront(preferences);
         sysUserService.update(sysUser);
         return R.success();
@@ -112,16 +100,16 @@ public class AccountApi {
     @ApiOperation("当前用户使用旧密码修改密码")
     public R<?> modifyPassword(@ApiParam("旧密码") @NotBlank(message = "旧密码不能为空") String password,
                                @ApiParam("新密码") @NotBlank(message = "新密码不能为空") String newPassword,
-                               @AuthenticationPrincipal SysUser user) {
-        sysUserService.modifyPassword(user, password, newPassword);
+                               @AuthenticationPrincipal SysUserPrincipal user) {
+        sysUserService.modifyPassword(user.toPO(), password, newPassword);
         return R.success();
     }
 
     @PutMapping
     @ApiOperation(value = "个人信息修改", notes = "修改当前用户的信息")
     public R<?> update(@Validated SysUserModifyForm userModifyForm,
-                               @AuthenticationPrincipal SysUser user) {
-        sysUserService.modifyProfile(userModifyForm, user);
+                               @AuthenticationPrincipal SysUserPrincipal user) {
+        sysUserService.modifyProfile(userModifyForm, user.toPO());
         return R.success();
     }
 

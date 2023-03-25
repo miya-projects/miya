@@ -12,7 +12,7 @@ public interface TokenService {
      * @param token
      * @return 用户对象
      */
-    Object getUserByToken(String token);
+    Object parseUserFromToken(String token);
 
     /**
      * 刷新token有效时间
@@ -25,9 +25,8 @@ public interface TokenService {
     /**
      * 获取token 并将用户对象设置到tokenStore
      * @param jwtPayload
-     * @param user  用户对象
-     * @param expirationDate    token失效时间
+     * @param userPrincipal       用户对象
      * @return token
      */
-    String generateToken(@NonNull JwtPayload jwtPayload, @NonNull Serializable user, Date expirationDate);
+    String generateToken(@NonNull JwtPayload jwtPayload, @NonNull Serializable userPrincipal);
 }

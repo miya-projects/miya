@@ -7,6 +7,7 @@ import com.miya.common.module.base.BaseApi;
 import com.miya.system.module.department.dto.SysDepartmentDTO;
 import com.miya.system.module.department.form.SysDepartmentForm;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +32,7 @@ import java.util.stream.StreamSupport;
 @RestController
 @Slf4j
 @Api(tags = {"部门"})
-@Acl(userType = SysUser.class)
+@Acl(userType = SysUserPrincipal.class)
 @Validated
 public class SysDepartmentApi extends BaseApi {
 
