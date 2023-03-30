@@ -27,7 +27,11 @@ public class CustomOperationNicknameReader implements OperationBuilderPlugin {
         String name = StrUtil.toCamelCase(context.getGroupName().replaceAll("-", "_"));
         Matcher matcher = pattern.matcher(name);
         if (matcher.matches()) {
-            name = name.substring(0, name.lastIndexOf("Api"));
+            try {
+                name = name.substring(0, name.lastIndexOf("Api"));
+            }catch (StringIndexOutOfBoundsException e) {
+                name = name.substring(0, name.lastIndexOf("Controller"));
+            }
         }
 
         // 重命名operateId
