@@ -143,7 +143,7 @@ public class SysConfigService implements SystemInit {
 
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#key.name()")
     public <T> T get(SystemConfigKey key) {
-        return (T)get(key.name(), key.getValueType()).orElse(key.defaultValue);
+        return (T)get(key.name(), key.getValueType()).orElse(conversionService.convert(key.defaultValue, key.valueType));
     }
 
     /**
