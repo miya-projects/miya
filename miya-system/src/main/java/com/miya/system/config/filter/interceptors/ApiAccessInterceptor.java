@@ -36,10 +36,7 @@ import java.util.Set;
  */
 @Slf4j
 @Component
-public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBean {
-
-    private final ExpressionParser spelExpressionParser = new SpelExpressionParser();
-    private final StandardEvaluationContext context = new StandardEvaluationContext();
+public class ApiAccessInterceptor implements HandlerInterceptor {
 
     @Resource
     private ApplicationContext applicationContext;
@@ -47,10 +44,6 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
     private SysUserService sysUserService;
     @Resource
     private SysRoleService sysRoleService;
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        context.setBeanResolver(new BeanFactoryResolver(applicationContext));
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -78,7 +71,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
         if (Acl.NotNeedLogin.class.equals(userType) || userType == null){
             return true;
         }
-        if ("anonymousUser".equalsIgnoreCase(principal.toString())) {
+        if (Objects.isNull(principal)) {
             response.setStatus(403);
             response.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.toString());
             response.getWriter().write(JSONUtil.toJsonStr(R.errorWithCodeAndMsg(ResponseCode.Common.NO_LOGIN)));
