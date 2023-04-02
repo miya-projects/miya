@@ -2,12 +2,11 @@ package com.miya.system.module.log;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.miya.common.util.AuthenticationUtil;
 import com.miya.system.config.business.Business;
 import com.miya.system.module.role.SysRoleService;
 import com.miya.system.module.user.model.SysUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -99,8 +98,7 @@ public class LogService {
      * @return              日志对象
      */
     private SysLog createSysLog(String business, String content, String operationType, String businessId, Map<String, Object> extra){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = Optional.ofNullable(authentication).map(Authentication::getPrincipal).orElse(null);
+        Object principal = AuthenticationUtil.getPrincipal();
         String name = this.getUserName(principal);
         return createSysLog(business, content, operationType, businessId, extra, name);
     }

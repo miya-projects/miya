@@ -3,13 +3,12 @@ package com.miya.system.module.log.event;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.miya.common.util.AuthenticationUtil;
 import com.miya.system.config.business.Business;
 import com.miya.system.module.role.SysRoleService;
 import com.miya.system.module.user.model.SysUser;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -70,8 +69,7 @@ public class LogEvent extends ApplicationEvent {
      * 推断操作用户
      */
     private String inferUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = Optional.ofNullable(authentication).map(Authentication::getPrincipal).orElse(null);
+        Object principal = AuthenticationUtil.getPrincipal();
         if (principal == null){
             return null;
         }

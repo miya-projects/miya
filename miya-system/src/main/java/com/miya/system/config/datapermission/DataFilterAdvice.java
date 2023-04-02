@@ -1,5 +1,6 @@
 package com.miya.system.config.datapermission;
 
+import com.miya.common.util.AuthenticationUtil;
 import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.role.SysDefaultRoles;
@@ -10,17 +11,18 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.hibernate.Filter;
 import org.hibernate.Session;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -98,8 +100,12 @@ public class DataFilterAdvice {
      * 获取当前登录用户id
      */
     public String getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = Optional.ofNullable(authentication).map(Authentication::getPrincipal).orElse(null);
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes == null) {
+            return null;
+        }
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        Object principal = request.getAttribute("principal");
         if (principal instanceof SysUser) {
             return ((SysUser) principal).getId();
         }
@@ -111,8 +117,7 @@ public class DataFilterAdvice {
      * 获取当前登录用户角色
      */
     public Set<SysRole> getCurrentUserRoles() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = Optional.ofNullable(authentication).map(Authentication::getPrincipal).orElse(null);
+        Object principal = AuthenticationUtil.getPrincipal();
         if (principal instanceof SysUser) {
             return new HashSet<>(((SysUser) principal).getRoles());
         }

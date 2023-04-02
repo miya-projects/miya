@@ -38,7 +38,7 @@ public @interface Acl {
     class NotNeedLogin {}
 
     /**
-     * 所有用户都可以访问
+     * 所有已登录用户都可以访问
      */
     class AllUser {}
 }

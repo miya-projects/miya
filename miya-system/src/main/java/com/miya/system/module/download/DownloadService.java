@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.config.SysConfigService;
+import com.miya.common.util.AuthenticationUtil;
 import com.miya.common.util.TransactionUtil;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
@@ -19,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -63,12 +62,9 @@ public class DownloadService {
         SysDownloadRecord record = new SysDownloadRecord();
         record.setName(taskName);
         record.setFileName(fileName);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null){
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof SysUser){
-                record.setUser((SysUser) principal);
-            }
+        Object principal = AuthenticationUtil.getPrincipal();
+        if (principal instanceof SysUser){
+            record.setUser((SysUser) principal);
         }
         downloadRecordRepository.save(record);
     }
@@ -187,8 +183,7 @@ public class DownloadService {
      */
     public Page<SysDownloadRecordDTO> list(Predicate predicate, Pageable pageRequest) {
         QSysDownloadRecord qSysDownloadRecord = QSysDownloadRecord.sysDownloadRecord;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = Optional.ofNullable(authentication).map(Authentication::getPrincipal).orElse(null);
+        Object principal = AuthenticationUtil.getPrincipal();
         BooleanBuilder bb = new BooleanBuilder();
         bb.and(predicate);
         if (principal instanceof SysUser) {

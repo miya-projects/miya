@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +31,7 @@ public class JwtRequestResolver {
      * 认证一个请求
      * @param request
      */
-    public Authentication getAuthentication(HttpServletRequest request) {
+    public GeneralAuthentication getAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         String token = resolveAuthorization(authorization);
         if (StrUtil.isBlank(token) && request.getMethod().equalsIgnoreCase("GET")){
@@ -65,13 +64,12 @@ public class JwtRequestResolver {
      * 将token解析为authentication  解析无状态token
      * @param token
      */
-    public Authentication getAuthentication(String token) {
+    public GeneralAuthentication getAuthentication(String token) {
         GeneralAuthentication generalAuthentication;
         try {
             JwtPayload payload = jwtTokenService.getPayload(token);
             generalAuthentication = GeneralAuthentication.getFromToken(payload);
             generalAuthentication.setUser(jwtTokenService.parseUserFromToken(token));
-            generalAuthentication.setAuthenticated(true);
         }catch (Exception e){
             log.trace(ExceptionUtils.getStackTrace(e));
             log.debug("token认证不通过, " + token);

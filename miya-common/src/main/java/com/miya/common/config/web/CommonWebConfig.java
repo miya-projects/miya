@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,7 +19,6 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@EnableWebSecurity
 @EnableSpringDataWebSupport
 public class CommonWebConfig implements WebMvcConfigurer {
 
@@ -31,6 +29,7 @@ public class CommonWebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new RequestJsonHandlerMethodArgumentResolver());
+        argumentResolvers.add(new AuthenticationPrincipalHandlerMethodArgumentResolver());
     }
 
     /**

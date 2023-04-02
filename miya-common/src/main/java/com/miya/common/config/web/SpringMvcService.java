@@ -2,8 +2,6 @@ package com.miya.common.config.web;
 
 import com.miya.common.annotation.Acl;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
@@ -20,7 +18,7 @@ import java.util.Set;
  * springmvc 提供相关的能力
  */
 @Service
-public class SpringMvcService extends WebSecurityConfigurerAdapter {
+public class SpringMvcService {
 
     //无需权限可访问的url
     private static final String[] ALLOW_ACCESS_URL = {
@@ -29,11 +27,6 @@ public class SpringMvcService extends WebSecurityConfigurerAdapter {
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers(allowAccessUrlForAcl()).permitAll();
-    }
 
     /**
      * 获取允许不登录访问的url

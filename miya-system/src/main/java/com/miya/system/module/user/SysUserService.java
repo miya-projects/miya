@@ -6,8 +6,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.http.ContentType;
-import cn.hutool.json.JSONUtil;
 import com.miya.common.auth.way.GeneralAuthentication;
 import com.miya.common.auth.way.LoginDevice;
 import com.miya.common.auth.way.LoginWay;
@@ -42,10 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.springframework.data.util.CastUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -300,7 +297,6 @@ public class SysUserService extends BaseService implements SystemInit {
         JwtPayload payload = jwtTokenService.getPayload(token);
         GeneralAuthentication authentication = GeneralAuthentication.getFromToken(payload);
         authentication.setUser(sysUser);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         UserLoginEvent loginEvent = new UserLoginEvent.Builder().user(sysUser).build();
         ac.publishEvent(loginEvent);
     }

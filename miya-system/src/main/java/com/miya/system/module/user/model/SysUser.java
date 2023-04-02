@@ -12,8 +12,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
-import org.springframework.security.core.AuthenticatedPrincipal;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.*;
@@ -36,7 +34,7 @@ import java.util.stream.Collectors;
         parameters = {@ParamDef(name = "ownerIds", type = "string")})
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})
 @Table(indexes = {@Index(name = "avatar", columnList = "avatar_id"), @Index(name = "username", columnList = "username", unique = true)})
-public class SysUser extends BaseEntity implements AuthenticatedPrincipal {
+public class SysUser extends BaseEntity {
 
     @Column(unique = true, length = 20)
     private String username;

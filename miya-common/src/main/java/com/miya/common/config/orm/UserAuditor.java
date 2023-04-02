@@ -4,8 +4,9 @@ import cn.hutool.core.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.context.SecurityContextHolder;
-
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
@@ -21,7 +22,12 @@ public class UserAuditor implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         try {
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            ServletRequestAttributes servletRequestAttributes =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (servletRequestAttributes == null) {
+                return Optional.empty();
+            }
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            Object principal = request.getAttribute("principal");
             if(principal instanceof String ){
                 return Optional.of(principal.toString());
             }

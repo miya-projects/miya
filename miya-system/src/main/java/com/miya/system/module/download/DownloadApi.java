@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@Api(tags = {"下载中心(TODO)"})
+@Api(tags = {"下载中心"})
 @Validated
 @RequiredArgsConstructor
 @Acl(userType = SysUserPrincipal.class)

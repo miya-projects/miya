@@ -17,12 +17,9 @@ import java.util.Collections;
 
 /**
  * @author 杨超辉
- * SpringSecurity的配置
- * <a href="https://blog.csdn.net/linzhiqiang0316/article/details/78358907">Demo</a>
  */
 @Slf4j
 @Configuration
-@Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class MiyaSystemWebConfig implements WebMvcConfigurer {
 
     @Resource

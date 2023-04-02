@@ -29,7 +29,6 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.repository.support.DefaultRepositoryInvokerFactory;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.repository.support.RepositoryInvoker;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -210,7 +209,7 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     public Object parseUserFromToken(String token){
         JwtPayload payload = getPayload(token);
         if (Objects.isNull(keyValueStore.get(getKey(payload)))){
-            throw new BadCredentialsException("token不合法哦");
+            throw new RuntimeException("token不合法哦");
         }
         return INSTANCE.getUserByJwtPayload(payload);
     }

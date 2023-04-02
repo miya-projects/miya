@@ -19,7 +19,6 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -60,9 +59,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Object bean = handlerMethod.getBean();
-        Object principal = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        Object principal = request.getAttribute("principal");
         // 先检测class
         Acl aclForClass = AnnotationUtils.findAnnotation(bean.getClass(), Acl.class);
         Acl aclForMethod = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Acl.class);
@@ -80,6 +77,12 @@ public class ApiAccessInterceptor implements HandlerInterceptor, InitializingBea
         }
         if (Acl.NotNeedLogin.class.equals(userType) || userType == null){
             return true;
+        }
+        if ("anonymousUser".equalsIgnoreCase(principal.toString())) {
+            response.setStatus(403);
+            response.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.toString());
+            response.getWriter().write(JSONUtil.toJsonStr(R.errorWithCodeAndMsg(ResponseCode.Common.NO_LOGIN)));
+            return false;
         }
         if (!Acl.AllUser.class.equals(userType)) {
             if (!principal.getClass().equals(userType)) {

@@ -46,7 +46,7 @@ config.db.password=root
 3. 启动springboot
 
 ## 技术栈
-    springboot spring-mvc spring-data-jpa spring security hibernate-search jwt等
+    springboot spring-mvc spring-data-jpa hibernate-search jwt等
 
 ## [更多]()
 

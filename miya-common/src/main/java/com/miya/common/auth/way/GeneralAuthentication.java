@@ -4,12 +4,6 @@ import com.miya.common.config.web.jwt.JwtPayload;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-
-import java.util.Collection;
-import java.util.Objects;
 
 /**
  * 自定义的通用Authentication
@@ -17,7 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
-public class GeneralAuthentication extends AbstractAuthenticationToken {
+public class GeneralAuthentication  {
 
     /**
      * 认证类型
@@ -33,20 +27,9 @@ public class GeneralAuthentication extends AbstractAuthenticationToken {
     private LoginInfo loginInfo;
 
     public GeneralAuthentication(AuthenticationType authenticationType, Object user, LoginInfo loginInfo){
-        super(AuthorityUtils.NO_AUTHORITIES);
         this.authenticationType = authenticationType;
         this.user = user;
         this.loginInfo = loginInfo;
-    }
-
-    /**
-     * Creates a token with the supplied array of authorities.
-     *
-     * @param authorities the collection of <tt>GrantedAuthority</tt>s for the principal
-     *                    represented by this authentication object.
-     */
-    public GeneralAuthentication(Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
     }
 
     public static GeneralAuthenticationBuilder builder(){
@@ -96,23 +79,5 @@ public class GeneralAuthentication extends AbstractAuthenticationToken {
                 .build();
     }
 
-    @Override
-    public Object getCredentials() {
-        return null;
-    }
 
-    @Override
-    public Object getPrincipal() {
-        return this.user;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return Objects.nonNull(this.user);
-    }
-
-    @Override
-    public Object getDetails() {
-        return this.getPrincipal();
-    }
 }

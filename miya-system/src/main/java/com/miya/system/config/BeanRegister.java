@@ -11,14 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AnonymousAuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.concurrent.DelegatingSecurityContextScheduledExecutorService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * 注册bean都在这
@@ -29,21 +21,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 @Import(cn.hutool.extra.spring.SpringUtil.class)
 public class BeanRegister implements ApplicationContextAware {
 
-    @Bean
-    public DelegatingSecurityContextScheduledExecutorService delegatingSecurityContextScheduledExecutorService() {
-        ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(5);
-        return new DelegatingSecurityContextScheduledExecutorService(scheduledExecutorService);
-    }
-
-    @Bean
-    protected AuthenticationManager authenticationManager() {
-        List<AuthenticationProvider> authenticationProviders = new ArrayList<>();
-        authenticationProviders.add(new AnonymousAuthenticationProvider("anonymous"));
-        ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
-        //不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
-        authenticationManager.setEraseCredentialsAfterAuthentication(false);
-        return authenticationManager;
-    }
 
     /**
      * 应用启动监听器
