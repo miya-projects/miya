@@ -82,9 +82,6 @@ public class SysFileApi {
             }
             list.add(sysFileService.upload(file));
         }
-        if (formatType == null){
-
-        }
         FormatType ft = Optional.ofNullable(formatType).orElse(FormatType.Array);
         if (ft.equals(FormatType.Object) && list.size() == 1){
             return R.successWithData(list.get(0));

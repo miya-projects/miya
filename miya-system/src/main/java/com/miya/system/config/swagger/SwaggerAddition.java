@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ApiDescriptionBuilder;
 import springfox.documentation.builders.OperationBuilder;
@@ -17,6 +16,7 @@ import springfox.documentation.spring.web.readers.operation.CachingOperationName
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,6 +26,9 @@ import java.util.List;
 public class SwaggerAddition implements ApiListingScannerPlugin {
     @Override
     public List<ApiDescription> apply(DocumentationContext documentationContext) {
+        if (!"系统".equals(documentationContext.getGroupName())) {
+            return Collections.emptyList();
+        }
         return new ArrayList<>(
                 Arrays.asList(
                         new ApiDescriptionBuilder(

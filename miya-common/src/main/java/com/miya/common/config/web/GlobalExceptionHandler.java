@@ -2,6 +2,7 @@ package com.miya.common.config.web;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
+import com.miya.common.exception.DataDuplicateException;
 import com.miya.common.exception.DataTooLongException;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
@@ -9,6 +10,7 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.util.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
+import org.hibernate.exception.spi.SQLExceptionConversionDelegate;
 import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -122,6 +124,12 @@ public class GlobalExceptionHandler {
         return R.errorWithMsg(StrUtil.format("{}输入太长", e.getFiledName()));
     }
 
+    @ExceptionHandler({DataDuplicateException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public R<?> dataDuplicateException(HttpServletResponse response, DataDuplicateException e) {
+        return R.errorWithMsg(StrUtil.format("{}字段数据重复: {}", e.getFiledName(), e.getValue()));
+    }
+
     @ExceptionHandler({MissingServletRequestParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> missingServletRequestParameterException(HttpServletResponse response, MissingServletRequestParameterException e) {
@@ -156,5 +164,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ClientAbortException.class})
     public void httpMediaTypeNotAcceptableException(HttpServletResponse response, ClientAbortException e) {}
 
+    /**
+     * 数据完整性约束异常
+     * 如果使用hibernate，可以自定义异常转换器实现同样的效果，参考{@link SQLExceptionConversionDelegate}
+     * SQLExceptionConversionDelegate.buildSQLExceptionConversionDelegate()
+     */
+    // @ExceptionHandler({DataIntegrityViolationException.class})
+    // @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    // public void dataIntegrityViolationException(HttpServletResponse response, DataIntegrityViolationException e) throws IOException {
+    //  需要将mysql驱动包加入到编译时
+    //     // Throwable causedBy = ExceptionUtil.getCausedBy(e, MysqlDataTruncation.class);
+    //     R<Object> r = R.errorWithMsg(StrUtil.format("{}", e.getMessage()));
+    //     response.getWriter().write(Objects.requireNonNull(JSONUtils.toJson(r)));
+    //     response.setContentType(ContentType.JSON.toString());
+    // }
 
 }
