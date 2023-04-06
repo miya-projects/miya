@@ -72,7 +72,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor {
             return true;
         }
         if (Objects.isNull(principal)) {
-            response.setStatus(403);
+            response.setStatus(401);
             response.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.toString());
             response.getWriter().write(JSONUtil.toJsonStr(R.errorWithCodeAndMsg(ResponseCode.Common.NO_LOGIN)));
             return false;
