@@ -80,8 +80,9 @@ public class DownloadService {
             executeAsync(task);
         }else if (exportWay.equalsIgnoreCase("sync")) {
             execute(task);
+        }else {
+            throw new ErrorMsgException("未正确配置导出方式，请先配置EXPORT_WAY后再进行导出");
         }
-        throw new ErrorMsgException("未正确配置导出方式，请先配置EXPORT_WAY后再进行导出");
     }
 
     /**
@@ -99,7 +100,6 @@ public class DownloadService {
             throw new IllegalStateException("当前线程请求已失去");
         }
         final SysDownloadRecord record = TransactionUtil.INSTANCE.transactional(() -> newDownloadRecord(task));
-        downloadRecordRepository.save(record);
         log.info("[{}]开始导出", task.getName());
         SysFile file = fileService.upload(task.getFileName(), task.get());
         TransactionUtil.INSTANCE.transactional(() -> {
@@ -162,7 +162,7 @@ public class DownloadService {
         record.setName(task.getName());
         record.setFileName(task.getFileName());
         record.setUser(task.getUser());
-        record = downloadRecordRepository.save(record);
+        record = downloadRecordRepository.saveAndFlush(record);
         return record;
     }
 

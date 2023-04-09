@@ -1,5 +1,6 @@
 package com.miya.system.module.role.model;
 
+import com.miya.common.config.xlsx.ToExcelFormat;
 import com.miya.common.module.base.Convertable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @ApiModel
 @Getter
 @Setter
-public class SysRoleSimpleDTO extends Convertable {
+public class SysRoleSimpleDTO extends Convertable implements ToExcelFormat {
 
     private String id;
 
@@ -21,7 +22,7 @@ public class SysRoleSimpleDTO extends Convertable {
     }
 
     @Override
-    public String toString() {
+    public String toStringForExcel() {
         return name;
     }
 }

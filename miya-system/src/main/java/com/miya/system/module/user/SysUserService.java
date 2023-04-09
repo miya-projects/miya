@@ -11,6 +11,7 @@ import com.miya.common.auth.way.LoginDevice;
 import com.miya.common.auth.way.LoginWay;
 import com.miya.common.config.web.jwt.JwtPayload;
 import com.miya.common.config.web.jwt.TokenService;
+import com.miya.common.config.xlsx.XlsxUtil;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.exception.ResponseCodeException;
 import com.miya.common.model.dto.base.R;
@@ -38,16 +39,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
+import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.transform.Transformer;
 import org.jxls.util.JxlsHelper;
+import org.springframework.context.expression.BeanExpressionContextAccessor;
+import org.springframework.context.expression.BeanFactoryAccessor;
+import org.springframework.context.expression.EnvironmentAccessor;
+import org.springframework.context.expression.MapAccessor;
 import org.springframework.data.util.CastUtils;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -418,13 +426,13 @@ public class SysUserService extends BaseService implements SystemInit {
             });
             Context context = new Context();
             context.putVar("items", userList);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try {
-                JxlsHelper.getInstance().processTemplate(resource.openStream(), stream, context);
+                XlsxUtil.export(resource.openStream(), outputStream, context);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return new ByteArrayInputStream(stream.toByteArray());
+            return new ByteArrayInputStream(outputStream.toByteArray());
         });
         downloadService.export(downloadTask);
     }
