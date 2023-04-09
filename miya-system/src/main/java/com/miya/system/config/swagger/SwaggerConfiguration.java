@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -313,7 +314,8 @@ public class SwaggerConfiguration {
                 List<AlternateTypeRule> arrayList;
                 arrayList = newArrayList(
                         newRule(Pageable.class, Page.class),
-                        newRule(Timestamp.class, Date.class)
+                        newRule(Timestamp.class, Date.class),
+                        newRule(YearMonth.class, String.class)
                 );
                 return arrayList;
             }
