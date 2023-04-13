@@ -79,20 +79,29 @@ public class SysRoleService extends BaseService implements SystemInit {
     }
 
     @Override
-    public void init(){
+    public void init() {
         // 检查默认角色有效性
         for (SysDefaultRoles value : SysDefaultRoles.values()) {
-            try{
-                value.getSysRole();
-            }catch (ObjectNotExistException e){
-                log.info("默认角色【{}】不存在，自动创建...", value.getName());
-                // 没有就新增
-                SysRole role = new SysRole();
-                role.setIsSystem(true);
-                role.setName(value.getName());
-                role.setId(value.getId());
-                sysRoleRepository.save(role);
-            }
+            touchSystemRole(value);
+        }
+        // Arrays.stream(SysDefaultRoles.values()).forEach(this::touchSystemRole);
+    }
+
+    /**
+     * 摸一下系统角色，如果不存在就创建
+     * @param defaultRole
+     */
+    public void touchSystemRole(DefaultRole defaultRole) {
+        try {
+            defaultRole.getSysRole();
+        } catch (ObjectNotExistException e){
+            log.info("默认角色【{}】不存在，自动创建...", defaultRole.getName());
+            // 没有就新增
+            SysRole role = new SysRole();
+            role.setIsSystem(true);
+            role.setName(defaultRole.getName());
+            role.setId(defaultRole.getId());
+            sysRoleRepository.save(role);
         }
     }
 
