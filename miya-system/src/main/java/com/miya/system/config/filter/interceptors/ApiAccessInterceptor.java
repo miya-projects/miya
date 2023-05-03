@@ -9,6 +9,7 @@ import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.system.module.role.SysRoleService;
 import com.miya.system.module.user.SysUserService;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -85,19 +86,19 @@ public class ApiAccessInterceptor implements HandlerInterceptor {
                 return false;
             }
         }
-        if (principal instanceof SysUser) {
-            SysUser sysUser = (SysUser) principal;
+        if (principal instanceof SysUserPrincipal) {
+            SysUserPrincipal userPrincipal = (SysUserPrincipal) principal;
             if (Objects.nonNull(businessCodes) && businessCodes.length > 0) {
                 request.setAttribute("business", businessCodes[0]);
             }
             /*
              * 超级管理员不受所有权限控制
              */
-            if (sysUser.isSuperAdmin()) {
+            if (userPrincipal.isSuperAdmin()) {
                 return true;
             }
             if (Objects.nonNull(businessCodes) && businessCodes.length > 0) {
-                Set<Business> permissions = sysUserService.getPermissions(sysUser);
+                Set<Business> permissions = sysUserService.getPermissions(userPrincipal);
                 for (Business b : permissions) {
                     for (String code : businessCodes) {
                         Business business = sysRoleService.valueOfCode(code);
@@ -108,11 +109,10 @@ public class ApiAccessInterceptor implements HandlerInterceptor {
                 }
                 response.setStatus(200);
                 String requestURI = request.getRequestURI();
-                log.info("拒绝 {} 访问 {} :无权限",sysUser.getName(),requestURI);
+                log.info("拒绝 {} 访问 {} :无权限",userPrincipal.getName(),requestURI);
                 reject(response);
                 return false;
             }
-            //没有加BelongBusiness注解直接通过
             return true;
         }
         return true;

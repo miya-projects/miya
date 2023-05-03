@@ -335,7 +335,7 @@ public class SysUserService extends BaseService implements SystemInit {
      *
      * @param sysUser
      */
-    public Set<Business> getPermissions(SysUser sysUser) {
+    public Set<Business> getPermissions(SysUserPrincipal sysUser) {
         Set<Business> permissions = new HashSet<>();
         if (Objects.nonNull(sysUser.getRoles())) {
             return sysUser.getRoles().stream()

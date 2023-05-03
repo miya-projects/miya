@@ -4,7 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.system.module.department.dto.SysDepartmentSimpleDTO;
 import com.miya.system.module.oss.model.SysFileDTO;
-import com.miya.system.module.role.model.SysRoleSimpleDTO;
+import com.miya.system.module.role.model.SysRoleDTO;
 import com.miya.system.module.user.SysUserRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,7 @@ public class SysUserPrincipal extends BaseEntity {
 
     private SysUser.Sex sex;
 
-    private Set<SysRoleSimpleDTO> roles;
+    private Set<SysRoleDTO> roles;
 
     private SysUser.AccountStatus accountStatus;
 
