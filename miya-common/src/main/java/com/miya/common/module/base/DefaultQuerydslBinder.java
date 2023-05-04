@@ -13,6 +13,8 @@ import org.springframework.data.util.CastUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +37,9 @@ public class DefaultQuerydslBinder {
         bindings.bind(Timestamp.class)
                 .all(CastUtils.cast(dateBinding));
         bindings.bind(LocalDate.class).all(new LocalDateMultiValueBinding());
+        bindings.bind(LocalDateTime.class).all(new LocalDateTimeMultiValueBinding());
+        bindings.bind(YearMonth.class).all(new YearMonthMultiValueBinding());
+
         bindings.bind(String.class)
                 .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
 
@@ -99,6 +104,64 @@ public class DefaultQuerydslBinder {
             }
 
             throw new IllegalArgumentException("LocalDate 参数个数不匹配！要么是单个(精确)，要么是两个(范围)!");
+        }
+    }
+
+    static class LocalDateTimeMultiValueBinding implements MultiValueBinding<Path<LocalDateTime>, LocalDateTime> {
+
+        @Override
+        public @NonNull Optional<Predicate> bind(Path<LocalDateTime> path, Collection<? extends LocalDateTime> value) {
+            BooleanBuilder booleanBuilder = new BooleanBuilder();
+            DatePath<LocalDateTime> localDateTimeDatePath = CastUtils.cast(path);
+            final List<? extends LocalDateTime> localDates = new ArrayList<>(value);
+            // 精确打击
+            if (localDates.size() == 1) {
+                LocalDateTime localDateTime = localDates.get(0);
+                booleanBuilder.and(localDateTimeDatePath.eq(localDateTime));
+                return Optional.of(booleanBuilder);
+            }
+            // 范围攻击
+            if (localDates.size() == 2) {
+                Collections.sort(localDates);
+                LocalDateTime startDateTime = localDates.get(0);
+                LocalDateTime endDateTime = localDates.get(1);
+                if (Objects.isNull(startDateTime) || Objects.isNull(endDateTime)) {
+                    return Optional.empty();
+                }
+                booleanBuilder.and(localDateTimeDatePath.between(startDateTime, endDateTime));
+                return Optional.of(booleanBuilder);
+            }
+
+            throw new IllegalArgumentException("LocalDateTime 参数个数不匹配！要么是单个(精确)，要么是两个(范围)!");
+        }
+    }
+
+    static class YearMonthMultiValueBinding implements MultiValueBinding<Path<YearMonth>, YearMonth> {
+
+        @Override
+        public @NonNull Optional<Predicate> bind(Path<YearMonth> path, Collection<? extends YearMonth> value) {
+            BooleanBuilder booleanBuilder = new BooleanBuilder();
+            DatePath<YearMonth> yearMonthPath = CastUtils.cast(path);
+            final List<? extends YearMonth> yearMonths = new ArrayList<>(value);
+            // 精确打击
+            if (yearMonths.size() == 1) {
+                YearMonth localDateTime = yearMonths.get(0);
+                booleanBuilder.and(yearMonthPath.eq(localDateTime));
+                return Optional.of(booleanBuilder);
+            }
+            // 范围攻击
+            if (yearMonths.size() == 2) {
+                Collections.sort(yearMonths);
+                YearMonth startYearMonth = yearMonths.get(0);
+                YearMonth endYearMonth = yearMonths.get(1);
+                if (Objects.isNull(startYearMonth) || Objects.isNull(endYearMonth)) {
+                    return Optional.empty();
+                }
+                booleanBuilder.and(yearMonthPath.between(startYearMonth, endYearMonth));
+                return Optional.of(booleanBuilder);
+            }
+
+            throw new IllegalArgumentException("YearMonth 参数个数不匹配！要么是单个(精确)，要么是两个(范围)!");
         }
     }
 

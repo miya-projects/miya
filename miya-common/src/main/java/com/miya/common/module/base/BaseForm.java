@@ -60,18 +60,24 @@ public abstract class BaseForm<PO> {
 
         List<String> fieldNamesForEntity = Arrays.stream(declaredFieldsForEntity).map(Field::getName).collect(Collectors.toList());
 
-        // form中entity没有的字段
-        List<Field> detachFields = Arrays.stream(declaredFieldsForForm).filter(field -> !fieldNamesForEntity.contains(field.getName())).collect(Collectors.toList());
-        if (detachFields.size() > 0){
-            throw new RuntimeException(StrUtil.format("字段【{}】在class 【{}】中不存在",
-                    detachFields.stream().map(Field::getName).collect(Collectors.toList()), entityClass.getSimpleName()));
-        }
+        // form中entity没有的字段，这些字段应当有form自己特殊处理
+        // List<Field> detachFields = Arrays.stream(declaredFieldsForForm).filter(field -> !fieldNamesForEntity.contains(field.getName())).collect(Collectors.toList());
+        // if (detachFields.size() > 0) {
+        //     throw new RuntimeException(StrUtil.format("字段【{}】在class 【{}】中不存在",
+        //             detachFields.stream().map(Field::getName).collect(Collectors.toList()), entityClass.getSimpleName()));
+        // }
         ConversionService conversionService = SpringUtil.getBean(ConversionService.class);
 
 
         // 在form中和entity类型不同的字段 使用spring类型转换系统转换
         List<Field> fieldsInFormDiffType = Arrays.stream(declaredFieldsForForm)
-                .filter(field -> !field.getType().equals(ReflectUtil.getField(entityClass, field.getName()).getType()))
+                .filter(field -> {
+                    Field fieldInEntity = ReflectUtil.getField(entityClass, field.getName());
+                    if (fieldInEntity == null) {
+                        return false;
+                    }
+                    return !field.getType().equals(fieldInEntity.getType());
+                })
                 .collect(Collectors.toList());
 
         List<String> ignoreProperties = new ArrayList<>();

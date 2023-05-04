@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Date;
 
 //todo 测试后删除
@@ -59,6 +60,7 @@ public class ClientApi {
     static class TestDTO extends BaseForm<SysUser> {
         @NotBlank
         private String name;
+        private YearMonth yearMonth;
         private Integer num;
         private Date date;
         private LocalDate localDate;

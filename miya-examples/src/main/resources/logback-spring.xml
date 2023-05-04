@@ -48,6 +48,12 @@
         </encoder>
     </appender>
 
+    <appender name="file_console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
     <springProfile name="!prod">
 <!--        <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
 <!--            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
@@ -102,7 +108,7 @@
             <!--        </filter>-->
         </appender>
         <root level="info">
-            <appender-ref ref="console"/>
+            <appender-ref ref="file_console"/>
             <appender-ref ref="file"/>
         </root>
     </springProfile>
