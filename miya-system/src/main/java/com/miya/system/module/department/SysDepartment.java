@@ -26,7 +26,7 @@ import java.util.Objects;
 @Table(indexes = {@Index(name = "name_unique", columnList = "pid, name", unique = true)})
 public class SysDepartment extends BaseEntity {
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String name;
 
     @Column(length = 200)

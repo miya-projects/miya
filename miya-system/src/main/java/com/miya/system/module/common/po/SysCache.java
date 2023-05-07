@@ -11,6 +11,8 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Objects;
 
@@ -23,9 +25,10 @@ import java.util.Objects;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = {@Index(name = "s_key_expire_date", columnList = "skey, expireDate")})
 public class SysCache extends BaseEntity {
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String sKey;
 
     @Column(columnDefinition = "text")

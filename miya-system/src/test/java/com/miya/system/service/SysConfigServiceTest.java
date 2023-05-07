@@ -1,6 +1,7 @@
 package com.miya.system.service;
 
 import com.miya.common.module.config.SysConfigService;
+import com.miya.common.module.config.SystemConfigKeys;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,7 @@ public class SysConfigServiceTest {
 
     @Test
     public void getBackendDomain() {
-        String backendDomain = sysConfigService.get(SysConfigService.SystemConfigKey.BACKEND_DOMAIN);
+        String backendDomain = sysConfigService.get(SystemConfigKeys.BACKEND_DOMAIN);
         log.info(backendDomain);
     }
 

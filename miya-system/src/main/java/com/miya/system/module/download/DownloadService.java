@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.config.SysConfigService;
+import com.miya.common.module.config.SystemConfigKeys;
 import com.miya.common.util.AuthenticationUtil;
 import com.miya.common.util.TransactionUtil;
 import com.miya.system.module.oss.model.SysFile;
@@ -75,7 +76,7 @@ public class DownloadService {
      */
     @Transactional
     public void export(DownloadTask task) {
-        String exportWay = configService.get(SysConfigService.SystemConfigKey.EXPORT_WAY);
+        String exportWay = configService.get(SystemConfigKeys.EXPORT_WAY);
         if (exportWay.equalsIgnoreCase("async")){
             executeAsync(task);
         }else if (exportWay.equalsIgnoreCase("sync")) {

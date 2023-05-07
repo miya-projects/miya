@@ -28,16 +28,17 @@ public class SysDictItem extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "dict_id")
     private SysDict sysDict;
+
     /**
      * 字典键值
      */
-    @Column(name = "`value`", length = 50)
+    @Column(name = "`value`", length = 50, nullable = false)
     private String value;
 
     /**
      * 描述
      */
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String label;
 
 }

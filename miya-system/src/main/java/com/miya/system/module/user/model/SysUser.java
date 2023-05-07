@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Table(indexes = {@Index(name = "avatar", columnList = "avatar_id"), @Index(name = "username", columnList = "username", unique = true)})
 public class SysUser extends BaseEntity {
 
-    @Column(unique = true, length = 20)
+    @Column(length = 20, nullable = false)
     private String username;
 
     @Column(length = 60)
@@ -46,7 +46,7 @@ public class SysUser extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "enum('NORMAL', 'LOCKED')")
+    @Column(columnDefinition = "enum('NORMAL', 'LOCKED')", nullable = false)
     private AccountStatus accountStatus = AccountStatus.NORMAL;
 
     @Column(length = 512)

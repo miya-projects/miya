@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -26,10 +25,10 @@ public class InitSystem {
      * 初始化系统
      */
     @PostConstruct
-    public void init(){
+    public void init() {
         String ddlauto = jr.getProperties().get(AvailableSettings.HBM2DDL_AUTO);
-        if (ddl.contains(ddlauto)){
-            Boolean isInitialize = sysConfigService.get(SysConfigService.SystemConfigKey.IS_INITIALIZE);
+        if (ddl.contains(ddlauto)) {
+            Boolean isInitialize = SystemConfigKeys.IS_INITIALIZE.getValue();
             if (!isInitialize) {
                 log.info("正在初始化系统...");
                 // 系统还未初始化，需要初始化
@@ -37,7 +36,7 @@ public class InitSystem {
                     systemInit.init();
                 }
                 // 设置为初始化完成
-                sysConfigService.put(SysConfigService.SystemConfigKey.IS_INITIALIZE.name(), "1", SysConfigService.SystemConfigKey.IS_INITIALIZE.getName(), "SYSTEM");
+                sysConfigService.put(SystemConfigKeys.IS_INITIALIZE.name(), "1", SystemConfigKeys.IS_INITIALIZE.getName(), "SYSTEM");
                 log.info("初始化完成");
             }
 

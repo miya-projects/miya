@@ -27,11 +27,11 @@ public class SysUserSocial extends BaseEntity implements Serializable {
     /**
      * 渠道
      */
-    @Column(name = "channel", length = 20)
+    @Column(name = "channel", length = 20, nullable = false)
     @EqualsAndHashCode.Include
     private String channel;
 
-    @Column(name = "social_id", length = 32)
+    @Column(name = "social_id", length = 32, nullable = false)
     @EqualsAndHashCode.Include
     private String socialId;
 
@@ -41,6 +41,10 @@ public class SysUserSocial extends BaseEntity implements Serializable {
     @Column(name = "extra", columnDefinition = "json")
     @Type(type = "json")
     private Map<String, Object> extra;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private SysUser user;
 
     public static SysUserSocial ofDingUnion(String socialId) {
         return of(Channel.DING_UNION.name(), socialId);

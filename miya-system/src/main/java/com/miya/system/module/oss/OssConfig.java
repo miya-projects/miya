@@ -1,7 +1,7 @@
 package com.miya.system.module.oss;
 
-import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.module.config.SysConfigService;
+import com.miya.common.module.config.SystemConfigKeys;
 import com.miya.system.module.oss.service.SysFileService;
 import com.miya.system.module.oss.service.impl.BareSysFileService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,7 +31,7 @@ public class OssConfig {
     @Bean
     @ConditionalOnMissingBean(SysFileService.class)
     public BareSysFileService bareSysFileService(){
-        return new BareSysFileService(sysFileRepository, ossConfigProperties.getBare(), configService.getSupplier(SysConfigService.SystemConfigKey.BACKEND_DOMAIN));
+        return new BareSysFileService(sysFileRepository, ossConfigProperties.getBare(), configService.getSupplier(SystemConfigKeys.BACKEND_DOMAIN));
     }
 
     /**

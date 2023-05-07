@@ -2,6 +2,7 @@ package com.miya.common.config;
 
 import com.miya.common.annotation.constraint.CustomMessageInterpolator;
 import com.miya.common.config.orm.source.CommonDataSourceConfig;
+import com.miya.common.config.orm.source.DataSourceConfig;
 import com.miya.common.module.bod.BackupDataSourceConfig;
 import com.miya.common.module.cache.CacheConfig;
 import com.miya.common.module.config.InitSystem;
@@ -23,13 +24,14 @@ import javax.validation.Validator;
         }
 )
 @Import({
+        InitSystem.class,
         SmsConfig.class,
         CacheConfig.class,
         CommonDataSourceConfig.class,
         BackupDataSourceConfig.class,
         SysConfigService.class,
-        InitSystem.class,
-        TransactionUtil.class
+        TransactionUtil.class,
+        DataSourceConfig.class
 })
 @Configuration
 @AutoConfigureBefore(ValidationAutoConfiguration.class)

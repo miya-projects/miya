@@ -33,7 +33,7 @@ public class SysConfig extends BaseEntity {
     /**
      * 变量key
      */
-    @Column(name = "`key`", length = 50, unique = true)
+    @Column(name = "`key`", length = 50, nullable = false)
     private String key;
 
     /**

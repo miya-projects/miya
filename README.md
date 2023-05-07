@@ -39,9 +39,10 @@
 
 2. 必要配置
 ```shell
-config.db.url=jdbc:mysql://localhost:3306/miya?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true
-config.db.username=root
-config.db.password=root
+spring.datasource.url=jdbc:mysql://localhost:3306/miya?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ```
 3. 启动springboot
 

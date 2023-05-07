@@ -1,6 +1,5 @@
 package com.miya.common.service;
 
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -11,10 +10,7 @@ import com.miya.common.config.web.jwt.TokenExpirationException;
 import com.miya.common.config.web.jwt.TokenService;
 import com.miya.common.module.cache.CacheKey;
 import com.miya.common.module.cache.KeyValueStore;
-import com.miya.common.module.config.SysConfig;
-import com.miya.common.module.config.SysConfigService;
-import com.miya.common.module.init.SystemInit;
-import com.miya.common.module.init.SystemInitErrorException;
+import com.miya.common.module.config.SystemConfigKeys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,15 +26,19 @@ import org.springframework.data.repository.support.DefaultRepositoryInvokerFacto
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.repository.support.RepositoryInvoker;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author 杨超辉
  */
 @Slf4j
-public class JwtTokenService implements Serializable, SystemInit, TokenService, ApplicationContextAware, SmartInitializingSingleton {
+public class JwtTokenService implements Serializable, TokenService, ApplicationContextAware, SmartInitializingSingleton {
     private static final long serialVersionUID = -3301605591108950415L;
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_ID = "id";
@@ -50,32 +50,16 @@ public class JwtTokenService implements Serializable, SystemInit, TokenService, 
     /**
      * 签名密钥
      */
-    private byte[] secret;
+    private final byte[] secret;
 
-    private final SysConfigService configService;
     private final KeyValueStore keyValueStore;
 
     private static JwtTokenService INSTANCE;
 
 
-    @Override
-    public void init() throws SystemInitErrorException {
-        // 重置secret
-        // 随机生成一个Secret
-        String secStr = RandomUtil.randomString(18);
-        this.configService.put(JWT_SECRET_KEY, secStr, "jwt密钥(务必不可泄露)", SysConfig.GROUP_SYSTEM);
-        this.secret = secStr.getBytes();
-    }
-
-    public JwtTokenService(SysConfigService configService, KeyValueStore keyValueStore){
-        this.configService = configService;
+    public JwtTokenService(KeyValueStore keyValueStore){
         this.keyValueStore = keyValueStore;
-        String sec = configService.get(JWT_SECRET_KEY).orElseGet(() -> {
-            log.info("未设置JWT密钥，生成一个");
-            String secStr = RandomUtil.randomString(18);
-            this.configService.put(JWT_SECRET_KEY, secStr, "jwt密钥(务必不可泄露)", SysConfig.GROUP_SYSTEM);
-            return secStr;
-        });
+        String sec = SystemConfigKeys.JWT_SECRET_KEY.getValue();
         this.secret = sec.getBytes();
     }
 

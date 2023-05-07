@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * 数据源配置组合 多个模块中的配置或扫描需要在多个分散类里配置，然后在这里合并
  */
-@Component
 public class DataSourceConfig {
 
     @Getter

@@ -6,6 +6,7 @@ import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.miya.common.module.config.SysConfigService;
+import com.miya.common.module.config.SystemConfigKeys;
 import com.miya.system.module.oss.service.impl.AliyunSysFileService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.annotation.Resource;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -39,7 +39,7 @@ public class AliyunOssConfig {
         conf.setSupportCname(true);
 
         Supplier<String> domainSupplier = SpringUtil.getBean(SysConfigService.class)
-                .getSupplier(SysConfigService.SystemConfigKey.OSS_DOMAIN);
+                .getSupplier(SystemConfigKeys.OSS_DOMAIN);
         String endpoint = aliyun.getEndpoint();
         String domain = domainSupplier.get();
         if(StrUtil.isNotBlank(domain)){

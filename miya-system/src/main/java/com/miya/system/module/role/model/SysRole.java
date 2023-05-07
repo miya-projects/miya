@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Table(indexes = {@Index(name = "name_unique", columnList = "name", unique = true)})
 public class SysRole extends BaseEntity {
 
-    @Column(length = 50, unique = true)
+    @Column(length = 50, nullable = false)
     private String name;
 
     @Column(length = 10)
@@ -33,14 +33,15 @@ public class SysRole extends BaseEntity {
     @Column(length = 100)
     private String description;
 
+    @Column(nullable = false)
     private Boolean isSystem;
 
     /**
      * 映射拥有的权限，该权限随role的删除而删除
      */
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "sys_permission", joinColumns = {@JoinColumn(name = "role_id")})
-    @Column(name = "code", insertable = false, length = 100, columnDefinition = "")
+    @CollectionTable(name = "sys_permission", joinColumns = {@JoinColumn(name = "role_id", nullable = false)})
+    @Column(name = "code", insertable = false, length = 100, nullable = false)
     private Set<String> permissions = new ConcurrentHashSet<>();
 
     public Set<Business> getBusiness(){

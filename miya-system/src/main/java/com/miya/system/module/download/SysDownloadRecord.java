@@ -14,20 +14,20 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.Date;
 
-@Table(name = "sys_download_record")
+@Table(name = "sys_download_record", indexes = {@Index(name = "status", columnList = "status")})
 @Entity
 @Getter
 @Setter
 public class SysDownloadRecord extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "enum('WAITING', 'PROCESSING', 'COMPLETED', 'DOWNLOAD', 'FAILED')")
+    @Column(name = "status", nullable = false, columnDefinition = "enum('WAITING', 'PROCESSING', 'COMPLETED', 'DOWNLOAD', 'FAILED')")
     private Status status = Status.WAITING;
 
     /**
      * 下载内容
      */
-    @Column(name = "name", length = 100)
+    @Column(name = "name", length = 100, nullable = false)
     private String name;
 
     @Column(name = "download_time")

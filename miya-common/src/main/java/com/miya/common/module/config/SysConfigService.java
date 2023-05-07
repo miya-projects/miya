@@ -21,7 +21,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,22 +41,31 @@ public class SysConfigService implements SystemInit {
 
     @Override
     public void init() throws SystemInitErrorException {
-        Boolean isInitialize = get(SystemConfigKey.IS_INITIALIZE);
+        Boolean isInitialize = get(SystemConfigKeys.IS_INITIALIZE);
         if (!isInitialize) {
             // 还未初始化，进行初始化
-            for (SystemConfigKey configKey : SystemConfigKey.values()) {
-                put(configKey.name(), configKey.defaultValue, configKey.name, "SYSTEM");
+            for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
+                put(configKey.name(), configKey.getDefaultValue(), configKey.getName(), "SYSTEM");
             }
         } else {
             // 增量更新
-            for (SystemConfigKey configKey : SystemConfigKey.values()) {
-                Optional<String> valueOptional = get(configKey.name());
-                if (!valueOptional.isPresent()) {
-                    put(configKey.name(), configKey.defaultValue, configKey.name, "SYSTEM");
-                }
+            for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
+                touchSystemConfig(configKey);
             }
         }
     }
+
+    /**
+     * 摸一下系统配置，如果不存在就创建
+     * @param systemConfig
+     */
+    public void touchSystemConfig(SystemConfig systemConfig) {
+        Optional<String> val = get(systemConfig.name());
+        if (!val.isPresent()) {
+            put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), "SYSTEM");
+        }
+    }
+
 
     /**
      *  注册lazymap bean，可通过以下方式注入配置，属性，支持动态重载配置
@@ -71,35 +79,6 @@ public class SysConfigService implements SystemInit {
         return MapUtils.lazyMap(new HashMap<>(),
                 key -> () -> SpringUtil.getBean(SysConfigService.class).get(key).orElse("")
         );
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum SystemConfigKey implements Serializable {
-        IS_INITIALIZE("是否初始化完毕", Boolean.class, "false"),
-        SYSTEM_NAME("系统名称", String.class, "MIYA"),
-        SYSTEM_VERSION("系统版本", String.class, "0.0.1"),
-        BACKEND_DOMAIN("后端域名(让后端知道怎么可以访问到自己)", String.class, "http://localhost:8080"),
-        OSS_DOMAIN("OSS域名，设置后文件访问将直接使用该域名，需自行配置OSS后端", String.class, ""),
-        EXPORT_WAY("文件导出方式，async(异步)sync(同步), 默认同步", String.class, "sync"),
-        ;
-
-        private final String name;
-
-        /**
-         * 值的类型
-         */
-        private final Class valueType;
-        /**
-         * 默认值
-         */
-        private final String defaultValue;
-
-        public Object getValue() {
-            SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
-            //不想给默认值 -> 应当有一次初始化
-            return configService.get(this);
-        }
     }
 
     /**
@@ -130,20 +109,20 @@ public class SysConfigService implements SystemInit {
      * 获取系统元信息
      */
     public SystemMeta getSystemMeta() {
-        return new SystemMeta(get(SystemConfigKey.SYSTEM_NAME), get(SystemConfigKey.SYSTEM_VERSION), get(SystemConfigKey.EXPORT_WAY));
+        return new SystemMeta(get(SystemConfigKeys.SYSTEM_NAME), get(SystemConfigKeys.SYSTEM_VERSION), get(SystemConfigKeys.EXPORT_WAY));
     }
 
     /**
      * 返回supplier包装过的参数，推荐使用，每次get都会重新加载参数(缓存或DB)。且低依赖(不用依赖于整个configService)。
      * @param key
      */
-    public <T> Supplier<T> getSupplier(SystemConfigKey key) {
+    public <T> Supplier<T> getSupplier(SystemConfigKeys key) {
         return () -> SpringUtil.getBean(SysConfigService.class).get(key);
     }
 
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#key.name()")
-    public <T> T get(SystemConfigKey key) {
-        return (T)get(key.name(), key.getValueType()).orElse(conversionService.convert(key.defaultValue, key.valueType));
+    public <T> T get(SystemConfigKeys key) {
+        return (T)get(key.name(), key.getValueType()).orElse(conversionService.convert(key.getDefaultValue(), key.getValueType()));
     }
 
     /**
@@ -209,8 +188,8 @@ public class SysConfigService implements SystemInit {
 
     @PostConstruct
     public void afterPropertiesSet() {
-        if (!get(SystemConfigKey.BACKEND_DOMAIN.name()).isPresent()) {
-            log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKey.BACKEND_DOMAIN.defaultValue);
+        if (!get(SystemConfigKeys.BACKEND_DOMAIN.name()).isPresent()) {
+            log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKeys.BACKEND_DOMAIN.getDefaultValue());
         }
     }
 }

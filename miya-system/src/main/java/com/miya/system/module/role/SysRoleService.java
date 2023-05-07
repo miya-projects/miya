@@ -172,8 +172,9 @@ public class SysRoleService extends BaseService implements SystemInit {
      * @return      角色对象
      */
     @Cacheable(cacheNames = "SYS_ROLE_DEFAULT_ROLE", key = "#id")
-    public SysRole getDefaultRoleById(String id){
-        Optional<SysRole> roleOptional = sysRoleRepository.findOne(QSysRole.sysRole.isSystem.isTrue().and(QSysRole.sysRole.id.eq(id)));
+    public SysRole getDefaultRoleById(String id) {
+        QSysRole qSysRole = QSysRole.sysRole;
+        Optional<SysRole> roleOptional = sysRoleRepository.findOne(qSysRole.isSystem.isTrue().and(qSysRole.id.eq(id)));
         if (roleOptional.isPresent()) {
             return roleOptional.get();
         }

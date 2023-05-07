@@ -55,7 +55,7 @@ public class SysLog extends BaseEntity {
      * 详细日志内容
      */
     @FullTextField
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", nullable = false)
     private String content;
 
     /**

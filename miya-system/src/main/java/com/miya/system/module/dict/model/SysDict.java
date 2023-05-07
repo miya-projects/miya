@@ -24,22 +24,22 @@ public class SysDict extends BaseEntity {
     /**
      * 字典名称
      */
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String name;
 
     /**
      * 业务代码
      */
-    @Column(length = 30, unique = true)
+    @Column(length = 30, nullable = false)
     private String code;
+
     /**
      * 是否为系统字典
      */
+    @Column(nullable = false)
     private Boolean isSystem;
 
     @ToString.Exclude
-    // @Setter(AccessLevel.NONE)
-    // @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "sysDict", orphanRemoval = true)
     private List<SysDictItem> items;
 

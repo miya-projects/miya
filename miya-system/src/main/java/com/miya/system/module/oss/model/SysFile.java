@@ -13,6 +13,8 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,11 +33,12 @@ import java.util.Optional;
 @Setter
 @Accessors(chain = true)
 @Entity
+@Table(indexes = {@Index(name = "path", columnList = "path")})
 public class SysFile extends BaseEntity {
     /**
      * 服务端全路径/或oss的object name
      */
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String path;
 
     /**
@@ -47,12 +50,12 @@ public class SysFile extends BaseEntity {
     /**
      * 文件可读大小
      */
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private String simpleSize;
     /**
      * 文件大小
      */
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private Long size;
 
     /**

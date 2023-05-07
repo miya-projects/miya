@@ -2,6 +2,7 @@ package com.miya.system.module.oss.domain;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.miya.common.module.config.SystemConfigKeys;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.common.module.config.SysConfigService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -32,7 +32,7 @@ public class PublicAssetsSysFile extends SysFile {
     @Override
     public String getUrl() {
         if (backendDomainSupplier == null){
-            backendDomainSupplier = SpringUtil.getBean(SysConfigService.class).getSupplier(SysConfigService.SystemConfigKey.BACKEND_DOMAIN);
+            backendDomainSupplier = SpringUtil.getBean(SysConfigService.class).getSupplier(SystemConfigKeys.BACKEND_DOMAIN);
         }
         String backendDomain = backendDomainSupplier.get();
         try {
