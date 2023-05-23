@@ -33,7 +33,7 @@ public class JwtRequestResolver {
      */
     public GeneralAuthentication getAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
-        String token = resolveAuthorization(authorization);
+        String token = resolveTokenFromAuthorization(authorization);
         if (StrUtil.isBlank(token) && request.getMethod().equalsIgnoreCase("GET")){
             token = request.getParameter("token");
         }
@@ -48,7 +48,7 @@ public class JwtRequestResolver {
      * @param authorization
      * @return token
      */
-    public String resolveAuthorization(String authorization){
+    public String resolveTokenFromAuthorization(String authorization){
         if (StringUtils.isEmpty(authorization)) {
             return null;
         }

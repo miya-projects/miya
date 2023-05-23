@@ -74,7 +74,9 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
             ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
             return mapper.readValue(JSONUtil.toJsonStr(claims), JwtPayload.class);
         } catch (Exception e) {
-            throw new RuntimeException(StrUtil.format("token 不合法: {}", token));
+            log.trace("token不合法: {}", ExceptionUtils.getStackTrace(e));
+            // throw new RuntimeException(StrUtil.format("token 不合法: {}", token));
+            return null;
         }
     }
 
@@ -192,8 +194,11 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
     @Override
     public Object parseUserFromToken(String token){
         JwtPayload payload = getPayload(token);
-        if (Objects.isNull(keyValueStore.get(getKey(payload)))){
-            throw new RuntimeException("token不合法哦");
+        if (payload == null) {
+            return null;
+        }
+        if (Objects.isNull(keyValueStore.get(getKey(payload)))) {
+            return null;
         }
         return INSTANCE.getUserByJwtPayload(payload);
     }

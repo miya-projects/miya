@@ -82,7 +82,7 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
         StringBuilder logStr = new StringBuilder();
 
         if (format){
-            logStr.append("接收到请求：{} \n");
+            logStr.append("接收到请求：{} {} \n");
             Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
             if (entries.size() != 0){
                 logStr.append("请求参数: \n");
@@ -93,7 +93,7 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
                 } );
             }
         }else {
-            logStr.append("接收到请求：{},");
+            logStr.append("接收到请求：{} {},");
             Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
             if (entries.size() != 0){
                 logStr.append("请求参数: ");
@@ -105,7 +105,7 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
             }
             logStr.deleteCharAt(logStr.length() - 1);
         }
-        log.debug(logStr.toString(), url.get(), logStr);
+        log.debug(logStr.toString(), request.getMethod(), url.get(), logStr);
         return true;
     }
 

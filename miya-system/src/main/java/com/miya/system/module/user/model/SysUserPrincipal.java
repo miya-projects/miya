@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+
+import java.security.Principal;
 import java.util.Set;
 
 /**
@@ -18,7 +20,7 @@ import java.util.Set;
  */
 @Getter
 @Setter
-public class SysUserPrincipal extends BaseEntity {
+public class SysUserPrincipal extends BaseEntity implements Principal {
 
 
     protected static ModelMapper modelMapper = new ModelMapper();

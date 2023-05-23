@@ -35,11 +35,12 @@
 <!--    <logger name="org.mybatis" level="INFO"/>-->
 <!--    输出hibernate sql参数-->
 <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />-->
-    <logger name="org.hibernate.SQL"  level="DEBUG" />
+<!--    <logger name="org.hibernate.SQL"  level="DEBUG" />-->
 <!--    swagger-->
     <logger name="springfox.documentation.spring.web" level="warn" />
     <logger name="com.miya.common.config.web.RepeatableRequestMappingHandlerMapping" level="info" />
     <logger name="com.miya" level="DEBUG" />
+    <logger name="com.teamytd" level="DEBUG" />
 
     <!-- Console 输出设置 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
