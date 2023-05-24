@@ -3,7 +3,7 @@ package com.miya.system.module.notice;
 import com.miya.system.module.user.model.SysUser;
 import lombok.*;
 import org.hibernate.annotations.NotFound;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 

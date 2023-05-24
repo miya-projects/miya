@@ -13,9 +13,9 @@ import org.hibernate.type.Type;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostRemove;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.HashMap;

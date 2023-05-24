@@ -1,13 +1,14 @@
 package com.miya.system.module.user.model;
 
 import com.miya.common.module.base.BaseEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class SysUserSocial extends BaseEntity implements Serializable {
      * 绑定时的其他信息
      */
     @Column(name = "extra", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(JsonType.class)
     private Map<String, Object> extra;
 
     @ManyToOne(fetch = FetchType.LAZY)

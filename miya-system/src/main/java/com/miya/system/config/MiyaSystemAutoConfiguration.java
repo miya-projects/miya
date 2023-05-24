@@ -6,11 +6,13 @@ import com.miya.system.module.FlagForMiyaSystemModule;
 import com.miya.system.module.common.repository.CacheRepository;
 import com.miya.common.module.cache.KeyValueStore;
 import com.miya.system.module.common.KeyValueStoreInDb;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import java.util.List;
         }
 )
 @EnableCaching
+@AutoConfiguration
 @AutoConfigureAfter(MiyaCommonAutoConfiguration.class)
 public class MiyaSystemAutoConfiguration {
 

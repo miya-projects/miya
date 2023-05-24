@@ -5,7 +5,7 @@ import com.miya.common.module.bod.BackupOnDelete;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 /**

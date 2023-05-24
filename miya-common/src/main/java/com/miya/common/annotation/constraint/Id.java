@@ -8,17 +8,17 @@ import com.querydsl.core.types.dsl.BeanPath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.validation.Constraint;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Payload;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraintvalidation.SupportedValidationTarget;
+import jakarta.validation.constraintvalidation.ValidationTarget;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraintvalidation.SupportedValidationTarget;
-import javax.validation.constraintvalidation.ValidationTarget;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static javax.validation.constraintvalidation.ValidationTarget.PARAMETERS;
 
 /**
  * 保证该id在数据库内存在
@@ -36,7 +35,7 @@ import static javax.validation.constraintvalidation.ValidationTarget.PARAMETERS;
  */
 @Documented
 @Constraint(validatedBy = { Id.IdValidator.class})
-@SupportedValidationTarget({ValidationTarget.ANNOTATED_ELEMENT, PARAMETERS})
+@SupportedValidationTarget({ValidationTarget.ANNOTATED_ELEMENT, ValidationTarget.PARAMETERS})
 @Target({ FIELD, PARAMETER,ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @NotBlank(message = "{property}不能为空")

@@ -1,8 +1,8 @@
 package com.miya.common.module.base;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.annotation.Resource;
 
-import javax.annotation.Resource;
 
 /**
  * @author 杨超辉

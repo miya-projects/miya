@@ -8,15 +8,16 @@ import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
 import com.miya.system.module.role.SysDefaultRoles;
 import com.miya.system.module.role.model.SysRole;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.*;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 @BackupOnDelete
 @Accessors(chain = true)
 @FilterDef(name = "orderOwnerFilter",
-        parameters = {@ParamDef(name = "ownerIds", type = "string")})
+        parameters = {@ParamDef(name = "ownerIds", type = String.class)})
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})
 @Table(indexes = {@Index(name = "avatar", columnList = "avatar_id"), @Index(name = "username", columnList = "username", unique = true)})
 public class SysUser extends BaseEntity {
@@ -76,7 +77,7 @@ public class SysUser extends BaseEntity {
     /**
      * 偏好配置
      */
-    @Type(type = "json")
+    @Type(JsonType.class)
     @Column(name = "preferences", columnDefinition = "json")
     private Preferences preferences = new Preferences();
 

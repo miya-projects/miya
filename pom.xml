@@ -6,7 +6,7 @@
 
     <groupId>io.github.rxxy</groupId>
     <artifactId>miya-parent</artifactId>
-    <version>1.6.9</version>
+    <version>2.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -32,20 +32,22 @@
     </licenses>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-        <springboot.version>2.7.9</springboot.version>
-        <maven.jar.version>3.2.0</maven.jar.version>
-        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <springboot.version>3.1.0</springboot.version>
+        <maven.jar.version>3.3.0</maven.jar.version>
+        <maven.compiler.version>3.11.0</maven.compiler.version>
         <querydsl.version>5.0.0</querydsl.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.26</lombok.version>
+        <hutool.version>5.8.18</hutool.version>
         <elasticsearch.version>7.13.4</elasticsearch.version>
+        <jxls.version>2.12.0</jxls.version>
 
-        <miya.version>1.6.9</miya.version>
+        <miya.version>2.0</miya.version>
     </properties>
 
     <modules>
@@ -81,7 +83,6 @@
                     <plugin>
                         <groupId>pl.project13.maven</groupId>
                         <artifactId>git-commit-id-plugin</artifactId>
-                        <version>4.0.5</version>
                         <executions>
                             <execution>
                                 <id>get-the-git-infos</id>
@@ -105,7 +106,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -118,7 +118,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -134,7 +133,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -148,7 +146,6 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
@@ -159,7 +156,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
-                        <version>2.5.3</version>
                         <configuration>
                             <autoVersionSubmodules>true</autoVersionSubmodules>
                             <useReleaseProfile>false</useReleaseProfile>
@@ -183,6 +179,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
@@ -203,11 +203,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven.jar.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.querydsl</groupId>
                 <artifactId>querydsl-jpa</artifactId>
                 <version>${querydsl.version}</version>
@@ -217,16 +212,10 @@
                 <artifactId>querydsl-core</artifactId>
                 <version>${querydsl.version}</version>
             </dependency>
-            <!--<dependency>-->
-            <!--    <groupId>com.querydsl</groupId>-->
-            <!--    <artifactId>querydsl-apt</artifactId>-->
-            <!--    <version>${querydsl.version}</version>-->
-            <!--    <classifier>jpa</classifier>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.18</version>
+                <version>${hutool.version}</version>
             </dependency>
             <!--zxing二维码-->
             <dependency>
@@ -256,8 +245,8 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>druid</artifactId>
-                <version>1.2.16</version>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>1.2.18</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -270,11 +259,6 @@
                 <version>0.9.1</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>2.14.2</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.4</version>
@@ -282,12 +266,12 @@
             <dependency>
                 <groupId>org.jxls</groupId>
                 <artifactId>jxls</artifactId>
-                <version>2.11.0</version>
+                <version>${jxls.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jxls</groupId>
                 <artifactId>jxls-poi</artifactId>
-                <version>2.11.0</version>
+                <version>${jxls.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -295,6 +279,36 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>4.9.10</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.13</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

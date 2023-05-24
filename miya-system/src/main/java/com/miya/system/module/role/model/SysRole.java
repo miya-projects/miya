@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public class SysRole extends BaseEntity {
      */
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "sys_permission", joinColumns = {@JoinColumn(name = "role_id", nullable = false)})
-    @Column(name = "code", insertable = false, length = 100, nullable = false)
+    @Column(name = "code", length = 100, nullable = false)
     private Set<String> permissions = new ConcurrentHashSet<>();
 
     public Set<Business> getBusiness(){

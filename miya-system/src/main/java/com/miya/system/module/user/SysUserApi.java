@@ -20,8 +20,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 
 /**
@@ -138,7 +138,6 @@ public class SysUserApi extends BaseApi {
      * @param sysUser
      */
     @ApiOperation("重置密码")
-    //    @PreAuthorize("hasAuthority('user')")
     @PutMapping("{id}/password")
     @Acl(business = "sys:user:resetPassword")
     public R<String> resetPassword(@NotNull(message = "id不合法") @PathVariable(value = "id") SysUser sysUser) {

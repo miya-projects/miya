@@ -1,12 +1,13 @@
 package com.miya.system.module.notice;
 
 import com.miya.common.module.base.BaseEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class SysNotice extends BaseEntity {
      * 额外参数
      * todo 具化类型?
      */
-    @Type(type = "json")
+    @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
 

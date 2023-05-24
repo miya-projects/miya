@@ -5,6 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -40,9 +41,15 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
         builder.serializerByType(ReadableEnum.class, new ReadableEnumSerializer());
         builder.deserializerByType(String.class, new StringTrimmerDeserializer(String.class));
 
+        builder.postConfigurer(objectMapper -> {
+            objectMapper.getFactory()
+                    .setStreamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(500).build());
+        });
+
         extendsDateLike(builder);
 
     }
+
 
     /**
      * 扩展日期类型序列化方式

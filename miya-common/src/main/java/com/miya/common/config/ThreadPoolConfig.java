@@ -15,7 +15,7 @@ import java.util.concurrent.Executor;
 public class ThreadPoolConfig {
 
 
-    @Bean(name = "taskExecutor")
+//    @Bean(name = "taskExecutor")
     // @ConditionalOnMissingBean(Executor.class)
     public Executor taskExecutor(){
         // todo 动态调整

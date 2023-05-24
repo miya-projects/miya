@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * service基类

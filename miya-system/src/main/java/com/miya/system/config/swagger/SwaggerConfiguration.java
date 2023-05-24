@@ -45,11 +45,11 @@ import springfox.documentation.spi.service.ParameterBuilderPlugin;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.time.YearMonth;
@@ -63,11 +63,11 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
  * @author 杨超辉
  * 丝袜哥配置
  */
-@Configuration
+//@Configuration
 // @EnableWebMvc
-@EnableSwagger2WebMvc
-@EnableKnife4j
-@Import(BeanValidatorPluginsConfiguration.class)
+//@EnableSwagger2WebMvc
+//@EnableKnife4j
+//@Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfiguration {
 
     @Resource

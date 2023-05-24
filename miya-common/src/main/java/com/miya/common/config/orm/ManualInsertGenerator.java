@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.UUIDHexGenerator;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -13,8 +12,8 @@ import java.util.Objects;
 public class ManualInsertGenerator extends UUIDHexGenerator {
 
     @Override
-    public Serializable generate(SharedSessionContractImplementor session, Object obj) {
-        Serializable id = session.getEntityPersister(null, obj).getClassMetadata().getIdentifier(obj, session);
+    public Object generate(SharedSessionContractImplementor session, Object obj) {
+        Object id = session.getEntityPersister(null, obj).getClassMetadata().getIdentifier(obj, session);
         if (Objects.nonNull(id) && StringUtils.isNotBlank(id.toString())){
             return id;
         }

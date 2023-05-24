@@ -5,16 +5,17 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.system.module.oss.service.SysFileService;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class SysFile extends BaseEntity {
     @Column(length = 50)
     private String category;
 
-    @Type(type = "json")
+    @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
 

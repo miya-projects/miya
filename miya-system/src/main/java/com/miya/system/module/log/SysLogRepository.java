@@ -4,7 +4,7 @@ import com.miya.common.module.base.DefaultQuerydslBinder;
 import com.miya.common.module.base.BaseRepository;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 
 /**

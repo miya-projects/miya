@@ -2,6 +2,10 @@ package com.miya.common.module.config;
 
 import com.miya.common.module.base.BaseEntity;
 import com.miya.common.module.bod.BackupOnDelete;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -9,10 +13,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import java.util.Objects;
 
 /**

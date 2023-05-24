@@ -2,6 +2,7 @@ package com.miya.system.module.department;
 
 import com.miya.common.module.base.BaseEntity;
 import com.miya.common.module.bod.BackupOnDelete;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class SysDepartment extends BaseEntity {
     @OneToMany(orphanRemoval = true, mappedBy = "parent")
     private List<SysDepartment> children;
 
-    @Type(type = "json")
+    @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
 

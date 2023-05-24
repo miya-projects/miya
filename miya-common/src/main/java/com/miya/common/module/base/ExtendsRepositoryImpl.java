@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.querydsl.EntityPathResolver;
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -44,14 +44,20 @@ public class ExtendsRepositoryImpl<T, ID, S extends EntityPath<?>> extends Simpl
     }
 
     @Override
-    public <D> Grid<D> findAll(Predicate predicate, Pageable pageable, Class<D> clazz){
-        // todo 还不能用
-        QueryResults<D> dQueryResults = queryFactory.select(Projections.bean(clazz, entityPath))
-                .from(entityPath)
-                .where(predicate)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
-        return Grid.of(dQueryResults);
+    public <D> Grid<D> findAll(Predicate predicate, Pageable pageable, Class<D> clazz) {
+        return null;
     }
+
+//    @Override
+//    public <D> Grid<D> findAll(Predicate predicate, Pageable pageable, Class<D> clazz){
+//        // todo 还不能用
+//        QueryResults<D> dQueryResults = queryFactory.select(Projections.bean(clazz, entityPath))
+//                .from(entityPath)
+//                .where(predicate)
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetchResults();
+//        return Grid.of(dQueryResults);
+//    }
+
 }

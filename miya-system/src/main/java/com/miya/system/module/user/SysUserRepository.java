@@ -1,12 +1,12 @@
 package com.miya.system.module.user;
 
+import com.miya.common.module.base.BaseRepository;
+import com.miya.common.module.base.DefaultQuerydslBinder;
 import com.miya.system.module.user.model.QSysUser;
 import com.miya.system.module.user.model.SysUser;
-import com.miya.common.module.base.DefaultQuerydslBinder;
-import com.miya.common.module.base.BaseRepository;
+import jakarta.annotation.Nonnull;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

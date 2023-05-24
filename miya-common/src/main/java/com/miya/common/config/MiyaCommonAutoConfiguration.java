@@ -9,14 +9,14 @@ import com.miya.common.module.config.InitSystem;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.common.module.sms.SmsConfig;
 import com.miya.common.util.TransactionUtil;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import javax.validation.Validator;
+import jakarta.validation.Validator;
 
 @ComponentScan(
         basePackageClasses = {
@@ -33,7 +33,7 @@ import javax.validation.Validator;
         TransactionUtil.class,
         DataSourceConfig.class
 })
-@Configuration
+@AutoConfiguration
 @AutoConfigureBefore(ValidationAutoConfiguration.class)
 public class MiyaCommonAutoConfiguration {
 

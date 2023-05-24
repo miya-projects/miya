@@ -4,15 +4,15 @@ import com.miya.common.exception.DataDuplicateException;
 import com.miya.common.exception.DataTooLongException;
 import org.hibernate.JDBCException;
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.MySQL57Dialect;
-import org.hibernate.dialect.function.SQLFunctionTemplate;
+import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.exception.spi.SQLExceptionConversionDelegate;
 import org.hibernate.mapping.ForeignKey;
+import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 import org.hibernate.tool.schema.internal.StandardForeignKeyExporter;
 import org.hibernate.tool.schema.spi.Exporter;
-import org.hibernate.type.StandardBasicTypes;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,12 +20,13 @@ import java.util.regex.Pattern;
 /**
  * 扩展原有的dialect，使得支持更多的mysql特性
  */
-public class ExtensionMySQLDialect extends MySQL57Dialect {
+public class ExtensionMySQLDialect extends MySQLDialect {
 
-    public ExtensionMySQLDialect() {
-        super();
-//        registerKeyword("regexp");
-        registerFunction("regexp", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1 REGEXP ?2"));
+    @Override
+    public void initializeFunctionRegistry(FunctionContributions functionContributions) {
+        super.initializeFunctionRegistry(functionContributions);
+        SqmFunctionRegistry functionRegistry = functionContributions.getFunctionRegistry();
+        functionRegistry.registerPattern("regexp", "?1 REGEXP ?2");
     }
 
     /**
@@ -70,13 +71,14 @@ public class ExtensionMySQLDialect extends MySQL57Dialect {
 
             @Override
             public JDBCException convert(SQLException sqlException, String message, String sql) {
-                switch ( sqlException.getErrorCode() ) {
-                    case 1406:
+                switch (sqlException.getErrorCode()) {
+                    case 1406 -> {
                         // 数据输入太长
                         Matcher matcher = dataTooLongPattern.matcher(sqlException.getMessage());
-                        String filedName = matcher.find()?matcher.group(1):null;
+                        String filedName = matcher.find() ? matcher.group(1) : null;
                         return new DataTooLongException(sqlException.getMessage(), sqlException, filedName);
-                    case 1062:
+                    }
+                    case 1062 -> {
                         // 数据重复，违反唯一约束
                         Matcher matcher2 = dataDuplicatePattern.matcher(sqlException.getMessage());
                         if (matcher2.find()) {
@@ -84,6 +86,7 @@ public class ExtensionMySQLDialect extends MySQL57Dialect {
                             return new DataDuplicateException(sqlException.getMessage(), sqlException, filedName2, matcher2.group(1));
                         }
                         return new DataDuplicateException(sqlException.getMessage(), sqlException, null, null);
+                    }
                 }
                 return conversionDelegate.convert(sqlException, message, sql);
             }
@@ -101,8 +104,8 @@ public class ExtensionMySQLDialect extends MySQL57Dialect {
         }
 
         @Override
-        public String[] getSqlDropStrings(ForeignKey foreignKey, Metadata metadata) {
-            return new String[]{""};
+        public String[] getSqlCreateStrings(ForeignKey foreignKey, Metadata metadata, SqlStringGenerationContext context) {
+            return NO_COMMANDS;
         }
 
         @Override

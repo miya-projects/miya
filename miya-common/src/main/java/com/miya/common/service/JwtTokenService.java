@@ -218,7 +218,7 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
     @Override
     public String generateToken(@NonNull JwtPayload jwtPayload, @NonNull Serializable userPrincipal){
         String token = payloadToToken(jwtPayload);
-        keyValueStore.set(getKey(jwtPayload), userPrincipal);
+        keyValueStore.set(getKey(jwtPayload), true);
         return token;
     }
 

@@ -2,6 +2,7 @@ package com.miya.system.module.user.event;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
@@ -11,7 +12,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public class UserLoginEvent extends LogEvent {
             assert user != null;
             ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = servletRequestAttributes.getRequest();
-            String clientIP = ServletUtil.getClientIP(request);
+            String clientIP = JakartaServletUtil.getClientIP(request);
             // 获取访问浏览器、操作系统
             UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));
             Map<String, Object> extra = MapUtil.<String, Object>builder().put("ip", clientIP)

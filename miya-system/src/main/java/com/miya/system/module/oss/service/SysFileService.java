@@ -11,7 +11,7 @@ import com.miya.system.module.oss.model.SysFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -2,16 +2,15 @@ package com.miya.system.module.log;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.miya.common.module.base.BaseEntity;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import java.util.Map;
 
 /**
@@ -26,20 +25,17 @@ import java.util.Map;
 @Entity
 @Table(indexes = {@Index(name = "sys_log_business_index", columnList = "business_id")})
 @Accessors(chain = true)
-@Indexed
 public class SysLog extends BaseEntity {
 
     /**
      * 日志操作人
      */
-    @FullTextField
     @Column(length = 50)
     private String operatorName;
 
     /**
      * 所属模块
      */
-    @FullTextField
     @Column(length = 50)
     private String business;
 
@@ -48,21 +44,18 @@ public class SysLog extends BaseEntity {
      * 对同一业务模块同一领域模型的操作可能有很多，
      * 例如对订单的操作可以有: 取消、申请退款、付款、删除等，这样对日志分类也能引导程序员从这方面去思考
      */
-    @FullTextField
     @Column(length = 50)
     private String operationType;
     /**
      * 详细日志内容
      */
-    @FullTextField
     @Column(columnDefinition = "text", nullable = false)
     private String content;
 
     /**
      * 额外参数
      */
-    @Type(type = "json")
-    // @FullTextField
+    @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
     private Map<String, Object> extra;
 

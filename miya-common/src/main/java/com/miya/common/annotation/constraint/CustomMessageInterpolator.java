@@ -1,11 +1,12 @@
 package com.miya.common.annotation.constraint;
 
 import cn.hutool.core.collection.ListUtil;
+import jakarta.validation.Path;
+import jakarta.validation.metadata.ConstraintDescriptor;
 import org.hibernate.validator.internal.engine.MessageInterpolatorContext;
 import org.hibernate.validator.messageinterpolation.ExpressionLanguageFeatureLevel;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
-import javax.validation.Path;
-import javax.validation.metadata.ConstraintDescriptor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;

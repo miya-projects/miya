@@ -2,7 +2,6 @@ package com.miya.common.module.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.miya.common.module.bod.BackupDataListener;
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
@@ -13,19 +12,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * PO基类
  * @author 杨超辉
  */
-@TypeDefs(
-        {
-            @TypeDef(name = "json", typeClass = JsonType.class)
-        }
-)
 @Getter
 @Setter
 @MappedSuperclass
@@ -48,14 +42,14 @@ public abstract class BaseEntity implements Serializable, Persistable<Serializab
      */
     @Column(nullable = false, updatable = false)
     @CreatedDate
-    protected Date createdTime;
+    protected LocalDateTime createdTime;
 
     /**
      * 更新时间戳 (单位:秒)
      */
     @LastModifiedDate
     @Column(nullable = false, updatable = true)
-    protected Date updatedTime;
+    protected LocalDateTime updatedTime;
 
     /**
      * 创建人

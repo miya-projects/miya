@@ -2,7 +2,6 @@ package com.teamytd.ws;
 
 import com.miya.system.module.user.model.SysUserPrincipal;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;

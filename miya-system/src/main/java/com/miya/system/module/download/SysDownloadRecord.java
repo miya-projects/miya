@@ -5,13 +5,14 @@ import com.miya.common.module.base.BaseEntity;
 import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.user.model.SysUser;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Table(name = "sys_download_record", indexes = {@Index(name = "status", columnList = "status")})
@@ -52,7 +53,7 @@ public class SysDownloadRecord extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private SysUser user;
 
-    @Type(type = "com.vladmihalcea.hibernate.type.json.JsonNodeStringType")
+    @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
     private JsonNode extra;
 
