@@ -2,12 +2,12 @@ package com.miya.system.module.notice;
 
 import com.miya.common.module.base.BaseEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
-import jakarta.persistence.*;
 import java.util.List;
 import java.util.Map;
 

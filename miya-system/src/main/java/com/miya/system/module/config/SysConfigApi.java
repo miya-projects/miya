@@ -5,13 +5,14 @@ import com.miya.common.annotation.Acl;
 import com.miya.common.model.dto.base.Grid;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
-import com.miya.common.module.config.*;
 import com.miya.common.module.base.BaseApi;
-import com.miya.system.module.user.model.SysUser;
+import com.miya.common.module.config.*;
 import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,7 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/config")
 @RestController
 @Slf4j
-@Api(tags = {"参数"})
+@Tag(name = "参数")
 @Acl(userType = SysUserPrincipal.class)
 @Validated
 public class SysConfigApi extends BaseApi {
@@ -42,7 +42,7 @@ public class SysConfigApi extends BaseApi {
     @Resource
     private SysConfigService sysConfigService;
 
-    @ApiOperation("系统参数")
+    @Operation(summary = "系统参数")
     @GetMapping("internal")
     public R<?> systemConfigs(){
         List<SysConfig> configs = sysConfigService.configs(SysConfig.GROUP_SYSTEM);
@@ -60,7 +60,7 @@ public class SysConfigApi extends BaseApi {
      * 设置系统参数
      */
     @PutMapping
-    @ApiOperation("设置系统参数")
+    @Operation(summary = "设置系统参数")
     public R<SysConfig> setup(
             @NotNull String configKey,
             String value,
@@ -75,7 +75,7 @@ public class SysConfigApi extends BaseApi {
     /**
      * 系统参数列表
      */
-    @ApiOperation("系统参数列表")
+    @Operation(summary = "系统参数列表")
     @GetMapping
     public R<?> list(
             @QuerydslPredicate(root = SysConfig.class) Predicate predicate,
@@ -87,7 +87,7 @@ public class SysConfigApi extends BaseApi {
     /**
      * 系统参数详情
      */
-    @ApiOperation("系统参数详情")
+    @Operation(summary = "系统参数详情")
     @GetMapping("{id}")
     public R<SysConfig> detail(@NotNull(message = "id不合法") @PathVariable(value = "id") SysConfig sysConfig) {
         return R.successWithData(sysConfig);
@@ -96,7 +96,7 @@ public class SysConfigApi extends BaseApi {
     /**
      * 修改系统参数
      */
-    @ApiOperation("修改系统参数")
+    @Operation(summary = "修改系统参数")
     @PutMapping("{id}")
     public R<SysConfig> update(@NotNull(message = "id不合法") @PathVariable(value = "id") SysConfig sysConfig,
                     @Validated SysConfigForm sysConfigForm,
@@ -118,7 +118,7 @@ public class SysConfigApi extends BaseApi {
      * 新增系统参数
      */
     @PostMapping
-    @ApiOperation("新增系统参数")
+    @Operation(summary = "新增系统参数")
     public R<SysConfig> save(
             @Validated SysConfigForm sysConfigForm,
             @AuthenticationPrincipal SysUserPrincipal user) {
@@ -138,7 +138,7 @@ public class SysConfigApi extends BaseApi {
      * 删除系统参数
      */
     @DeleteMapping("{id}")
-    @ApiOperation("删除系统参数")
+    @Operation(summary = "删除系统参数")
     public R<?> delete(
             @PathVariable String id,
             @AuthenticationPrincipal SysUserPrincipal user) {
@@ -153,7 +153,7 @@ public class SysConfigApi extends BaseApi {
      * 重载所有参数
      */
     @GetMapping("flush")
-    @ApiOperation("重载所有参数")
+    @Operation(summary = "重载所有参数")
     public R<?> flush(@AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);

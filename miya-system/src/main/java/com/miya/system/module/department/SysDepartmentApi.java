@@ -6,20 +6,20 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseApi;
 import com.miya.system.module.department.dto.SysDepartmentDTO;
 import com.miya.system.module.department.form.SysDepartmentForm;
-import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,7 +31,7 @@ import java.util.stream.StreamSupport;
 @RequestMapping("department")
 @RestController
 @Slf4j
-@Api(tags = {"部门"})
+@Tag(name = "部门")
 @Acl(userType = SysUserPrincipal.class)
 @Validated
 public class SysDepartmentApi extends BaseApi {
@@ -44,7 +44,7 @@ public class SysDepartmentApi extends BaseApi {
     /**
      * 部门列表
      */
-    @ApiOperation("部门列表")
+    @Operation(summary = "部门列表")
     @GetMapping
     public R<?> list(
             @QuerydslPredicate(root = SysDepartment.class) Predicate predicate,
@@ -56,7 +56,7 @@ public class SysDepartmentApi extends BaseApi {
     /**
      * 部门列表不分页
      */
-    @ApiOperation("部门列表不分页")
+    @Operation(summary = "部门列表不分页")
     @GetMapping(params = "noPage")
     public R<?> listNoPage() {
         Iterable<SysDepartment> all = sysDepartmentRepository.findAll(qSysDepartment.parent.isNull());
@@ -69,7 +69,7 @@ public class SysDepartmentApi extends BaseApi {
      * 新增部门
      */
     @PostMapping
-    @ApiOperation("新增部门")
+    @Operation(summary = "新增部门")
     public R<?> save(@Validated SysDepartmentForm departmentForm) {
         boolean exists = sysDepartmentRepository.exists(qSysDepartment.name.eq(departmentForm.getName()));
         if (exists) {
@@ -83,7 +83,7 @@ public class SysDepartmentApi extends BaseApi {
      * 部门修改
      */
     @PutMapping
-    @ApiOperation("修改部门")
+    @Operation(summary = "修改部门")
     public R<?> update(@NotBlank String name, @NotBlank String description, @RequestParam(value = "parent", required = false) SysDepartment parent,
                        @NotNull @RequestParam("id") SysDepartment department) {
         if (Objects.nonNull(parent)){
@@ -99,7 +99,7 @@ public class SysDepartmentApi extends BaseApi {
      * 部门详情
      */
     @GetMapping("{id}")
-    @ApiOperation("部门详情")
+    @Operation(summary = "部门详情")
     public R<?> detail(@PathVariable("id") SysDepartment department) {
         return R.successWithData(department);
     }
@@ -107,7 +107,7 @@ public class SysDepartmentApi extends BaseApi {
     /**
      * 删除部门
      */
-    @ApiOperation("删除部门以及子部门")
+    @Operation(summary = "删除部门以及子部门")
     @DeleteMapping("{id}")
     public R<?> delete(@PathVariable("id") SysDepartment department) {
         sysDepartmentRepository.delete(department);

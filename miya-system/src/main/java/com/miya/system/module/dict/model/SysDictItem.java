@@ -1,13 +1,12 @@
 package com.miya.system.module.dict.model;
 
 import com.miya.common.module.base.BaseEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import jakarta.persistence.*;
 
 /**
  * @author 杨超辉

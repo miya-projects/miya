@@ -1,24 +1,30 @@
 package com.miya.system.module.user.model;
 
 import com.miya.common.module.base.BaseEntity;
-import com.miya.system.config.web.ReadableEnum;
 import com.miya.common.module.bod.BackupOnDelete;
+import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.department.SysDepartment;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
 import com.miya.system.module.role.SysDefaultRoles;
 import com.miya.system.module.role.model.SysRole;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import java.util.*;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

@@ -1,8 +1,8 @@
 package com.miya.system.module.common.repository;
 
+import com.miya.common.module.base.BaseRepository;
 import com.miya.system.module.common.po.QSysCache;
 import com.miya.system.module.common.po.SysCache;
-import com.miya.common.module.base.BaseRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;

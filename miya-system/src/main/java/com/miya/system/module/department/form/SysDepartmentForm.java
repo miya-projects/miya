@@ -2,14 +2,14 @@ package com.miya.system.module.department.form;
 
 import com.miya.common.module.base.BaseForm;
 import com.miya.system.module.department.SysDepartment;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.validation.constraints.NotBlank;
 import java.util.Map;
 
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysDepartmentForm extends BaseForm<SysDepartment> {

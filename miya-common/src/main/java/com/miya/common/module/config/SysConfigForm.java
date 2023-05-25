@@ -1,9 +1,7 @@
 package com.miya.common.module.config;
 
 import com.miya.common.module.base.BaseForm;
-import com.miya.common.module.config.SysConfig;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,18 +12,18 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Getter
 @Setter
-@ApiModel
+@Schema
 public class SysConfigForm extends BaseForm<SysConfig> {
     //变量key
-    @ApiModelProperty(value = "参数key", required = true)
+    @Schema(description = "参数key", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "参数key不能为空")
     private String key;
     //变量值
-    @ApiModelProperty(value = "变量值", required = true)
+    @Schema(description = "变量值", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "默认值不能为空")
     private String val;
     //备注
-    @ApiModelProperty("备注")
+    @Schema(description = "备注")
     private String desc;
 
 }

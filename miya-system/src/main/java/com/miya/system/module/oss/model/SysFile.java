@@ -1,24 +1,21 @@
 package com.miya.system.module.oss.model;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.module.config.SysConfigService;
 import com.miya.system.module.oss.service.SysFileService;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author 杨超辉

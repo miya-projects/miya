@@ -2,11 +2,11 @@ package com.miya.system.module.department.dto;
 
 import com.miya.common.config.xlsx.ToExcelFormat;
 import com.miya.common.module.base.BaseDTO;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysDepartmentSimpleDTO extends BaseDTO implements ToExcelFormat {

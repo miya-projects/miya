@@ -8,10 +8,10 @@ import com.miya.common.exception.ErrorMsgException;
 import com.miya.system.module.oss.MiyaSystemOssConfig;
 import com.miya.system.module.oss.domain.PublicAssetsSysFile;
 import com.miya.system.module.oss.model.SysFile;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.validation.constraints.NotBlank;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;

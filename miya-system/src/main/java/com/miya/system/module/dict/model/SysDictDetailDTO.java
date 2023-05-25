@@ -3,6 +3,7 @@ package com.miya.system.module.dict.model;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

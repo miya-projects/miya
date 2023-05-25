@@ -1,10 +1,9 @@
 package com.miya.system.module.log;
 
-import com.miya.common.module.base.DefaultQuerydslBinder;
 import com.miya.common.module.base.BaseRepository;
-import org.springframework.data.querydsl.binding.QuerydslBindings;
-
+import com.miya.common.module.base.DefaultQuerydslBinder;
 import jakarta.annotation.Nonnull;
+import org.springframework.data.querydsl.binding.QuerydslBindings;
 
 
 /**

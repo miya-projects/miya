@@ -1,20 +1,20 @@
 package com.miya.system.module.user.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Set;
 
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysUserDetailDTO extends SysUserListDTO {
 
-    @ApiModelProperty("权限代码")
+    @Schema(description = "权限代码")
     private Set<String> business;
 
-    @ApiModelProperty("偏好配置")
+    @Schema(description = "偏好配置")
     private SysUser.Preferences preferences;
 
     static {

@@ -3,14 +3,18 @@ package com.miya.system.module.log;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.miya.common.module.base.BaseEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import lombok.*;
-import lombok.experimental.Accessors;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.Type;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Type;
+
 import java.util.Map;
 
 /**

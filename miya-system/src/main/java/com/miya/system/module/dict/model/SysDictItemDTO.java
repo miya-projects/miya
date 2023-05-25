@@ -1,13 +1,13 @@
 package com.miya.system.module.dict.model;
 
 import com.miya.common.module.base.BaseDTO;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@ApiModel
+@Schema
 public class SysDictItemDTO extends BaseDTO {
 
     private String value;

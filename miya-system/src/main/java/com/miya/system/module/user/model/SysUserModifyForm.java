@@ -1,28 +1,27 @@
 package com.miya.system.module.user.model;
 
 import com.miya.common.module.base.BaseForm;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.NotBlank;
 
 /**
  * 用于自己修改个人信息
  */
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysUserModifyForm extends BaseForm<SysUser> {
 
-    @ApiModelProperty("姓名")
+    @Schema(description = "姓名")
     @NotBlank
     private String name;
 
-    @ApiModelProperty("头像文件id")
+    @Schema(description = "头像文件id")
     private String avatar;
 
-    @ApiModelProperty("性别")
+    @Schema(description = "性别")
     private SysUser.Sex sex;
 
 }

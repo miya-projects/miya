@@ -4,15 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.miya.common.module.base.BaseDTO;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.user.model.SysUser;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Date;
 import java.util.Optional;
 
 @Getter
 @Setter
-@ApiModel
+@Schema
 public class SysDownloadRecordDTO extends BaseDTO {
 
     private Date createdTime;

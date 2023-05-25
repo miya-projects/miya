@@ -3,8 +3,8 @@ package com.miya.system.module.common;
 import cn.hutool.core.map.MapUtil;
 import com.miya.common.annotation.Acl;
 import com.miya.common.model.dto.base.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ import static cn.hutool.core.map.MapUtil.entry;
 @Acl(userType = Acl.NotNeedLogin.class)
 @RequiredArgsConstructor
 @Validated
-@Api(tags = {"监控"})
+@Tag(name = "监控")
 @RestController("/monitorAndMaintenance")
 public class MonitorAndMaintenanceApi {
 
@@ -39,7 +39,7 @@ public class MonitorAndMaintenanceApi {
      * 健康检查
      * 挂在根路径 /api/health
      */
-    @ApiOperation("健康检查")
+    @Operation(summary = "健康检查")
     @GetMapping(value = "/health")
     public R<?> health() {
         return R.success();
@@ -49,7 +49,7 @@ public class MonitorAndMaintenanceApi {
      * 软件版本信息
      * 挂在根路径 /api/version
      */
-    @ApiOperation("软件版本信息")
+    @Operation(summary = "软件版本信息")
     @GetMapping(value = "/version")
     @CrossOrigin(originPatterns = "*", allowCredentials = "true", methods = {RequestMethod.GET})
     public R<?> version() {

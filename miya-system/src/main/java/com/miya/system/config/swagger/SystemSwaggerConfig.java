@@ -1,6 +1,7 @@
 package com.miya.system.config.swagger;
 
 import com.miya.system.module.FlagForMiyaSystemModule;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,8 +9,11 @@ import org.springframework.context.annotation.Configuration;
 public class SystemSwaggerConfig {
 
     @Bean
-    public DocketBuilder back(){
-        return new DocketBuilder("系统", SwaggerConfiguration.ApiSelectors.packageApiSelector(FlagForMiyaSystemModule.class.getPackage().getName()));
+    public GroupedOpenApi systemOpenApi() {
+        return GroupedOpenApi.builder().group("系统")
+//                .addOperationCustomizer()
+                .packagesToScan(FlagForMiyaSystemModule.class.getPackageName())
+                .build();
     }
 
 }

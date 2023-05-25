@@ -8,13 +8,14 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.common.module.config.SystemConfigKeys;
 import com.miya.system.module.oss.service.impl.AliyunSysFileService;
+import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import jakarta.annotation.Resource;
+
 import java.util.function.Supplier;
 
 @Slf4j

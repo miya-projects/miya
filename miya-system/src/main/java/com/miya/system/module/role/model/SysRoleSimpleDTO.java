@@ -2,19 +2,18 @@ package com.miya.system.module.role.model;
 
 import com.miya.common.config.xlsx.ToExcelFormat;
 import com.miya.common.module.base.Convertable;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysRoleSimpleDTO extends Convertable implements ToExcelFormat {
 
     private String id;
 
-    @ApiModelProperty("角色名")
+    @Schema(description = "角色名")
     private String name;
 
     public static SysRoleSimpleDTO of(SysRole sysRole) {

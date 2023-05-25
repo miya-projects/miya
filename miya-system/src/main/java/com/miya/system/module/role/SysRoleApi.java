@@ -9,11 +9,12 @@ import com.miya.system.config.business.SystemErrorCode;
 import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.role.model.SysRoleDTO;
 import com.miya.system.module.role.model.SysRoleForm;
-import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserPrincipal;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "role")
 @Slf4j
 @RestController
-@Api(tags = {"角色"})
+@Tag(name = "角色")
 @Acl(userType = SysUserPrincipal.class)
 @Validated
 public class SysRoleApi extends BaseApi {
@@ -50,7 +49,7 @@ public class SysRoleApi extends BaseApi {
     /**
      * 角色列表
      */
-    @ApiOperation(value = "角色列表")
+    @Operation(summary = "角色列表")
     @GetMapping
     @Acl(business = "sys:role:view")
     public R<?> list(@PageableDefault(sort = "createdTime", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -61,10 +60,10 @@ public class SysRoleApi extends BaseApi {
     /**
      * 角色详情
      */
-    @ApiOperation(value = "角色详情")
+    @Operation(summary = "角色详情")
     @GetMapping(value = "{id}")
     @Acl(business = "sys:role:view")
-    public R<?> detail( @ApiParam("角色id") @NotNull @PathVariable("id") SysRole role) {
+    public R<?> detail( @Parameter(name = "角色id") @NotNull @PathVariable("id") SysRole role) {
         return R.successWithData(SysRoleDTO.of(role));
     }
 
@@ -73,11 +72,11 @@ public class SysRoleApi extends BaseApi {
      * @param codes     权限code集合
      * @param sysRole 角色id
      */
-    @ApiOperation(value = "为角色设置权限")
+    @Operation(summary = "为角色设置权限")
     @PutMapping(value = "{id}/business")
     @Acl(business = "sys:role:edit")
-    public R<?> setPermissions(@ApiParam("权限code") String[] codes,
-                            @ApiParam("角色id") @NotNull @PathVariable("id") SysRole sysRole,
+    public R<?> setPermissions(@Parameter(name = "权限code") String[] codes,
+                            @Parameter(name = "角色id") @NotNull @PathVariable("id") SysRole sysRole,
                             @AuthenticationPrincipal SysUserPrincipal sysUser) {
         if (sysRole.getIsSystem() && !sysUser.isSuperAdmin()){
             // 只有超级管理员才可以配置系统角色的权限
@@ -93,7 +92,7 @@ public class SysRoleApi extends BaseApi {
      * @param sysRoleForm 角色信息
      */
     @PostMapping
-    @ApiOperation("增加角色")
+    @Operation(summary = "增加角色")
     @Acl(business = "sys:role:add")
     public R<?> save( @Validated SysRoleForm sysRoleForm) {
         return sysRoleService.saveRole(sysRoleForm);
@@ -104,9 +103,9 @@ public class SysRoleApi extends BaseApi {
      * @param sysRoleForm 角色信息
      */
     @PutMapping(value = "{id}")
-    @ApiOperation("修改角色")
+    @Operation(summary = "修改角色")
     @Acl(business = "sys:role:edit")
-    public R<?> update(@Validated SysRoleForm sysRoleForm, @ApiParam("角色id") @PathVariable("id") @NotNull SysRole sysRole) {
+    public R<?> update(@Validated SysRoleForm sysRoleForm, @Parameter(name = "角色id") @PathVariable("id") @NotNull SysRole sysRole) {
         return sysRoleService.updateRole(sysRoleForm, sysRole);
     }
 
@@ -114,10 +113,10 @@ public class SysRoleApi extends BaseApi {
      * 角色删除
      * @param sysRole 角色id
      */
-    @ApiOperation("删除角色")
+    @Operation(summary = "删除角色")
     @DeleteMapping(value = "{id}")
     @Acl(business = "sys:role:delete")
-    public R<?> delete( @ApiParam("角色id") @PathVariable("id") @NotNull SysRole sysRole ) {
+    public R<?> delete( @Parameter(name = "角色id") @PathVariable("id") @NotNull SysRole sysRole ) {
         return sysRoleService.deleteRole(sysRole);
     }
 
@@ -125,7 +124,7 @@ public class SysRoleApi extends BaseApi {
      * 获取业务功能列表
      */
     @GetMapping(value = "/business")
-    @ApiOperation("获取业务功能列表")
+    @Operation(summary = "获取业务功能列表")
     public R<?> businessList() {
         List<Business> businesses = sysRoleService.getBusiness();
         List<Business> collect = businesses.stream().filter(business -> Objects.isNull(business.getParent()))

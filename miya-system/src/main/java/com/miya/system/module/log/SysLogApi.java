@@ -5,11 +5,10 @@ import com.miya.common.model.dto.base.Grid;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
-import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("log")
 @RestController
 @Slf4j
-@Api(tags = {"日志"})
+@Tag(name = "日志")
 @Acl(userType = SysUserPrincipal.class)
 @Validated
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class SysLogApi extends BaseApi {
     /**
      * 日志列表
      */
-    @ApiOperation("日志列表")
+    @Operation(summary = "日志列表")
     @GetMapping
     public R<?> list(
             @QuerydslPredicate(root = SysLog.class) Predicate predicate,
@@ -51,7 +50,7 @@ public class SysLogApi extends BaseApi {
     /**
      * 日志详情
      */
-    @ApiOperation("日志详情")
+    @Operation(summary = "日志详情")
     @GetMapping("{id}")
     public R<?> detail(@PathVariable("id") SysLog sysLog) {
         return R.successWithData(sysLog);

@@ -1,7 +1,7 @@
 package com.miya.system.module.notice;
 
 import com.miya.common.module.base.BaseDTO;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-@ApiModel
+@Schema
 public class SysNoticeDTO extends BaseDTO {
 
     /**

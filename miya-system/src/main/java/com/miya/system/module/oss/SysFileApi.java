@@ -11,9 +11,12 @@ import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
 import com.miya.system.util.PictureCompression;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -44,7 +44,7 @@ import java.util.concurrent.Executor;
 @RestController
 @RequestMapping("/file")
 @Slf4j
-@Api(tags = {"文件"})
+@Tag(name = "文件")
 @Validated
 @RequiredArgsConstructor
 public class SysFileApi {
@@ -72,9 +72,9 @@ public class SysFileApi {
      * @param files
      */
     @PostMapping("upload")
-    @ApiOperation(value = "上传文件(支持多个)")
+    @Operation(summary = "上传文件(支持多个)")
     public R<?> upload(@NotNull @RequestParam("file") List<MultipartFile> files,
-                       @ApiParam("在上传单个文件时返回参数的格式化类型，默认返回数组，对象类型只有在上传单个文件时生效") FormatType formatType) {
+                       @Parameter(name = "在上传单个文件时返回参数的格式化类型，默认返回数组，对象类型只有在上传单个文件时生效") FormatType formatType) {
         List<SysFile> list = new ArrayList<>();
         for (MultipartFile file : files) {
             if (sysFileService.isNotAllowUpload(file)) {
@@ -95,7 +95,7 @@ public class SysFileApi {
      * @param url
      */
     @PostMapping(value = "upload/imageByUrl")
-    @ApiOperation(value = "通过url上传图片")
+    @Operation(summary = "通过url上传图片")
     @RequestLimit(count = 5, seconds = 20)
     public R<?> uploadByUrl(@NotBlank String url) {
         try {
@@ -112,7 +112,7 @@ public class SysFileApi {
      * @param images
      */
     @PostMapping(value = "upload/image")
-    @ApiOperation(value = "上传图片(支持多张，进行压缩,然后丢弃原图)")
+    @Operation(summary = "上传图片(支持多张，进行压缩,然后丢弃原图)")
     public R<List<SysFile>> uploadImages(@NotNull @RequestParam List<MultipartFile> images) throws IOException {
         if (images.size() > MAX_UPLOAD_SIZE) {
             throw new ErrorMsgException(StrUtil.format("图片个数不能超过{}", MAX_UPLOAD_SIZE));

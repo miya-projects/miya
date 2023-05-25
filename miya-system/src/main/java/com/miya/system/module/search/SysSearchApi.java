@@ -4,8 +4,8 @@
 //import com.miya.common.model.dto.base.R;
 //import com.miya.system.module.user.model.SysUser;
 //import com.miya.system.module.user.model.SysUserPrincipal;
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiOperation;
+//import io.swagger.v3.oas.annotations.tags.Tag;
+//import io.swagger.v3.oas.annotations.Operation;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.validation.annotation.Validated;
@@ -14,7 +14,7 @@
 //import java.io.IOException;
 //
 //@Slf4j
-//@Api(tags = {"全文检索(todo)"})
+//@Tag(name = "全文检索(todo)")
 //@Acl(userType = SysUserPrincipal.class)
 //@Validated
 //@ResponseBody
@@ -25,21 +25,21 @@
 //    private final SysSearchService searchService;
 //
 //    @PostMapping("init")
-//    @ApiOperation("初始化")
+//    @Operation(summary = "初始化")
 //    public R<?> init() throws InterruptedException {
 //        searchService.init();
 //        return R.success();
 //    }
 //
 //    @GetMapping
-//    @ApiOperation("搜索")
+//    @Operation(summary = "搜索")
 //    public R<?> search(@NotBlank String q) throws InterruptedException {
 //        searchService.query(q);
 //        return R.success();
 //    }
 //
 //    @GetMapping("native")
-//    @ApiOperation("搜索")
+//    @Operation(summary = "搜索")
 //    public R<?> searchByNative(@NotBlank String q) throws IOException {
 //        // searchService.queryByNative(q);
 //        searchService.queryByNative(q);

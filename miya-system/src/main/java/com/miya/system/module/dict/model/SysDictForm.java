@@ -1,13 +1,12 @@
 package com.miya.system.module.dict.model;
 
 import com.miya.common.module.base.BaseForm;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.validation.constraints.NotBlank;
-
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysDictForm extends BaseForm<SysDict> {

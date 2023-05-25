@@ -1,7 +1,6 @@
 package com.miya.common.model.dto.base;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;
@@ -14,12 +13,12 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-@ApiModel(value = "R", description = "统一的api返回格式")
+@Schema(name = "R", description = "统一的api返回格式")
 public class R<T> implements Serializable {
     /**
      * 响应码
      */
-    @ApiModelProperty(name = "code", value = "响应码", required = true, example = "0")
+    @Schema(name = "code", description = "响应码", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
     private Integer code;
     /**
      * 当code为0时success为true，方便判断
@@ -28,12 +27,12 @@ public class R<T> implements Serializable {
     /**
      * 说明信息, 该信息应当可展示给最终用户查看
      */
-    @ApiModelProperty(name = "msg", value = "说明信息", required = true, example = "用户名或密码错误")
+    @Schema(name = "msg", description = "说明信息", requiredMode = Schema.RequiredMode.REQUIRED, example = "用户名或密码错误")
     private String msg;
     /**
      * 返回数据
      */
-    @ApiModelProperty(name = "data", value = "返回数据", required = true)
+    @Schema(name = "data", description = "返回数据", requiredMode = Schema.RequiredMode.REQUIRED)
     private T data;
 
     private R(Integer code, String msg) {

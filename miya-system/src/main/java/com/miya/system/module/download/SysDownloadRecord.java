@@ -6,13 +6,14 @@ import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.user.model.SysUser;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
-import jakarta.persistence.*;
+
 import java.util.Date;
 
 @Table(name = "sys_download_record", indexes = {@Index(name = "status", columnList = "status")})

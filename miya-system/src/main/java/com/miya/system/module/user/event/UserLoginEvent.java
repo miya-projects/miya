@@ -3,16 +3,16 @@ package com.miya.system.module.user.event;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.miya.system.module.log.event.LogEvent;
 import com.miya.system.module.user.model.SysUser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Map;
 
 /**

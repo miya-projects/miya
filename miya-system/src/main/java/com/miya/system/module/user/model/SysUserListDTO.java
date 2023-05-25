@@ -4,12 +4,13 @@ import com.miya.common.module.base.BaseDTO;
 import com.miya.system.module.department.dto.SysDepartmentSimpleDTO;
 import com.miya.system.module.oss.model.SysFileDTO;
 import com.miya.system.module.role.model.SysRoleSimpleDTO;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Set;
 
-@ApiModel
+@Schema
 @Getter
 @Setter
 public class SysUserListDTO extends BaseDTO {

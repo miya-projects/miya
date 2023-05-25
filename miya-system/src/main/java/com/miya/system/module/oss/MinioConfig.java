@@ -2,13 +2,12 @@ package com.miya.system.module.oss;
 
 import com.miya.system.module.oss.service.impl.MinioSysFileService;
 import io.minio.MinioClient;
+import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import jakarta.annotation.Resource;
 
 @Configuration
 @ConditionalOnProperty(prefix = "config.oss", name = "type", havingValue = "minio")

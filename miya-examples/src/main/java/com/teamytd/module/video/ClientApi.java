@@ -5,8 +5,8 @@ import com.miya.common.annotation.constraint.AutoMaxLength;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseForm;
 import com.miya.system.module.user.model.SysUser;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import java.util.Date;
 @RequestMapping(value = "client")
 @RestController
 @Slf4j
-@Api(tags = {"客户服务"})
+@Tag(name = "客户服务")
 @Acl(userType = Acl.NotNeedLogin.class)
 @Validated
 @RequiredArgsConstructor
@@ -37,14 +37,14 @@ public class ClientApi {
 
 
     @PostMapping("testConvert")
-    @ApiOperation("test")
+    @Operation(summary = "test")
     public R<?> testConvert(@Validated TestDTO dto) {
         log.info("\n" + dto.toString());
         return R.success();
     }
 
     @PostMapping("testConvertRequestBody")
-    @ApiOperation("testConvertRequestBody")
+    @Operation(summary = "testConvertRequestBody")
     public R<?> testConvertRequestBody(@Validated @RequestBody TestDTO dto) {
          // log.info("\n" + dto.toString());
         return R.successWithData(dto);

@@ -1,21 +1,22 @@
 package com.miya.system.module.common;
 
 import cn.hutool.core.util.ClassUtil;
+import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseApi;
 import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.common.dto.DropDownItemDTO;
-import com.miya.common.model.dto.base.R;
+import com.miya.system.module.role.SysDefaultRoles;
 import com.miya.system.module.role.model.QSysRole;
+import com.miya.system.module.user.SysUserRepository;
 import com.miya.system.module.user.model.QSysUser;
 import com.miya.system.module.user.model.SysUser;
-import com.miya.system.module.user.SysUserRepository;
-import com.miya.system.module.role.SysDefaultRoles;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.CastUtils;
@@ -25,14 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -41,7 +35,7 @@ import java.util.stream.StreamSupport;
  */
 @RequestMapping("/dp")
 @RestController
-@Api(tags = {"下拉框可选项接口"})
+@Tag(name = "下拉框可选项接口")
 @Validated
 public class DropDownListApi extends BaseApi implements InitializingBean {
 
@@ -58,7 +52,7 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
      * 获取角色列表 下拉框使用
      */
     @GetMapping(value = "role")
-    @ApiOperation(value = "获取角色列表", notes = "不分页 下拉框使用")
+    @Operation(summary = "获取角色列表", description = "不分页 下拉框使用")
     public R<?> sysRoleList() {
         QSysRole qSysRole = QSysRole.sysRole;
         JPAQuery<DropDownItemDTO> query = qf.select(
@@ -70,7 +64,7 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
     }
 
     @GetMapping(value = "departments")
-    @ApiOperation(value = "获取部门列表", notes = "不分页 下拉框使用")
+    @Operation(summary = "获取部门列表", description = "不分页 下拉框使用")
     public R<List<DropDownItemDTO>> departments() {
         QSysRole qSysRole = QSysRole.sysRole;
         JPAQuery<DropDownItemDTO> query = qf.select(
@@ -82,20 +76,20 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
     }
 
     @GetMapping("enumsKey")
-    @ApiOperation("查询枚举key")
+    @Operation(summary = "查询枚举key")
     public R<Set<String>> enums() {
         return R.successWithData(MAP.keySet());
     }
 
     @GetMapping(value = "enums")
-    @ApiOperation("查询枚举项")
-    public R<List<Map<String, String>>> queryEnum(@ApiParam("查询哪个枚举项") @RequestParam String key) {
+    @Operation(summary = "查询枚举项")
+    public R<List<Map<String, String>>> queryEnum(@Parameter(name = "查询哪个枚举项") @RequestParam String key) {
         return R.successWithData(MAP.getOrDefault(key, CastUtils.cast(Collections.EMPTY_LIST)));
     }
 
     @GetMapping("users")
-    @ApiOperation(value = "查询用户", notes = "最多返回10个")
-    public R<List<DropDownItemDTO>> users(@ApiParam("搜索用户名") String key, @ApiParam("角色") SysDefaultRoles role) {
+    @Operation(summary = "查询用户", description = "最多返回10个")
+    public R<List<DropDownItemDTO>> users(@Parameter(name = "搜索用户名") String key, @Parameter(name = "角色") SysDefaultRoles role) {
         BooleanBuilder bb = new BooleanBuilder();
         if (role != null){
             bb.and(QSysUser.sysUser.roles.contains(role.getSysRole()));

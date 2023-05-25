@@ -2,15 +2,15 @@ package com.miya.system.module.role.model;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.extra.spring.SpringUtil;
-import com.miya.system.config.business.Business;
 import com.miya.common.module.base.BaseEntity;
+import com.miya.system.config.business.Business;
 import com.miya.system.module.role.SysRoleService;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.Hibernate;
-import jakarta.persistence.*;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
