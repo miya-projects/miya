@@ -1,7 +1,6 @@
 package com.miya.system.module.department;
 
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.module.bod.BackupOnDelete;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +9,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
-
+import org.hibernate.envers.Audited;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,10 +20,10 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-@BackupOnDelete
 @Entity
 @Accessors(chain = true)
 @Table(indexes = {@Index(name = "name_unique", columnList = "pid, name", unique = true)})
+@Audited
 public class SysDepartment extends BaseEntity {
 
     @Column(length = 100, nullable = false)

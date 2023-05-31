@@ -122,22 +122,37 @@ logService.log(content, operationType, businessId, extra);
 ### 系统配置
 可管理对系统的动态调整配置，可存放业务配置
 
-### BOD
-1. 什么是BOD?  
-   全称`Backup On Delete`，是一种逻辑删除的替代方案，在数据删除前将数据备份到另外一个数据库schema的办法。
-2. 为什么要在删除数据时备份?  
-   普通方式的逻辑删除或多或少对系统产生一些副作用(唯一约束)和维护开销(查询索引维护等), 在用户误操作删除数据后，提供除binlog外的另一种数据备份方式  
-   删除数据备份是一种悲观的设计思路，主张在删除后恢复，但更应该做的是认真考虑业务场景是否需要删除数据，这里仁者见仁，参考[《不要删除数据》](https://www.infoq.cn/article/2009/09/Do-Not-Delete-Data/)
-3. 如何使用?
-   1. 增加如下配置
-      ```properties
-      config.backup-on-delete.enable=true
-      config.backup-on-delete.url=jdbc:mysql://192.168.2.170:3306/miya-backup?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true
-      config.backup-on-delete.username=root
-      config.backup-on-delete.password=root
-      ```
-   2. 在需要做删除备份的实体类上增加`@BackupOnDelete`
-   3. 数据源创建好数据库即可，miya会自动为你创建和源数据一样的表结构
+[//]: # (### BOD)
+
+[//]: # (1. 什么是BOD?  )
+
+[//]: # (   全称`Backup On Delete`，是一种逻辑删除的替代方案，在数据删除前将数据备份到另外一个数据库schema的办法。)
+
+[//]: # (2. 为什么要在删除数据时备份?  )
+
+[//]: # (   普通方式的逻辑删除或多或少对系统产生一些副作用&#40;唯一约束&#41;和维护开销&#40;查询索引维护等&#41;, 在用户误操作删除数据后，提供除binlog外的另一种数据备份方式  )
+
+[//]: # (   删除数据备份是一种悲观的设计思路，主张在删除后恢复，但更应该做的是认真考虑业务场景是否需要删除数据，这里仁者见仁，参考[《不要删除数据》]&#40;https://www.infoq.cn/article/2009/09/Do-Not-Delete-Data/&#41;)
+
+[//]: # (3. 如何使用?)
+
+[//]: # (   1. 增加如下配置)
+
+[//]: # (      ```properties)
+
+[//]: # (      config.backup-on-delete.enable=true)
+
+[//]: # (      config.backup-on-delete.url=jdbc:mysql://192.168.2.170:3306/miya-backup?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true)
+
+[//]: # (      config.backup-on-delete.username=root)
+
+[//]: # (      config.backup-on-delete.password=root)
+
+[//]: # (      ```)
+
+[//]: # (   2. 在需要做删除备份的实体类上增加`@BackupOnDelete`)
+
+[//]: # (   3. 数据源创建好数据库即可，miya会自动为你创建和源数据一样的表结构)
 
 ### 邮件
 配置发件邮箱

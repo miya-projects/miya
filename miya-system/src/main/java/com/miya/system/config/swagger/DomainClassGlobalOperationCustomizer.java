@@ -1,16 +1,12 @@
 package com.miya.system.config.swagger;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import io.swagger.v3.core.converter.ModelConverters;
-import io.swagger.v3.core.converter.ResolvedSchema;
 import io.swagger.v3.core.util.PrimitiveType;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.customizers.GlobalOperationCustomizer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
@@ -19,8 +15,6 @@ import org.springframework.data.repository.support.Repositories;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.method.HandlerMethod;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,7 +58,7 @@ public class DomainClassGlobalOperationCustomizer implements GlobalOperationCust
             schema = primitiveType.createProperty();
             parameter.setSchema(schema);
             operation.getParameters().removeIf(p -> {
-                return p.getIn().equals(parameter.getIn());
+                return p.getIn().equals(parameter.getIn()) && p.getName().equals(parameter.getName());
             });
             operation.getParameters().add(parameter);
         }

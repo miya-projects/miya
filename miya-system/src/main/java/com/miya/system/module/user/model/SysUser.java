@@ -1,7 +1,6 @@
 package com.miya.system.module.user.model;
 
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.module.bod.BackupOnDelete;
 import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.department.SysDepartment;
 import com.miya.system.module.oss.model.SysFile;
@@ -20,6 +19,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,12 +36,12 @@ import java.util.stream.Collectors;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@BackupOnDelete
 @Accessors(chain = true)
 @FilterDef(name = "orderOwnerFilter",
         parameters = {@ParamDef(name = "ownerIds", type = String.class)})
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})
 @Table(indexes = {@Index(name = "avatar", columnList = "avatar_id"), @Index(name = "username", columnList = "username", unique = true)})
+@Audited
 public class SysUser extends BaseEntity {
 
     @Column(length = 20, nullable = false)
@@ -78,6 +79,7 @@ public class SysUser extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private SysFile avatar;
 
     /**

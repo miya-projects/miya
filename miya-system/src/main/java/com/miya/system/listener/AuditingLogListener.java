@@ -8,7 +8,8 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.miya.system.module.log.LogService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.CallbackException;
+import org.hibernate.Interceptor;
 import org.hibernate.type.Type;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ import java.util.Objects;
  * todo 同一个对象变动多次会触发多次
  */
 @Slf4j
-public class AuditingLogListener extends EmptyInterceptor {
+public class AuditingLogListener implements Interceptor {
 
     private final String LOG_TYPE = "实体数据变化";
 
@@ -58,8 +59,7 @@ public class AuditingLogListener extends EmptyInterceptor {
     @SneakyThrows({IllegalArgumentException.class, IllegalAccessException.class})
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState,
-                                Object[] previousState, String[] propertyNames, Type[] types) {
+    public boolean onFlushDirty(Object entity, Object id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) throws CallbackException {
         String summary = StrUtil.format("更新了{}表数据", entity.getClass().getName());
         Map<String, Object> oldEntity = new HashMap<>();
         Map<String, Object> newEntity = new HashMap<>();

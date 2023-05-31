@@ -15,6 +15,7 @@ import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springdoc.core.providers.ObjectMapperProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -29,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
+import static org.springdoc.core.utils.Constants.SPRINGDOC_ENABLED;
 import static org.springdoc.core.utils.SpringDocUtils.getConfig;
-
 
 /**
  * @author 杨超辉
@@ -38,6 +39,7 @@ import static org.springdoc.core.utils.SpringDocUtils.getConfig;
  */
 @Configuration
 @AutoConfigureBefore(value = {SpringDocDataRestConfiguration.class})
+@ConditionalOnProperty(name = SPRINGDOC_ENABLED, matchIfMissing = true)
 public class SwaggerConfiguration {
 
     static {
@@ -116,5 +118,19 @@ public class SwaggerConfiguration {
         }
         return null;
     }
+
+//    @Bean
+//    public GlobalOpenApiCustomizer extraApi() {
+//        return new GlobalOpenApiCustomizer() {
+//
+//            @Override
+//            public void customise(OpenAPI openApi) {
+//                Paths paths = openApi.getPaths();
+//                PathItem pathItem = new PathItem();
+//                pathItem.operation();
+//                paths.addPathItem("1",)
+//            }
+//        };
+//    }
 
 }

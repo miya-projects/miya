@@ -2,6 +2,7 @@ package com.miya.system.config;
 
 import com.miya.common.config.MiyaCommonAutoConfiguration;
 import com.miya.common.service.JwtTokenService;
+import com.miya.system.listener.StartedListener;
 import com.miya.system.module.FlagForMiyaSystemModule;
 import com.miya.system.module.common.repository.CacheRepository;
 import com.miya.common.module.cache.KeyValueStore;
@@ -19,7 +20,8 @@ import java.util.List;
 @ComponentScan(
         basePackageClasses = {
                 FlagForMiyaSystemModule.class,
-                MiyaSystemAutoConfiguration.class
+                MiyaSystemAutoConfiguration.class,
+                StartedListener.class
         }
 )
 @EnableCaching

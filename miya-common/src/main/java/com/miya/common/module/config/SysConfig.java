@@ -1,7 +1,6 @@
 package com.miya.common.module.config;
 
 import com.miya.common.module.base.BaseEntity;
-import com.miya.common.module.bod.BackupOnDelete;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
@@ -12,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.envers.Audited;
 
 import java.util.Objects;
 
@@ -23,9 +23,9 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@BackupOnDelete
 @Table(indexes = {@Index(name = "key_unique", columnList = "key", unique = true)})
 @Accessors(chain = true)
+@Audited
 public class SysConfig extends BaseEntity {
 
     public static final String GROUP_SYSTEM = "SYSTEM";

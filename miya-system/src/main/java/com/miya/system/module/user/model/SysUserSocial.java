@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Accessors(chain = true)
+@Audited
 public class SysUserSocial extends BaseEntity implements Serializable {
 
 

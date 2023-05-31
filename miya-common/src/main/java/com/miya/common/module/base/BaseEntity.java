@@ -1,12 +1,12 @@
 package com.miya.common.module.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.miya.common.module.bod.BackupDataListener;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
+import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,8 +23,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-@EntityListeners({AuditingEntityListener.class, BackupDataListener.class})
+@EntityListeners({AuditingEntityListener.class})
 @FieldNameConstants
+@Audited
 public abstract class BaseEntity implements Serializable, Persistable<Serializable> {
 
     @Id

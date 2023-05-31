@@ -39,17 +39,6 @@ public class BeanRegister implements ApplicationContextAware {
     // }
 
 
-//    /**
-//     * spring缓存配置，使用guava
-//     * @return
-//     */
-//    @Bean
-//    public CacheManager cacheManager(){
-//        GuavaCacheManager cacheManager = new GuavaCacheManager();
-//        cacheManager.setCacheBuilder(CacheBuilder.newBuilder().expireAfterWrite(3, TimeUnit.SECONDS));
-//        return cacheManager;
-//    }
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringUtil springUtil = applicationContext.getBean(SpringUtil.class);

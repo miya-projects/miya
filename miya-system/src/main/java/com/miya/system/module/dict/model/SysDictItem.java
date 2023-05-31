@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.envers.Audited;
 
 /**
  * @author 杨超辉
@@ -19,6 +20,7 @@ import lombok.experimental.Accessors;
 @Entity
 @Accessors(chain = true)
 @Table(name = "sys_dict_item", indexes = {@Index(name = "dict_id_value", unique = true, columnList = "dict_id, value")})
+@Audited
 public class SysDictItem extends BaseEntity {
 
     /**

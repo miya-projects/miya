@@ -1,12 +1,12 @@
 package com.miya.common.module.base;
 
 import com.miya.common.model.dto.base.Grid;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaContext;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.querydsl.EntityPathResolver;
@@ -24,23 +24,28 @@ import java.util.List;
 public class ExtendsRepositoryImpl<T, ID, S extends EntityPath<?>> extends SimpleJpaRepository<T, ID> implements ExtendsRepository <T, ID, S> {
 
     private final EntityManager entityManager;
-    private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory qf;
     EntityPathResolver resolver = SimpleEntityPathResolver.INSTANCE;
     private final EntityPath<T> entityPath;
-    private final Class<T> entityClass;
+
+//    ExtendsRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, JpaContext context) {
+//        super(entityInformation, context.getEntityManagerByManagedType(entityInformation.getJavaType()));
+//        this.entityManager = context.getEntityManagerByManagedType(entityInformation.getJavaType());
+//        this.qf = new JPAQueryFactory(entityManager);
+//        this.entityPath = resolver.createPath(entityInformation.getJavaType());
+//    }
 
     ExtendsRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.entityManager = entityManager;
-        this.queryFactory = new JPAQueryFactory(entityManager);
-        entityClass = entityInformation.getJavaType();
-        this.entityPath = resolver.createPath(entityClass);
+        this.qf = new JPAQueryFactory(entityManager);
+        this.entityPath = resolver.createPath(entityInformation.getJavaType());
     }
 
     @Override
     public <D> List<D> findAll(Predicate predicate, Class<D> clazz){
         // todo 还不能用
-        return queryFactory.select(Projections.bean(clazz, entityPath)).from(entityPath).where(predicate).fetch();
+        return qf.select(Projections.bean(clazz, entityPath)).from(entityPath).where(predicate).fetch();
     }
 
     @Override

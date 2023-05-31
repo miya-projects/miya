@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.hibernate.envers.Audited;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Entity
 @Table(indexes = {@Index(name = "name_unique", columnList = "name", unique = true)})
+@Audited
 public class SysRole extends BaseEntity {
 
     @Column(length = 50, nullable = false)
