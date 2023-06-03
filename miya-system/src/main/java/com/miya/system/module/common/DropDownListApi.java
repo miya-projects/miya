@@ -83,13 +83,13 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
 
     @GetMapping(value = "enums")
     @Operation(summary = "查询枚举项")
-    public R<List<Map<String, String>>> queryEnum(@Parameter(name = "查询哪个枚举项") @RequestParam String key) {
+    public R<List<Map<String, String>>> queryEnum(@Parameter(description = "查询哪个枚举项") @RequestParam String key) {
         return R.successWithData(MAP.getOrDefault(key, CastUtils.cast(Collections.EMPTY_LIST)));
     }
 
     @GetMapping("users")
     @Operation(summary = "查询用户", description = "最多返回10个")
-    public R<List<DropDownItemDTO>> users(@Parameter(name = "搜索用户名") String key, @Parameter(name = "角色") SysDefaultRoles role) {
+    public R<List<DropDownItemDTO>> users(@Parameter(description = "搜索用户名") String key, @Parameter(description = "角色") SysDefaultRoles role) {
         BooleanBuilder bb = new BooleanBuilder();
         if (role != null){
             bb.and(QSysUser.sysUser.roles.contains(role.getSysRole()));

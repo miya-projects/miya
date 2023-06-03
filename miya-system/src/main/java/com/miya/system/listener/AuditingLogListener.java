@@ -25,9 +25,10 @@ import java.util.Objects;
 
 /**
  * 数据变动Log监听
- * todo 同一个对象变动多次会触发多次
+ * @deprecated 使用 envers 同一个对象变动多次会触发多次
  */
 @Slf4j
+@Deprecated
 public class AuditingLogListener implements Interceptor {
 
     private final String LOG_TYPE = "实体数据变化";

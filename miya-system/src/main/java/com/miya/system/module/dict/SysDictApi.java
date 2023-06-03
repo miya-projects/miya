@@ -118,7 +118,7 @@ public class SysDictApi extends BaseApi {
     @Acl(business = "sys:dict:view")
     public R<?> dictItemList(
             @QuerydslPredicate(root = SysDictItem.class) Predicate predicate,
-            @Parameter(name = "字典id") @PathVariable(value = "idOrCode") String idOrCode,
+            @Parameter(description = "字典id") @PathVariable(value = "idOrCode") String idOrCode,
             @PageableDefault(sort = BaseEntity.Fields.createdTime, direction = Sort.Direction.DESC) Pageable pageable) {
         QSysDictItem qSysDictItem = QSysDictItem.sysDictItem;
         Optional<SysDict> dictOptional = sysDictRepository.findOne(QSysDict.sysDict.code.eq(idOrCode).or(QSysDict.sysDict.id.eq(idOrCode)));
@@ -134,7 +134,7 @@ public class SysDictApi extends BaseApi {
     @GetMapping("{idOrCode}/item/noPage")
     @Operation(summary = "查询字典数据不分页")
     public R<?> selectSysDictInfoList(
-            @Parameter(name = "字典code") @PathVariable String idOrCode) {
+            @Parameter(description = "字典code") @PathVariable String idOrCode) {
         QSysDictItem qSysDictItem = QSysDictItem.sysDictItem;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qSysDictItem.sysDict.code.eq(idOrCode).or(qSysDictItem.sysDict.id.eq(idOrCode)));

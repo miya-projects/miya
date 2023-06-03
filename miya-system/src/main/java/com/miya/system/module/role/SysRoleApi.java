@@ -63,7 +63,7 @@ public class SysRoleApi extends BaseApi {
     @Operation(summary = "角色详情")
     @GetMapping(value = "{id}")
     @Acl(business = "sys:role:view")
-    public R<?> detail( @Parameter(name = "角色id") @NotNull @PathVariable("id") SysRole role) {
+    public R<?> detail( @Parameter(description = "角色id") @NotNull @PathVariable("id") SysRole role) {
         return R.successWithData(SysRoleDTO.of(role));
     }
 
@@ -75,8 +75,8 @@ public class SysRoleApi extends BaseApi {
     @Operation(summary = "为角色设置权限")
     @PutMapping(value = "{id}/business")
     @Acl(business = "sys:role:edit")
-    public R<?> setPermissions(@Parameter(name = "权限code") String[] codes,
-                            @Parameter(name = "角色id") @NotNull @PathVariable("id") SysRole sysRole,
+    public R<?> setPermissions(@Parameter(description = "权限code") String[] codes,
+                            @Parameter(description = "角色id") @NotNull @PathVariable("id") SysRole sysRole,
                             @AuthenticationPrincipal SysUserPrincipal sysUser) {
         if (sysRole.getIsSystem() && !sysUser.isSuperAdmin()){
             // 只有超级管理员才可以配置系统角色的权限
@@ -105,7 +105,7 @@ public class SysRoleApi extends BaseApi {
     @PutMapping(value = "{id}")
     @Operation(summary = "修改角色")
     @Acl(business = "sys:role:edit")
-    public R<?> update(@Validated SysRoleForm sysRoleForm, @Parameter(name = "角色id") @PathVariable("id") @NotNull SysRole sysRole) {
+    public R<?> update(@Validated SysRoleForm sysRoleForm, @Parameter(description = "角色id") @PathVariable("id") @NotNull SysRole sysRole) {
         return sysRoleService.updateRole(sysRoleForm, sysRole);
     }
 
@@ -116,7 +116,7 @@ public class SysRoleApi extends BaseApi {
     @Operation(summary = "删除角色")
     @DeleteMapping(value = "{id}")
     @Acl(business = "sys:role:delete")
-    public R<?> delete( @Parameter(name = "角色id") @PathVariable("id") @NotNull SysRole sysRole ) {
+    public R<?> delete( @Parameter(description = "角色id") @PathVariable("id") @NotNull SysRole sysRole ) {
         return sysRoleService.deleteRole(sysRole);
     }
 

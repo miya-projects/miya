@@ -74,7 +74,7 @@ public class SysFileApi {
     @PostMapping("upload")
     @Operation(summary = "上传文件(支持多个)")
     public R<?> upload(@NotNull @RequestParam("file") List<MultipartFile> files,
-                       @Parameter(name = "在上传单个文件时返回参数的格式化类型，默认返回数组，对象类型只有在上传单个文件时生效") FormatType formatType) {
+                       @Parameter(description = "在上传单个文件时返回参数的格式化类型，默认返回数组，对象类型只有在上传单个文件时生效") FormatType formatType) {
         List<SysFile> list = new ArrayList<>();
         for (MultipartFile file : files) {
             if (sysFileService.isNotAllowUpload(file)) {

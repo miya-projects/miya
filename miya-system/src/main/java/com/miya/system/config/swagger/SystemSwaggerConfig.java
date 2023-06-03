@@ -11,7 +11,6 @@ public class SystemSwaggerConfig {
     @Bean
     public GroupedOpenApi systemOpenApi() {
         return GroupedOpenApi.builder().group("系统")
-//                .addOperationCustomizer()
                 .packagesToScan(FlagForMiyaSystemModule.class.getPackageName())
                 .build();
     }

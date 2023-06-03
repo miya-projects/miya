@@ -64,7 +64,6 @@ public class TransactionUtil implements SmartInitializingSingleton {
     }
 
     /**
-     * TODO 待测试
      * <p>
      *     在结束事务后做一些事情<br />
      *     使用spring声明式事务时，想要在事务提交后做一些动作时，必须要将这样的逻辑写到方法外(因为方法调用结束才会提交事务)，

@@ -33,6 +33,7 @@ import com.miya.system.module.user.event.UserLoginEvent;
 import com.miya.system.module.user.event.UserModifyEvent;
 import com.miya.system.module.user.model.*;
 import com.querydsl.core.types.Predicate;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Builder;
@@ -227,11 +228,15 @@ public class SysUserService extends BaseService implements SystemInit {
     @Setter
     @Getter
     @Builder
+    @Schema(description = "登录接口返回的dto")
     public static class LoginRes {
+
+        @Schema(description = "token")
         private String token;
         /**
          * token失效日期
          */
+        @Schema(description = "token失效日期")
         private Date expiredDate;
 //        private SysUserDTO sysUserDTO;
     }

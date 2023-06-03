@@ -30,7 +30,7 @@ public interface SystemConfig extends Serializable {
     default <T> T getValue() {
         SysConfigService service = SpringUtil.getBean(SysConfigService.class);
         Optional optional = service.get(name(), getValueType());
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             service.touchSystemConfig(this);
             return getValue();
         }

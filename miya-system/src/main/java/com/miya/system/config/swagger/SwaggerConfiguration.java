@@ -2,6 +2,9 @@ package com.miya.system.config.swagger;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.miya.system.config.swagger.customizer.DomainClassGlobalSupport;
+import com.miya.system.config.swagger.customizer.ExtClientMethodNameSupport;
+import com.miya.system.config.swagger.customizer.GenericReturnTypeSupport;
 import com.querydsl.core.types.Predicate;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -23,7 +26,6 @@ import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.MediaType;
-
 import java.sql.Timestamp;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -43,8 +45,10 @@ import static org.springdoc.core.utils.SpringDocUtils.getConfig;
 public class SwaggerConfiguration {
 
     static {
-        getConfig().replaceParameterObjectWithClass(Timestamp.class, Date.class);
-        getConfig().replaceParameterObjectWithClass(YearMonth.class, String.class);
+//        getConfig().replaceParameterObjectWithClass(Timestamp.class, Date.class);
+//        getConfig().replaceParameterObjectWithClass(YearMonth.class, String.class);
+        getConfig().replaceWithClass(YearMonth.class, String.class);
+        getConfig().replaceWithClass(Timestamp.class, Date.class);
         io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = true;
     }
 
@@ -57,14 +61,14 @@ public class SwaggerConfiguration {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components()
-                        .addSecuritySchemes("jwt",
-                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"))
+                                .addSecuritySchemes("jwt",
+                                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"))
 //                        .addParameters("myHeader1", new Parameter().in("header").schema(new StringSchema()).name("myHeader1"))
 //                        .addHeaders("myHeader2", new Header().description("myHeader2 header").schema(new StringSchema()))
                 )
                 .addSecurityItem(new SecurityRequirement().addList("jwt"))
                 .info(new Info().title("miya").version("1.0").description("miya description"))
-        ;
+                ;
     }
 
     /**
@@ -76,24 +80,18 @@ public class SwaggerConfiguration {
         properties.setDefaultConsumesMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         properties.setDefaultProducesMediaType(MediaType.APPLICATION_JSON_VALUE);
         properties.setEnableSpringSecurity(true);
-//        SpringDocConfigProperties.Cache cache = new SpringDocConfigProperties.Cache();
-//        cache.setDisabled(true);
-//        properties.setCache(cache);
         return properties;
     }
 
-    /**
-     *
-     */
     @Bean
     @ConditionalOnClass(DomainClassConverter.class)
     @Lazy(false)
-    DomainClassGlobalOperationCustomizer domainClassGlobalOperationCustomizer() {
+    DomainClassGlobalSupport domainClassGlobalOperationCustomizer() {
         Repositories repositories = new Repositories(SpringUtil.getApplicationContext());
         ArrayList<Class<?>> domains = ListUtil.toList(repositories);
         getConfig()
                 .addRequestWrapperToIgnore(domains.toArray(new Class<?>[0]));
-        return new DomainClassGlobalOperationCustomizer(repositories);
+        return new DomainClassGlobalSupport(repositories);
     }
 
     /**
@@ -118,6 +116,17 @@ public class SwaggerConfiguration {
         }
         return null;
     }
+
+    @Bean
+    ExtClientMethodNameSupport ExtClientMethodNameReader() {
+        return new ExtClientMethodNameSupport();
+    }
+
+    @Bean
+    GenericReturnTypeSupport genericReturnTypeSupport() {
+        return new GenericReturnTypeSupport(springDocConfigProperties().getDefaultProducesMediaType());
+    }
+
 
 //    @Bean
 //    public GlobalOpenApiCustomizer extraApi() {

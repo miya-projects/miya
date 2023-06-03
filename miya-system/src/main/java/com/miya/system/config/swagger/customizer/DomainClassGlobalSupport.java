@@ -1,4 +1,4 @@
-package com.miya.system.config.swagger;
+package com.miya.system.config.swagger.customizer;
 
 import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.core.util.PrimitiveType;
@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.method.HandlerMethod;
 
+/**
+ * spring-data-commons支持了直接在controller接收PO类参数，但是swagger不支持，这里做一个支持
+ */
 @Slf4j
 @RequiredArgsConstructor
-public class DomainClassGlobalOperationCustomizer implements GlobalOperationCustomizer {
+public class DomainClassGlobalSupport implements GlobalOperationCustomizer {
     private final Repositories repositories;
 
     @Override

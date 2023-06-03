@@ -42,8 +42,8 @@ public class AccountApi {
     @PostMapping(value = "login")
     @Operation(summary = "后台登录", description = "后台登录接口")
     @Acl(userType = Acl.NotNeedLogin.class)
-    public R<SysUserService.LoginRes> login(@Parameter(name = "用户名", example = "admin") @NotBlank String userName,
-                                            @Parameter(name = "密码", example = "123456") @NotBlank String password) {
+    public R<SysUserService.LoginRes> login(@Parameter(description = "用户名", example = "admin") @NotBlank String userName,
+                                            @Parameter(description = "密码", example = "123456") @NotBlank String password) {
         return R.successWithData(sysUserService.login(userName, password));
     }
 
@@ -55,8 +55,8 @@ public class AccountApi {
     @PostMapping(value = "loginByPhone")
     @Operation(summary = "通过手机号验证码登录", description = "后台登录接口")
     @Acl(userType = Acl.NotNeedLogin.class)
-    public R<SysUserService.LoginRes> loginByPhone(@Parameter(name = "手机号", example = "13800000000") @NotBlank String phone,
-                                                   @Parameter(name = "验证码", example = "123456") @NotBlank String verifyCode) {
+    public R<SysUserService.LoginRes> loginByPhone(@Parameter(description = "手机号", example = "13800000000") @NotBlank String phone,
+                                                   @Parameter(description = "验证码", example = "123456") @NotBlank String verifyCode) {
         return R.successWithData(sysUserService.loginByPhone(phone, verifyCode));
     }
 
@@ -68,7 +68,7 @@ public class AccountApi {
     @Operation(summary = "发送手机验证码")
     @Acl(userType = Acl.NotNeedLogin.class)
     @RequestLimit(count = 1)
-    public R<SysUserService.LoginRes> sendVerifyCode(@Parameter(name = "手机号", example = "13800000000") @NotBlank String phone) {
+    public R<?> sendVerifyCode(@Parameter(description = "手机号", example = "13800000000") @NotBlank String phone) {
         String verifyCode = RandomUtil.randomNumbers(6);
         smsService.sendVerifyCode(phone, verifyCode);
         return R.success();
@@ -99,8 +99,8 @@ public class AccountApi {
 
     @PutMapping(value = "password")
     @Operation(summary = "当前用户使用旧密码修改密码")
-    public R<?> modifyPassword(@Parameter(name = "旧密码") @NotBlank(message = "旧密码不能为空") String password,
-                               @Parameter(name = "新密码") @NotBlank(message = "新密码不能为空") String newPassword,
+    public R<?> modifyPassword(@Parameter(description = "旧密码") @NotBlank(message = "旧密码不能为空") String password,
+                               @Parameter(description = "新密码") @NotBlank(message = "新密码不能为空") String newPassword,
                                @AuthenticationPrincipal SysUserPrincipal user) {
         sysUserService.modifyPassword(user.toPO(), password, newPassword);
         return R.success();

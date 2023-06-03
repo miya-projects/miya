@@ -9,6 +9,7 @@ import com.miya.common.module.base.BaseEntity;
 import com.miya.system.module.user.model.*;
 import com.querydsl.core.types.Predicate;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
@@ -39,6 +40,15 @@ public class SysUserApi extends BaseApi {
 
     private final SysUserService sysUserService;
     private final SysUserRepository sysUserRepository;
+
+    /**
+     * 用户列表
+     */
+    @Operation(summary = "用户列表11")
+    @GetMapping("123")
+    public R<SysUserListDTO> lis1t() {
+        return null;
+    }
 
     /**
      * 用户列表

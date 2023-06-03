@@ -2,6 +2,7 @@ package com.miya.common.model.dto.base;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Schema(name = "R", description = "统一的api返回格式")
+@NoArgsConstructor
 public class R<T> implements Serializable {
     /**
      * 响应码
@@ -32,7 +34,7 @@ public class R<T> implements Serializable {
     /**
      * 返回数据
      */
-    @Schema(name = "data", description = "返回数据", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "data", description = "返回数据", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private T data;
 
     private R(Integer code, String msg) {

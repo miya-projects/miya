@@ -1,12 +1,12 @@
 package com.miya.common.model.dto.base;
 
 import com.querydsl.core.QueryResults;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Map;
@@ -18,37 +18,40 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
+@Schema
 public class Grid<T> {
     /**
      * 总页数
      */
     @NonNull
+    @Schema(title = "总页数")
     private Integer totalPage;
     /**
      * 页大小
      */
     @NonNull
+    @Schema(title = "页大小")
     private Integer pageSize;
     /**
      * 当前页数，从1开始
      */
     @NonNull
+    @Schema(title = "当前页数，从1开始")
     private Integer currentPage;
     /**
      * 总条数
      */
     @NonNull
+    @Schema(title = "总条数")
     private Long total;
     /**
      * 表格数据
      */
     @NonNull
+    @Schema(title = "表格数据")
     private List<T> rows;
-    /**
-     * 排序
-     */
-    private Sort sort;
 
+    @Schema(title = "额外的其他数据")
     private Map<String, Object> others;
 
     /**
