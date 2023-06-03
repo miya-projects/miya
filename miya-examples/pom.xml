@@ -159,6 +159,10 @@
                             <artifactId>jakarta.persistence-api</artifactId>
                             <version>2.2.3</version>
                         </path>
+                        <path>
+                            <groupId>com.github.therapi</groupId>
+                            <artifactId>therapi-runtime-javadoc-scribe</artifactId>
+                        </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>

@@ -46,9 +46,7 @@ import org.springframework.data.util.CastUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -423,13 +421,20 @@ public class SysUserService extends BaseService implements SystemInit {
             });
             Context context = new Context();
             context.putVar("items", userList);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            PipedInputStream pipedInputStream = new PipedInputStream();
+            PipedOutputStream pipedOutputStream = null;
             try {
-                XlsxUtil.export(resource.openStream(), outputStream, context);
+                pipedOutputStream = new PipedOutputStream(pipedInputStream);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return new ByteArrayInputStream(outputStream.toByteArray());
+            try {
+                XlsxUtil.export(resource.openStream(), pipedOutputStream, context);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return pipedInputStream;
         });
         downloadService.export(downloadTask);
     }

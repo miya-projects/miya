@@ -30,7 +30,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -110,7 +113,7 @@ public class DownloadService {
             downloadRecordRepository.save(record);
         });
         log.info("[{}]导出完毕", task.getName());
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(task.getFileName(), "utf-8"));
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(task.getFileName(), StandardCharsets.UTF_8));
         response.setContentType("application/octet-stream");
         IoUtil.copy(fileService.openStream(file), response.getOutputStream());
     }
@@ -169,11 +172,14 @@ public class DownloadService {
 
 
     /**
-     * todo 没啥乱用
      * 获取文件url 可能为null
      * @param downloadRecord
      */
     public String getFileUrl(SysDownloadRecord downloadRecord) {
+        List<SysDownloadRecord.Status> statuses = Arrays.asList(SysDownloadRecord.Status.COMPLETED, SysDownloadRecord.Status.DOWNLOAD);
+        if (!statuses.contains(downloadRecord.getStatus())) {
+            throw new ErrorMsgException("当前导出任务未完成或导出任务失败");
+        }
         downloadRecord.setStatus(SysDownloadRecord.Status.DOWNLOAD);
         downloadRecordRepository.save(downloadRecord);
         return Optional.ofNullable(downloadRecord.getFile()).map(SysFile::getUrl).orElse(null);

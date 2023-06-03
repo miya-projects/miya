@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 @Getter
 @RequiredArgsConstructor
-public class SimpleDownloadTask implements DownloadTask{
+public class SimpleDownloadTask implements DownloadTask {
 
     private final String name;
     private final String fileName;

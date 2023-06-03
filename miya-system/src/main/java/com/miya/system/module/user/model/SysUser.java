@@ -44,39 +44,69 @@ import java.util.stream.Collectors;
 @Audited
 public class SysUser extends BaseEntity {
 
+    /**
+     * 用户登录账户
+     */
     @Column(length = 20, nullable = false)
     private String username;
 
+    /**
+     * 用户登录密码
+     */
     @Column(length = 60)
     private String password;
 
+    /**
+     * 用户姓名
+     */
     @Column(length = 50)
     private String name;
 
+    /**
+     * 账户状态
+     */
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "enum('NORMAL', 'LOCKED')", nullable = false)
     private AccountStatus accountStatus = AccountStatus.NORMAL;
 
+    /**
+     * 备注
+     */
     @Column(length = 512)
     private String remark;
 
+    /**
+     * 手机号
+     */
     @Column(length = 20)
     private String phone;
 
+    /**
+     * 性别
+     */
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "enum('MALE', 'FEMALE')")
     private Sex sex;
 
+    /**
+     * 用户部门
+     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "department_id")}, name = "sys_user_department")
     private Set<SysDepartment> departments;
 
+    /**
+     * 用户角色
+     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "role_id")}, name = "sys_user_role")
     private Set<SysRole> roles;
 
+    /**
+     * 用户头像
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -89,6 +119,9 @@ public class SysUser extends BaseEntity {
     @Column(name = "preferences", columnDefinition = "json")
     private Preferences preferences = new Preferences();
 
+    /**
+     * 用户社交账号
+     */
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private Set<SysUserSocial> sysUserSocials = new HashSet<>();
@@ -122,7 +155,13 @@ public class SysUser extends BaseEntity {
     @Getter
     @AllArgsConstructor
     public enum Sex implements ReadableEnum {
+        /**
+         * 男
+         */
         MALE("男"),
+        /**
+         * 女
+         */
         FEMALE("女");
         private final String name;
     }

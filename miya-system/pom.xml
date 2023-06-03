@@ -133,6 +133,10 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.therapi</groupId>
+            <artifactId>therapi-runtime-javadoc</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.name}</finalName>
@@ -181,6 +185,11 @@
                             <groupId>jakarta.persistence</groupId>
                             <artifactId>jakarta.persistence-api</artifactId>
                             <version>3.1.0</version>
+                        </path>
+                        <path>
+                            <groupId>com.github.therapi</groupId>
+                            <artifactId>therapi-runtime-javadoc-scribe</artifactId>
+                            <version>0.15.0</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

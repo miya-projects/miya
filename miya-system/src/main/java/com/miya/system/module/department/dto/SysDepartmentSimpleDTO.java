@@ -1,7 +1,6 @@
 package com.miya.system.module.department.dto;
 
 import com.miya.common.config.xlsx.ToExcelFormat;
-import com.miya.common.module.base.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,13 @@ import lombok.Setter;
 @Schema
 @Getter
 @Setter
-public class SysDepartmentSimpleDTO extends BaseDTO implements ToExcelFormat {
+public class SysDepartmentSimpleDTO implements ToExcelFormat {
+
+    private String id;
+
+    /**
+     * 部门名称
+     */
     private String name;
 
     @Override

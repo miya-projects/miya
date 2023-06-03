@@ -4,12 +4,14 @@ package com.miya.system.config;
 import com.miya.common.config.orm.source.DataSourceConfigure;
 import com.miya.system.module.FlagForMiyaSystemModule;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import java.util.List;
 
 /**
  * miya配置
  */
 @Configuration
+@Import(cn.hutool.extra.spring.SpringUtil.class)
 public class MiyaSystemConfiguration implements DataSourceConfigure, MiyaSystemConfigure {
 
 

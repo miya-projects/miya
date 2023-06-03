@@ -49,7 +49,7 @@ public abstract class BaseEntity implements Serializable, Persistable<Serializab
      * 更新时间戳 (单位:秒)
      */
     @LastModifiedDate
-    @Column(nullable = false, updatable = true)
+    @Column(nullable = false)
     protected LocalDateTime updatedTime;
 
     /**
