@@ -96,12 +96,8 @@ public class DropDownListApi extends BaseApi implements InitializingBean {
         }
         Optional.ofNullable(key).ifPresent(k -> bb.and(QSysUser.sysUser.name.contains(key)));
         Iterable<SysUser> all = sysUserRepository.findAll(bb, PageRequest.of(0, 10));
-        List<DropDownItemDTO> result = StreamSupport.stream(all.spliterator(), false).map(user -> {
-            DropDownItemDTO dropDownItem = new DropDownItemDTO();
-            dropDownItem.setLabel(user.getName());
-            dropDownItem.setValue(user.getId());
-            return dropDownItem;
-        }).collect(Collectors.toList());
+        List<DropDownItemDTO> result = StreamSupport.stream(all.spliterator(), false)
+                .map(user -> DropDownItemDTO.of(user.getId(), user.getName())).collect(Collectors.toList());
         return R.successWithData(result);
     }
 

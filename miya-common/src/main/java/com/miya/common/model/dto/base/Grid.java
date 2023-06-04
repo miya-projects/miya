@@ -24,34 +24,34 @@ public class Grid<T> {
      * 总页数
      */
     @NonNull
-    @Schema(title = "总页数")
+    @Schema(description = "总页数")
     private Integer totalPage;
     /**
      * 页大小
      */
     @NonNull
-    @Schema(title = "页大小")
+    @Schema(description = "页大小")
     private Integer pageSize;
     /**
      * 当前页数，从1开始
      */
     @NonNull
-    @Schema(title = "当前页数，从1开始")
+    @Schema(description = "当前页数，从1开始")
     private Integer currentPage;
     /**
      * 总条数
      */
     @NonNull
-    @Schema(title = "总条数")
+    @Schema(description = "总条数")
     private Long total;
     /**
      * 表格数据
      */
     @NonNull
-    @Schema(title = "表格数据")
+    @Schema(description = "表格数据")
     private List<T> rows;
 
-    @Schema(title = "额外的其他数据")
+    @Schema(description = "额外的其他数据")
     private Map<String, Object> others;
 
     /**

@@ -2,19 +2,25 @@ package com.miya.system.config.swagger;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.miya.system.config.swagger.customizer.DomainClassGlobalSupport;
-import com.miya.system.config.swagger.customizer.ExtClientMethodNameSupport;
-import com.miya.system.config.swagger.customizer.GenericReturnTypeSupport;
+import com.fasterxml.jackson.databind.JavaType;
+import com.miya.system.config.swagger.customizer.*;
+import com.miya.system.config.web.ReadableEnum;
 import com.querydsl.core.types.Predicate;
+import io.swagger.v3.core.converter.AnnotatedType;
+import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.configuration.SpringDocDataRestConfiguration;
 import org.springdoc.core.converters.PageableOpenAPIConverter;
-import org.springdoc.core.customizers.QuerydslPredicateOperationCustomizer;
+import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springdoc.core.providers.JavadocProvider;
 import org.springdoc.core.providers.ObjectMapperProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,9 +34,8 @@ import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.MediaType;
 import java.sql.Timestamp;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springdoc.core.utils.Constants.SPRINGDOC_ENABLED;
 import static org.springdoc.core.utils.SpringDocUtils.getConfig;
@@ -49,7 +54,9 @@ public class SwaggerConfiguration {
 //        getConfig().replaceParameterObjectWithClass(YearMonth.class, String.class);
         getConfig().replaceWithClass(YearMonth.class, String.class);
         getConfig().replaceWithClass(Timestamp.class, Date.class);
-        io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = true;
+        io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = false;
+        ModelConverters.getInstance().addConverter(new GenericModelConverter());
+//        ModelConverters.getInstance().addConverter(new ReadEnumModelConverter());
     }
 
 
@@ -109,10 +116,11 @@ public class SwaggerConfiguration {
      * 解析querydsl的predicate参数
      */
     @Bean
-    QuerydslPredicateOperationCustomizer queryDslQuerydslPredicateOperationCustomizer(Optional<QuerydslBindingsFactory> querydslBindingsFactory) {
+    QuerydslPredicateOperationWithJavaDocCustomizer queryDslQuerydslPredicateOperationCustomizer(
+            Optional<QuerydslBindingsFactory> querydslBindingsFactory, JavadocProvider javadocProvider) {
         if (querydslBindingsFactory.isPresent()) {
             getConfig().addRequestWrapperToIgnore(Predicate.class);
-            return new QuerydslPredicateOperationCustomizer(querydslBindingsFactory.get());
+            return new QuerydslPredicateOperationWithJavaDocCustomizer(querydslBindingsFactory.get(), javadocProvider);
         }
         return null;
     }
@@ -122,11 +130,26 @@ public class SwaggerConfiguration {
         return new ExtClientMethodNameSupport();
     }
 
-    @Bean
+//    @Bean
     GenericReturnTypeSupport genericReturnTypeSupport() {
         return new GenericReturnTypeSupport(springDocConfigProperties().getDefaultProducesMediaType());
     }
 
+    @Bean
+    PropertyCustomizer propertyCustomizer() {
+        return new PropertyCustomizer() {
+
+            @Override
+            public Schema customize(Schema property, AnnotatedType type) {
+                if (type.isSchemaProperty()) {
+//                    if (type.getType().isEnum()) {
+//                        property.setEnum(ListUtil.toList(type.getType().getEnumConstants()));
+//                    }
+                }
+                return property;
+            }
+        };
+    }
 
 //    @Bean
 //    public GlobalOpenApiCustomizer extraApi() {

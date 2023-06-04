@@ -25,6 +25,7 @@ public class R<T> implements Serializable {
     /**
      * 当code为0时success为true，方便判断
      */
+    @Schema(name = "success", description = "当code为0时success为true，方便判断", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
     private Boolean success;
     /**
      * 说明信息, 该信息应当可展示给最终用户查看

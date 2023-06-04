@@ -1,5 +1,6 @@
 package com.miya.system.module.common.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -8,6 +9,7 @@ import lombok.experimental.FieldNameConstants;
  */
 @Data
 @FieldNameConstants
+@AllArgsConstructor(staticName = "of")
 public class DropDownItemDTO {
     private String value;
     private String label;

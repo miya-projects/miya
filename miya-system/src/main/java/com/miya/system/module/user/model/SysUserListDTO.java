@@ -60,7 +60,7 @@ public class SysUserListDTO extends BaseDTO {
     /**
      * 是否是超级管理员
      */
-    private boolean isSuperAdmin;
+    private boolean superAdmin;
 
     public static SysUserListDTO of(SysUser user) {
         return modelMapper.map(user, SysUserListDTO.class);
