@@ -11,10 +11,11 @@ import java.util.Objects;
  * @author 杨超辉
  * http响应实体
  * 当用户未达到调用接口的目的时，success应该为false，业务逻辑的多种走向应该使用data里的信息承载
+ * 带泛型的返回类，不能指定@Schema(name="")，否则springdoc只会生成一个泛型的schema
  */
 @Getter
 @Setter
-@Schema(name = "R", description = "统一的api返回格式")
+@Schema(description = "统一的api返回格式")
 @NoArgsConstructor
 public class R<T> implements Serializable {
     /**

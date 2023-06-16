@@ -55,7 +55,7 @@ public class SwaggerConfiguration {
         getConfig().replaceWithClass(YearMonth.class, String.class);
         getConfig().replaceWithClass(Timestamp.class, Date.class);
         io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = false;
-        ModelConverters.getInstance().addConverter(new GenericModelConverter());
+//        ModelConverters.getInstance().addConverter(new GenericModelConverter());
 //        ModelConverters.getInstance().addConverter(new ReadEnumModelConverter());
     }
 
