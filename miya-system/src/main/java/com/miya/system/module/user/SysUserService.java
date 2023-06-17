@@ -29,6 +29,8 @@ import com.miya.system.config.business.Business;
 import com.miya.system.module.download.DownloadService;
 import com.miya.system.module.download.SimpleDownloadTask;
 import com.miya.system.module.notice.SysNoticeService;
+import com.miya.system.module.user.config.MiyaSystemUserConfig;
+import com.miya.system.module.user.dto.*;
 import com.miya.system.module.user.event.UserLoginEvent;
 import com.miya.system.module.user.event.UserModifyEvent;
 import com.miya.system.module.user.model.*;

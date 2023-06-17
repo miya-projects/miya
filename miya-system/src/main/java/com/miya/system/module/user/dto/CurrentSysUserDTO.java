@@ -1,4 +1,4 @@
-package com.miya.system.module.user.model;
+package com.miya.system.module.user.dto;
 
 import com.miya.common.module.config.SysConfigService;
 import lombok.Getter;

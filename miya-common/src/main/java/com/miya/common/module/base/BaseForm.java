@@ -5,7 +5,6 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.TypeUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,9 +57,9 @@ public abstract class BaseForm<PO> {
         // entity中的字段
         Field[] declaredFieldsForEntity = entityClass.getDeclaredFields();
 
-        List<String> fieldNamesForEntity = Arrays.stream(declaredFieldsForEntity).map(Field::getName).collect(Collectors.toList());
+//        List<String> fieldNamesForEntity = Arrays.stream(declaredFieldsForEntity).map(Field::getName).toList();
 
-        // form中entity没有的字段，这些字段应当有form自己特殊处理
+        // form中entity没有的字段，这些字段应当由form自己特殊处理
         // List<Field> detachFields = Arrays.stream(declaredFieldsForForm).filter(field -> !fieldNamesForEntity.contains(field.getName())).collect(Collectors.toList());
         // if (detachFields.size() > 0) {
         //     throw new RuntimeException(StrUtil.format("字段【{}】在class 【{}】中不存在",
@@ -78,7 +77,7 @@ public abstract class BaseForm<PO> {
                     }
                     return !field.getType().equals(fieldInEntity.getType());
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> ignoreProperties = new ArrayList<>();
         for (Field field : fieldsInFormDiffType) {
@@ -90,7 +89,7 @@ public abstract class BaseForm<PO> {
         // 在form中集合类型字段
         List<Field> fieldsInFormCollType = Arrays.stream(declaredFieldsForForm)
                 .filter(field -> Collection.class.isAssignableFrom(field.getType()))
-                .collect(Collectors.toList());
+                .toList();
         for (Field field : fieldsInFormCollType) {
             Collection<Object> collection = CollUtil.create(field.getType());
             Collection<?> collInForm = (Collection<?>)ReflectUtil.getFieldValue(this, field);

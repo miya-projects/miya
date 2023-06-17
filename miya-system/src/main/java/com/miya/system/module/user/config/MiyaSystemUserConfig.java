@@ -1,7 +1,7 @@
-package com.miya.system.module.user;
+package com.miya.system.module.user.config;
 
 import com.miya.system.module.user.model.SysUser;
-import com.miya.system.module.user.model.SysUserForm;
+import com.miya.system.module.user.dto.SysUserForm;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Accessors;

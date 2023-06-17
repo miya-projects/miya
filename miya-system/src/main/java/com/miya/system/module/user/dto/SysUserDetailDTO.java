@@ -1,5 +1,6 @@
-package com.miya.system.module.user.model;
+package com.miya.system.module.user.dto;
 
+import com.miya.system.module.user.model.SysUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

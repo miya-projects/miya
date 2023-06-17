@@ -38,8 +38,8 @@ public class CustomExpressionEvaluator implements ExpressionEvaluator {
     public Object evaluate(String expression, Map<String, Object> context) {
         StandardEvaluationContext ctx = getStandardEvaluationContext(context);
         Object value = parser.parseExpression(expression).getValue(ctx);
-        if (value instanceof ToExcelFormat) {
-            return ((ToExcelFormat)value).toStringForExcel();
+        if (value instanceof ToExcelFormat toExcelFormat) {
+            return toExcelFormat.toStringForExcel();
         }
         return value;
     }

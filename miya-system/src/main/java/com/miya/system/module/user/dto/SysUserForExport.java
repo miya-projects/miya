@@ -1,8 +1,9 @@
-package com.miya.system.module.user.model;
+package com.miya.system.module.user.dto;
 
 import com.miya.common.module.base.BaseDTO;
 import com.miya.system.module.department.dto.SysDepartmentSimpleDTO;
 import com.miya.system.module.role.model.SysRoleSimpleDTO;
+import com.miya.system.module.user.model.SysUser;
 import lombok.Getter;
 import lombok.Setter;
 

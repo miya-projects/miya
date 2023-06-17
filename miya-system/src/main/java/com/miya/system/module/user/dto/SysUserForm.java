@@ -1,7 +1,8 @@
-package com.miya.system.module.user.model;
+package com.miya.system.module.user.dto;
 
 import com.miya.common.annotation.constraint.ValidFieldString;
 import com.miya.common.module.base.BaseForm;
+import com.miya.system.module.user.model.SysUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

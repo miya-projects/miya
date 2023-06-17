@@ -15,7 +15,7 @@ import com.miya.system.module.role.event.RoleModifyEvent;
 import com.miya.system.module.role.model.QSysRole;
 import com.miya.system.module.role.model.SysRole;
 import com.miya.system.module.role.model.SysRoleForm;
-import com.miya.system.module.user.MiyaSystemUserConfig;
+import com.miya.system.module.user.config.MiyaSystemUserConfig;
 import com.miya.system.module.user.SysUserRepository;
 import com.miya.system.module.user.model.QSysUser;
 import jakarta.annotation.PostConstruct;

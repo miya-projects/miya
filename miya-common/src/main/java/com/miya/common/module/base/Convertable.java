@@ -4,6 +4,9 @@ import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
+/**
+ * 继承该类拥有modelMapper转换为其他类的能力
+ */
 public class Convertable {
     protected static ModelMapper modelMapper = new ModelMapper();
 
