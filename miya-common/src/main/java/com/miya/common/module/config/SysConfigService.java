@@ -71,7 +71,7 @@ public class SysConfigService implements SystemInit {
      *  注册lazymap bean，可通过以下方式注入配置，属性，支持动态重载配置
      *  <code>
      *     \@Value("#{sysConfig['SYSTEM_NAME']}") <br />
-     *     private Supplier<String> systemName;
+     *     private Supplier&lt;String> systemName;
      *  </code>
      */
     @Bean(name = "sysConfig")

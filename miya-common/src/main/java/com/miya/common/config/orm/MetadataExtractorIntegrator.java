@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @link {<a href="https://stackoverflow.com/questions/45843457/how-to-discover-fully-qualified-table-column-from-hibernate-metadatasources">参考</a>}
+ *  <a href="https://stackoverflow.com/questions/45843457/how-to-discover-fully-qualified-table-column-from-hibernate-metadatasources">参考</a>
  */
 @Slf4j
 public class MetadataExtractorIntegrator

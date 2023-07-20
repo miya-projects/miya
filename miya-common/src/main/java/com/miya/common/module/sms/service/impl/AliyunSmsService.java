@@ -21,11 +21,10 @@ public class AliyunSmsService implements SmsService {
     }
 
     /**
-     * 使用AK&SK初始化账号Client
+     * 使用ID和Secret初始化账号Client
      * @param accessKeyId
      * @param accessKeySecret
      * @return Client
-     * @throws Exception
      */
     @SneakyThrows
     public static com.aliyun.dysmsapi20170525.Client createClient(String accessKeyId, String accessKeySecret) {

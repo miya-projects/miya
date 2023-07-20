@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 泛型返回类型支持
  * 在springdoc.remove-broken-reference-definitions=true的请情况下会有问题
- * @deprecated  @see {@link com.miya.system.config.swagger.customizer.GenericModelConverter}
+ * @deprecated  {@see com.miya.system.config.swagger.customizer.GenericModelConverter}
  */
 @Deprecated
 @RequiredArgsConstructor
