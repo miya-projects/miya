@@ -37,13 +37,31 @@
     </repositories>
 ```
 
-2. 必要配置
+2. 配置
+
+### 必要配置
 ```shell
 spring.datasource.url=jdbc:mysql://localhost:3306/miya?allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true
 spring.datasource.username=root
 spring.datasource.password=root
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ```
+### 可选配置
+#### ORM配置(请自行判断是否要开启)
+```shell
+#logging.level.org.hibernate.SQL=DEBUG
+spring.jpa.properties.hibernate.show_sql=false
+spring.jpa.properties.hibernate.hbm2ddl.auto=update
+# 是否开启数据审计
+spring.jpa.properties.hibernate.integration.envers.enabled=false
+spring.jpa.properties.org.hibernate.envers.default_catalog=miya-deleted
+```
+####
+```shell
+# 开启特殊字符过滤(全局trim前端字符串参数的首尾空格，并去除如ZWSP这类不可见字符，@RequestBody接参不进行处理)
+config.enable-special-character-filter=true
+```
+
 3. 启动springboot
 
 ## 技术栈

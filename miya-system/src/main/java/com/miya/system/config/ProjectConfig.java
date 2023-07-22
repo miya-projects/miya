@@ -31,6 +31,6 @@ public class ProjectConfig {
     /**
      * 是否全局trim前端字符串参数的首尾空格，并去除如ZWSP这类不可见字符
      */
-    private Boolean enableSpecialCharacterFilter;
+    private Boolean enableSpecialCharacterFilter = false;
 
 }

@@ -1,8 +1,0 @@
-app=miya-service
-traefik.enable=true
-traefik.http.routers.miya-service.entrypoints=web,websecure
-traefik.http.routers.miya-service.rule=Host(`www.miya.com`) && PathPrefix(`/api`)
-traefik.http.services.miya-service.loadbalancer.server.port=8633
-traefik.http.services.miya-service.loadbalancer.healthCheck.path=/api/health
-traefik.http.services.miya-service.loadbalancer.healthCheck.interval="10s"
-traefik.http.services.miya-service.loadbalancer.healthCheck.timeout="5s"

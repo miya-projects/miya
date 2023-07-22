@@ -1,12 +1,10 @@
-# syntax = docker/dockerfile:1.2
+#syntax = docker/dockerfile:1.2
 
-FROM registry.cn-hangzhou.aliyuncs.com/rxxy/java:8-jdk
+FROM registry.cn-hangzhou.aliyuncs.com/rxxy/java:17-jdk
 WORKDIR /app
 COPY ./target/miya-system.jar /app/miya-system.jar
 
-ARG PROFILE=common,prod
-ENV TZ Asia/Shanghai
-ENV SPRING_PROFILES_ACTIVE "${PROFILE}"
-EXPOSE 8080
-ENTRYPOINT ["bash","-c", "java -jar miya-system.jar"]
+#RUN --mount=type=cache,mode=0777,target=~/.m2/repository/,id=maven_cache \
+#        mvn -s /root/.m2/settings.xml -P fatjar clean package -Dmaven.test.skip=true
+
 

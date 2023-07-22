@@ -1,5 +1,6 @@
 #syntax = docker/dockerfile:1.2
 
+#打包为镜像
 FROM registry.cn-hangzhou.aliyuncs.com/rxxy/java:17-jdk as build-image
 WORKDIR /app
 COPY target/*.jar /app/
