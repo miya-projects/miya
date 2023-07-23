@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.Date;
 import java.util.Objects;
 
@@ -31,7 +33,8 @@ public class SysCache extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String sKey;
 
-    @Column(columnDefinition = "text")
+    @Column
+    @JdbcTypeCode(Types.CLOB)
     private String sVal;
 
     private Date expireDate;

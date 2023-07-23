@@ -14,6 +14,7 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -29,7 +30,8 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity implements Serializable, Persistable<Serializable> {
 
     @Id
-    @Column(name = "id", columnDefinition = "char(32)")
+    @Column(name = "id", length = 32)
+    @JdbcTypeCode(Types.CHAR)
     @GenericGenerator(name = "idGenerator", strategy = "com.miya.common.config.orm.ManualInsertGenerator")
     // @GenericGenerator(name = "idGenerator", strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")

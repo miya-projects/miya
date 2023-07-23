@@ -13,8 +13,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 
+import java.sql.Types;
 import java.util.Map;
 
 /**
@@ -53,7 +55,8 @@ public class SysLog extends BaseEntity {
     /**
      * 详细日志内容
      */
-    @Column(columnDefinition = "text", nullable = false)
+    @Column(nullable = false)
+    @JdbcTypeCode(Types.CLOB)
     private String content;
 
     /**
@@ -66,7 +69,8 @@ public class SysLog extends BaseEntity {
     /**
      * 业务数据id
      */
-    @Column(name = "business_id", columnDefinition = "char(32)")
+    @Column(name = "business_id", length = 32)
+    @JdbcTypeCode(Types.CHAR)
     private String businessId;
 
     @Override

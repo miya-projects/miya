@@ -8,12 +8,19 @@ import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQLDialect;
+import org.hibernate.engine.jdbc.Size;
 import org.hibernate.exception.spi.SQLExceptionConversionDelegate;
 import org.hibernate.mapping.ForeignKey;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 import org.hibernate.tool.schema.internal.StandardForeignKeyExporter;
+import org.hibernate.tool.schema.internal.TableMigrator;
 import org.hibernate.tool.schema.spi.Exporter;
+import org.hibernate.type.SqlTypes;
+import org.hibernate.type.descriptor.java.JavaType;
+import org.hibernate.type.descriptor.jdbc.JdbcType;
+
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +64,60 @@ public class ExtensionMySQLDialect extends MySQLDialect {
     @Override
     public Exporter<ForeignKey> getForeignKeyExporter() {
         return this.foreignKeyExporter;
+    }
+
+    @Override
+    public TableMigrator getTableMigrator() {
+        return super.getTableMigrator();
+    }
+
+    private final SizeStrategy sizeStrategy = new SizeStrategyImpl() {
+        @Override
+        public Size resolveSize(
+                JdbcType jdbcType,
+                JavaType<?> javaType,
+                Integer precision,
+                Integer scale,
+                Long length) {
+            final Size size = new Size();
+            switch ( jdbcType.getDdlTypeCode() ) {
+                case Types.BIT:
+                    // MySQL allows BIT with a length up to 64 (less the default length 255)
+                    if ( length != null ) {
+                        return Size.length( Math.min( Math.max( length, 1 ), 64 ) );
+                    }
+                    break;
+                case SqlTypes.TIME:
+                case SqlTypes.TIME_WITH_TIMEZONE:
+                case SqlTypes.TIME_UTC:
+                case SqlTypes.TIMESTAMP:
+                case SqlTypes.TIMESTAMP_WITH_TIMEZONE:
+                case SqlTypes.TIMESTAMP_UTC:
+                    size.setPrecision( javaType.getDefaultSqlPrecision( ExtensionMySQLDialect.this, jdbcType ) );
+//                    处理数据库列大小和模型中不一致的问题 mysql版本大于"5.6.4"都这么计算length
+//                    mysql8.0驱动中 {@see com.mysql.cj.jdbc.DatabaseMetaDataUsingInfoSchema#158}
+                    if (size.getPrecision() > 0) {
+                        length = 19 + size.getPrecision() + 1L;
+                    }else {
+                        length = 19L;
+                    }
+                    if ( scale != null && scale != 0 ) {
+                        throw new IllegalArgumentException("scale has no meaning for timestamps");
+                    }
+                    break;
+                default:
+                    return super.resolveSize( jdbcType, javaType, precision, scale, length );
+            }
+            if ( length != null ) {
+                size.setLength( length );
+            }
+            return size;
+        }
+    };
+
+    @Override
+    public SizeStrategy getSizeStrategy() {
+        return sizeStrategy;
     }
 
     @Override

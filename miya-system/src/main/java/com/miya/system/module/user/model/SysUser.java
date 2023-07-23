@@ -66,7 +66,7 @@ public class SysUser extends BaseEntity {
      * 账户状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "enum('NORMAL', 'LOCKED')", nullable = false)
+    @Column(nullable = false)
     private AccountStatus accountStatus = AccountStatus.NORMAL;
 
     /**
@@ -85,7 +85,6 @@ public class SysUser extends BaseEntity {
      * 性别
      */
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "enum('MALE', 'FEMALE')")
     private Sex sex;
 
     /**

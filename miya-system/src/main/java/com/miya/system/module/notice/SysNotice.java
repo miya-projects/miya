@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +30,8 @@ public class SysNotice extends BaseEntity {
     /**
      * 通知内容
      */
-    @Column(columnDefinition = "text")
+    @Column
+    @JdbcTypeCode(Types.CLOB)
     private String content;
 
     /**

@@ -11,8 +11,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 
+import java.sql.Types;
 import java.util.Objects;
 
 /**
@@ -39,7 +41,8 @@ public class SysConfig extends BaseEntity {
     /**
      * 变量值
      */
-    @Column(name = "val", columnDefinition = "text")
+    @Column(name = "val")
+    @JdbcTypeCode(Types.CLOB)
     private String val;
 
     /**
