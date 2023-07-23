@@ -102,24 +102,20 @@
                         <image>registry.cn-hangzhou.aliyuncs.com/rxxy/java:17-jdk</image>
                     </from>
                     <to>
-                        <image>registry.cn-hangzhou.aliyuncs.com/rxxy/miya-service:latest</image>
+                        <image>registry.cn-hangzhou.aliyuncs.com/rxxy/miya-examples:latest</image>
                         <auth>
                             <username>${env.REGISTRY_USERNAME}</username>
                             <password>${env.REGISTRY_PASSWORD}</password>
                         </auth>
                     </to>
                     <container>
-<!--                        java -cp @/app/jib-classpath-file @/app/jib-main-class-file-->
-<!--                        <entrypoint></entrypoint>-->
                         <jvmFlags>
-<!--                            <jvmFlag>-Dspring.profiles.active=prod</jvmFlag>-->
 <!--                            <jvmFlag>$JAVA_OPTS</jvmFlag>-->
-                            <jvmFlag>-Xms512m</jvmFlag>
-                            <jvmFlag>-Dspring.datasource.url=jdbc:mysql://host.docker.internal:3306/miya</jvmFlag>
-                            <jvmFlag>-Dspring.datasource.username=root</jvmFlag>
-                            <jvmFlag>-Dspring.datasource.password=root</jvmFlag>
+<!--                            <jvmFlag>-Dspring.datasource.url=jdbc:mysql://host.docker.internal:3306/miya</jvmFlag>-->
+<!--                            <jvmFlag>-Dspring.datasource.username=root</jvmFlag>-->
+<!--                            <jvmFlag>-Dspring.datasource.password=root</jvmFlag>-->
                         </jvmFlags>
-<!--                        <mainClass>com.teamytd.Application</mainClass>-->
+                        <mainClass>com.teamytd.Application</mainClass>
 <!--                        <args>-->
 <!--                            <arg>bash</arg>-->
 <!--                            <arg>-c</arg>-->
@@ -137,7 +133,8 @@
                         </labels>
                         <environment>
                             <TZ>Asia/Shanghai</TZ>
-                            <JAVA_OPTS>-Xms512m -Xdebug</JAVA_OPTS>
+                            <!-- 自定义jvm参数 可在运行时添加环境变量覆盖 -->
+                            <JDK_JAVA_OPTIONS>-Xms512m -Xdebug -Dspring.profiles.active=local</JDK_JAVA_OPTIONS>
                         </environment>
                         <format>OCI</format>
                     </container>
