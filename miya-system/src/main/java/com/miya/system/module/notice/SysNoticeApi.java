@@ -78,15 +78,9 @@ public class SysNoticeApi {
 
     @PostMapping(value = "top8")
     @Operation(summary = "查询最近8条通知")
-    public R<List<SysNoticeDTO>> top8(@AuthenticationPrincipal SysUserPrincipal sysUser) {
-        List<SysNotice> sysNotices = sysNoticeService.top8(sysUser.getId());
-        List<SysNoticeDTO> list = sysNotices.stream().map(notice -> {
-            List<SysNoticeUser> noticeUsers = notice.getSysUser();
-            SysNoticeUser noticeUser = noticeUsers.stream().filter(nu -> nu.getId().getSysUser().equals(sysUser)).findFirst().get();
-            SysNoticeDTO sysNoticeDTO = SysNoticeDTO.of(notice);
-            sysNoticeDTO.assign(noticeUser);
-            return sysNoticeDTO;
-        }).collect(Collectors.toList());
+    public R<List<SysNoticeDTO>> top8(@AuthenticationPrincipal SysUserPrincipal sysUserPrincipal) {
+        List<SysNotice> sysNotices = sysNoticeService.top8(sysUserPrincipal.getId());
+        List<SysNoticeDTO> list = sysNotices.stream().map(SysNoticeDTO::of).collect(Collectors.toList());
         return R.successWithData(list);
     }
 

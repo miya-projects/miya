@@ -41,10 +41,6 @@ public class SysNoticeDTO extends BaseDTO {
     // @Getter(AccessLevel.NONE)
     // private SysUserDTO sysUserDTO;
 
-    public void assign(SysNoticeUser noticeUser){
-        // this.read = noticeUser.getRead();
-    }
-
     public static SysNoticeDTO of(SysNotice sysDict) {
         return modelMapper.map(sysDict, SysNoticeDTO.class);
     }
