@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 @EntityListeners({AuditingEntityListener.class})
 @FieldNameConstants
 @Audited
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class BaseEntity implements Serializable, Persistable<Serializable> {
 
     @Id

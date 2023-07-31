@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +22,13 @@ import java.util.Map;
 @AllArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
 @Schema
-public class Grid<T> {
+public class Grid<T> implements EnvironmentAware {
+
+    /**
+     * 页码是否从1开始，默认为false，表示从0开始
+     */
+    public static boolean oneIndexedParameters = false;
+
     /**
      * 总页数
      */
@@ -33,10 +42,10 @@ public class Grid<T> {
     @Schema(description = "页大小")
     private Integer pageSize;
     /**
-     * 当前页数，从1开始
+     * 当前页数
      */
     @NonNull
-    @Schema(description = "当前页数，从1开始")
+    @Schema(description = "当前页数")
     private Integer currentPage;
     /**
      * 总条数
@@ -65,12 +74,13 @@ public class Grid<T> {
 
     /**
      * 通过page对象转换为Grid对象
-     *
      * @param page
      * @param others 其他信息
      */
     public static <T> Grid<T> of(Page<T> page, Map<String, Object> others) {
-        final Grid<T> grid = Grid.of(page.getTotalPages(), page.getPageable().getPageSize(), page.getPageable().getPageNumber(), page.getTotalElements(), page.getContent());
+        Pageable pageable = page.getPageable();
+        final Grid<T> grid = Grid.of(page.getTotalPages(), pageable.getPageSize(),
+                oneIndexedParameters?pageable.getPageNumber()+1:pageable.getPageNumber(), page.getTotalElements(), page.getContent());
         grid.setOthers(others);
         return grid;
     }
@@ -78,8 +88,14 @@ public class Grid<T> {
     public static <T> Grid<T> of(QueryResults<T> queryResults) {
         return Grid.of((int) Math.ceil(queryResults.getTotal() / (double)queryResults.getLimit()) + 1,
                 (int) queryResults.getLimit() + 1,
-                (int) Math.ceil(queryResults.getOffset() / (double)queryResults.getLimit()),
+                (int) Math.ceil(queryResults.getOffset() / (double)queryResults.getLimit()) + (oneIndexedParameters?1:0),
                 queryResults.getTotal(),
                 queryResults.getResults());
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        // {org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties}
+        oneIndexedParameters = environment.getProperty("spring.data.web.pageable.one-indexed-parameters", Boolean.class, false);
     }
 }

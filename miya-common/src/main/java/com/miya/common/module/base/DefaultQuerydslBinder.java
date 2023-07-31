@@ -112,7 +112,7 @@ public class DefaultQuerydslBinder {
         @Override
         public @NonNull Optional<Predicate> bind(Path<LocalDateTime> path, Collection<? extends LocalDateTime> value) {
             BooleanBuilder booleanBuilder = new BooleanBuilder();
-            DatePath<LocalDateTime> localDateTimeDatePath = CastUtils.cast(path);
+            DateTimePath<LocalDateTime> localDateTimeDatePath = CastUtils.cast(path);
             final List<? extends LocalDateTime> localDates = new ArrayList<>(value);
             // 精确打击
             if (localDates.size() == 1) {
