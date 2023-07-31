@@ -1,6 +1,7 @@
 package com.teamytd.module.video;
 
 import com.miya.common.annotation.Acl;
+import com.miya.common.annotation.RequestJsonParam;
 import com.miya.common.annotation.constraint.AutoMaxLength;
 import com.miya.common.model.dto.base.R;
 import com.miya.common.module.base.BaseForm;
@@ -14,10 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -48,6 +46,13 @@ public class ClientApi {
     public R<?> testConvertRequestBody(@Validated @RequestBody TestDTO dto) {
          // log.info("\n" + dto.toString());
         return R.successWithData(dto);
+    }
+
+    @PostMapping("testRequestJson")
+    @Operation(summary = "testRequestJson")
+    public R<?> testRequestJson(@RequestJsonParam String id, @RequestJsonParam String name) {
+        log.info("\n" + id);
+        return R.success();
     }
 
     @Getter

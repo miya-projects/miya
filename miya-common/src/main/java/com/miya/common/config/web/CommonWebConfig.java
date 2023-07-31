@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -26,7 +27,7 @@ public class CommonWebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new RequestJsonHandlerMethodArgumentResolver());
+        argumentResolvers.add(new RequestJsonHandlerMethodArgumentResolver(SpringUtil.getBean(ConversionService.class)));
         argumentResolvers.add(new AuthenticationPrincipalHandlerMethodArgumentResolver());
     }
 
