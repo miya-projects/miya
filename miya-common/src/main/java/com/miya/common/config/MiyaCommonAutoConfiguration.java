@@ -6,7 +6,6 @@ import com.miya.common.config.orm.source.DataSourceConfig;
 import com.miya.common.module.cache.CacheConfig;
 import com.miya.common.module.config.InitSystem;
 import com.miya.common.module.config.SysConfigService;
-import com.miya.common.module.sms.SmsConfig;
 import com.miya.common.util.TransactionUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -24,7 +23,6 @@ import jakarta.validation.Validator;
 )
 @Import({
         InitSystem.class,
-        SmsConfig.class,
         CacheConfig.class,
         CommonDataSourceConfig.class,
         SysConfigService.class,

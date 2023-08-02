@@ -1,25 +1,25 @@
-package com.miya.common.module.sms.service.impl;
+package com.miya.system.module.sms;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import com.miya.common.module.sms.CacheKeys;
-import com.miya.common.module.sms.service.SmsService;
-import com.miya.common.module.cache.KeyValueStore;
+import com.miya.third.sms.service.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 
 
 /**
  * 假装发短信，其实打日志
  */
-@Transactional
+//@Transactional
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class LogSmsService implements SmsService {
 
-    private final KeyValueStore keyValueStore;
+    //private final KeyValueStore keyValueStore;
 
     /**
      * 给指定手机号发送短信
@@ -28,7 +28,7 @@ public class LogSmsService implements SmsService {
      */
     public void sendSms(String phone, String content){
         // todo 限流
-        log.info("发送短信给{}, 短信内容: {}", phone, content);
+        //log.info("发送短信给{}, 短信内容: {}", phone, content);
     }
 
     /**
@@ -42,6 +42,6 @@ public class LogSmsService implements SmsService {
         Date now = new Date();
         // 5分钟后过期
         DateTime dateTime = DateUtil.offsetMinute(now, 5);
-        keyValueStore.set(CacheKeys.PHONE_VERIFY.toCacheKey(phone), verifyCode, dateTime);
+        //keyValueStore.set(CacheKeys.PHONE_VERIFY.toCacheKey(phone), verifyCode, dateTime);
     }
 }

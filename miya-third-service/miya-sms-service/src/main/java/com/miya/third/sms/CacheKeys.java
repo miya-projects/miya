@@ -1,4 +1,4 @@
-package com.miya.common.module.sms;
+package com.miya.third.sms;
 
 import com.miya.common.module.cache.CacheKey;
 import com.miya.common.module.cache.PrefixKeyWrapper;

@@ -1,7 +1,6 @@
 package com.atlassian.sourcemap;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
+import com.miya.common.util.JSONUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,13 +27,7 @@ class Consumer {
      * Parses the given contents containing a source map.
      */
     private void parse(String sourceMapData) {
-        SourceMapJson sourceMapRoot = null;
-        try {
-            sourceMapRoot = new Gson().fromJson(sourceMapData, SourceMapJson.class);
-        } catch (JsonParseException e) {
-            throw new RuntimeException(e);
-        }
-
+        SourceMapJson sourceMapRoot = JSONUtils.toJavaObject(sourceMapData, SourceMapJson.class);
         // Check basic assertions about the format.
         int version = sourceMapRoot.version;
         if (version != 3) throw new RuntimeException("Unknown version: " + version);

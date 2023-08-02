@@ -1,7 +1,7 @@
-package com.miya.common.module.sms.service.impl;
+package com.miya.third.sms.service.impl;
 
 import com.aliyun.tea.TeaException;
-import com.miya.common.module.sms.service.SmsService;
+import com.miya.third.sms.service.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 

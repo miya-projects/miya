@@ -1,4 +1,4 @@
-package com.miya.common.module.sms;
+package com.miya.third.sms;
 
 import lombok.Getter;
 import lombok.Setter;
