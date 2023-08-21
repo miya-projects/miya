@@ -130,16 +130,22 @@ public class GlobalExceptionHandler {
         return R.errorWithMsg(StrUtil.format("{}字段数据重复: {}", e.getFiledName(), e.getValue()));
     }
 
+    /**
+     * 该异常在数据校验之前就会抛出
+     */
     @ExceptionHandler({MissingServletRequestParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> missingServletRequestParameterException(HttpServletResponse response, MissingServletRequestParameterException e) {
-        return R.errorWithMsg(StrUtil.format("参数{}是必须的", e.getParameterName()));
+        return R.errorWithMsg(StrUtil.format("参数{}为空或非法", e.getParameterName()));
     }
 
+    /**
+     * 该异常在数据校验之前就会抛出
+     */
     @ExceptionHandler({MissingPathVariableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R<?> missingPathVariableException(HttpServletResponse response, MissingPathVariableException e) {
-        return R.errorWithMsg(StrUtil.format("参数{}是必须的", e.getVariableName()));
+        return R.errorWithMsg(StrUtil.format("参数{}为空或非法", e.getVariableName()));
     }
 
     @ExceptionHandler({MultipartException.class})

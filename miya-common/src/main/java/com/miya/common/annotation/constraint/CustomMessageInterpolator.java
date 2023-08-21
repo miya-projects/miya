@@ -15,6 +15,7 @@ import java.util.Map;
 /**
  * 自定义消息变量插值器
  * 增加property变量，标识属性名
+ * 自定义jsr303错误消息时，可以使用{property}变量
  */
 public class CustomMessageInterpolator extends ResourceBundleMessageInterpolator {
 
@@ -23,6 +24,15 @@ public class CustomMessageInterpolator extends ResourceBundleMessageInterpolator
         return super.interpolate(new VarContext((MessageInterpolatorContext) context), locale, term);
     }
 
+    @Override
+    public String interpolate(String message, Context context) {
+        return super.interpolate(message, new VarContext((MessageInterpolatorContext) context));
+    }
+
+    @Override
+    public String interpolate(String message, Context context, Locale locale) {
+        return super.interpolate(message, new VarContext((MessageInterpolatorContext) context), locale);
+    }
 
     /**
      * 支持属性名插值的上下文对象
