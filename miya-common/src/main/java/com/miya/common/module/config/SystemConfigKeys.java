@@ -27,6 +27,11 @@ public enum SystemConfigKeys implements SystemConfig {
      */
     private final String defaultValue;
 
+    @Override
+    public String group() {
+        return "SYSTEM";
+    }
+
     // public Object getValue() {
     //     SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
     //     // 不想给默认值 -> 应当有一次初始化

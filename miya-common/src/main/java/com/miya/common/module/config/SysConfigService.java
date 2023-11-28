@@ -38,6 +38,7 @@ public class SysConfigService implements SystemInit {
 
     private final SysConfigRepository configRepository;
     private final ConversionService conversionService = DefaultConversionService.getSharedInstance();
+    private SysConfigService INSTANCE;
 
     @Override
     public void init() throws SystemInitErrorException {
@@ -45,7 +46,7 @@ public class SysConfigService implements SystemInit {
         if (!isInitialize) {
             // 还未初始化，进行初始化
             for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
-                put(configKey.name(), configKey.getDefaultValue(), configKey.getName(), "SYSTEM");
+                put(configKey.name(), configKey.getDefaultValue(), configKey.getName(), configKey.group());
             }
         } else {
             // 增量更新
@@ -57,18 +58,18 @@ public class SysConfigService implements SystemInit {
 
     /**
      * 摸一下系统配置，如果不存在就创建
-     * @param systemConfig
      */
+    @CacheEvict(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
     public void touchSystemConfig(SystemConfig systemConfig) {
-        Optional<String> val = get(systemConfig.name());
-        if (!val.isPresent()) {
-            put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), "SYSTEM");
+        Optional<String> val = get(systemConfig);
+        if (val.isEmpty()) {
+            INSTANCE.put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
         }
     }
 
 
     /**
-     *  注册lazymap bean，可通过以下方式注入配置，属性，支持动态重载配置
+     *  注册lazymap bean，可通过以下方式注入配置，属性，支持动态重载配置 只有system分组的配置
      *  <code>
      *     \@Value("#{sysConfig['SYSTEM_NAME']}") <br />
      *     private Supplier&lt;String> systemName;
@@ -77,7 +78,7 @@ public class SysConfigService implements SystemInit {
     @Bean(name = "sysConfig")
     public Map<String, Supplier<String>> sysConfig() {
         return MapUtils.lazyMap(new HashMap<>(),
-                key -> () -> SpringUtil.getBean(SysConfigService.class).get(key).orElse("")
+                key -> () -> SpringUtil.getBean(SysConfigService.class).get("SYSTEM", key).orElse("")
         );
     }
 
@@ -120,9 +121,9 @@ public class SysConfigService implements SystemInit {
         return () -> SpringUtil.getBean(SysConfigService.class).get(key);
     }
 
-    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key.name()")
-    public <T> T get(SystemConfigKeys key) {
-        return (T)get(key.name(), key.getValueType()).orElse(conversionService.convert(key.getDefaultValue(), key.getValueType()));
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
+    public <T> T get(SystemConfig systemConfig) {
+        return (T)get(systemConfig.group(), systemConfig.name(), systemConfig.getValueType()).orElse(conversionService.convert(systemConfig.getDefaultValue(), systemConfig.getValueType()));
     }
 
     /**
@@ -130,9 +131,10 @@ public class SysConfigService implements SystemInit {
      * @param key
      */
     @ManagedOperation
-    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
-    public Optional<String> get(String key) {
-        Optional<SysConfig> config = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#group + #key")
+    public Optional<String> get(String group, String key) {
+        QSysConfig qSysConfig = QSysConfig.sysConfig;
+        Optional<SysConfig> config = configRepository.findOne(qSysConfig.group.eq(group).and(qSysConfig.key.eq(key)));
         return config.map(SysConfig::getVal);
     }
 
@@ -141,9 +143,10 @@ public class SysConfigService implements SystemInit {
      * @param key
      */
     @ManagedOperation
-    @Cacheable(cacheNames = "SYS_CONFIG", key = "#key")
-    public <T> Optional<T> get(String key, Class<T> valueType) {
-        Optional<SysConfig> config = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#group + #key")
+    public <T> Optional<T> get(String group, String key, Class<T> valueType) {
+        QSysConfig qSysConfig = QSysConfig.sysConfig;
+        Optional<SysConfig> config = configRepository.findOne(qSysConfig.group.eq(group).and(qSysConfig.key.eq(key)));
         return config.map(SysConfig::getVal).map(value -> conversionService.convert(value, valueType));
     }
 
@@ -153,9 +156,10 @@ public class SysConfigService implements SystemInit {
      * @param value
      */
     @ManagedOperation
-    @CacheEvict(cacheNames = "SYS_CONFIG", key = "#key")
-    public void set(String key, String value) {
-        Optional<SysConfig> sysConfigOptional = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
+    @CacheEvict(cacheNames = "SYS_CONFIG", key = "#group + #key")
+    public void set(String group, String key, String value) {
+        QSysConfig qSysConfig = QSysConfig.sysConfig;
+        Optional<SysConfig> sysConfigOptional = configRepository.findOne(qSysConfig.group.eq(group).and(qSysConfig.key.eq(key)));
         SysConfig sysConfig = sysConfigOptional.orElseThrow(() -> new RuntimeException(StrUtil.format("配置项【{}】不存在", key)));
         sysConfig.setVal(value);
         configRepository.save(sysConfig);
@@ -167,7 +171,7 @@ public class SysConfigService implements SystemInit {
      * @param value
      */
     @ManagedOperation
-    @CacheEvict(cacheNames = "SYS_CONFIG", key = "#key")
+    @CacheEvict(cacheNames = "SYS_CONFIG", key = "#group + #key")
     public void put(String key, String value, String desc, String group) {
         Optional<SysConfig> sysConfigOptional = configRepository.findOne(QSysConfig.sysConfig.key.eq(key));
         SysConfig sysConfig = sysConfigOptional.orElseGet(() -> {
@@ -188,7 +192,8 @@ public class SysConfigService implements SystemInit {
 
     @PostConstruct
     public void afterPropertiesSet() {
-        if (!get(SystemConfigKeys.BACKEND_DOMAIN.name()).isPresent()) {
+        INSTANCE = SpringUtil.getBean(SysConfigService.class);
+        if (StrUtil.isBlank(get(SystemConfigKeys.BACKEND_DOMAIN))) {
             log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKeys.BACKEND_DOMAIN.getDefaultValue());
         }
     }

@@ -62,13 +62,14 @@ public class SysConfigApi extends BaseApi {
     @PutMapping
     @Operation(summary = "设置系统参数")
     public R<SysConfig> setup(
+            @NotNull String group,
             @NotNull String configKey,
             String value,
             @AuthenticationPrincipal SysUserPrincipal user) {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
-        sysConfigService.set(configKey, value);
+        sysConfigService.set(group, configKey, value);
         return R.success();
     }
 
@@ -104,10 +105,11 @@ public class SysConfigApi extends BaseApi {
         if (!user.isSuperAdmin()) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.NOT_ADMIN);
         }
-        long count = sysConfigRepository.count(QSysConfig.sysConfig.key.eq(sysConfigForm.getKey())
-                .and(QSysConfig.sysConfig.id.ne(sysConfig.getId())));
+        QSysConfig qSysConfig = QSysConfig.sysConfig;
+        long count = sysConfigRepository.count(qSysConfig.group.eq(sysConfigForm.getGroup()).and(qSysConfig.key.eq(sysConfigForm.getKey()))
+                .and(qSysConfig.id.ne(sysConfig.getId())));
         if (count > 0) {
-            return R.errorWithMsg("key重复");
+            return R.errorWithMsg("分组和key重复");
         }
         sysConfigForm.mergeToPo(sysConfig);
         sysConfigRepository.save(sysConfig);

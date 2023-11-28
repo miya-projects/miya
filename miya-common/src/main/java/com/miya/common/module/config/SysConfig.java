@@ -25,7 +25,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(indexes = {@Index(name = "key_unique", columnList = "key", unique = true)})
+@Table(indexes = {@Index(name = "key_unique", columnList = "group,key", unique = true)})
 @Accessors(chain = true)
 @Audited
 public class SysConfig extends BaseEntity {
