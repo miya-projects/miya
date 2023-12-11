@@ -14,6 +14,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.data.util.CastUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -38,7 +39,12 @@ public abstract class BaseForm<PO> {
         Type genType = getClass().getGenericSuperclass();
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
         Class<PO> entityClass = CastUtils.cast(params[0]);
-        PO t = entityClass.newInstance();
+        PO t = null;
+        try {
+            t = entityClass.getDeclaredConstructor().newInstance();
+        } catch (InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
         mergeToPo(t);
         return t;
     }

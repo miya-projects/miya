@@ -1,18 +1,22 @@
 package com.miya.common.module.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.miya.common.config.orm.annotations.NoDashesUuidGenerator;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.sql.Types;
 import java.time.LocalDateTime;
@@ -27,15 +31,12 @@ import java.time.LocalDateTime;
 @EntityListeners({AuditingEntityListener.class})
 @FieldNameConstants
 @Audited
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class BaseEntity implements Serializable, Persistable<Serializable> {
 
     @Id
     @Column(name = "id", length = 32)
     @JdbcTypeCode(Types.CHAR)
-    @GenericGenerator(name = "idGenerator", strategy = "com.miya.common.config.orm.ManualInsertGenerator")
-    // @GenericGenerator(name = "idGenerator", strategy = "uuid")
-    @GeneratedValue(generator = "idGenerator")
+    @NoDashesUuidGenerator
     protected String id;
 
     protected BaseEntity() {

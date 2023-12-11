@@ -35,6 +35,7 @@
 <!--    <logger name="org.mybatis" level="INFO"/>-->
 <!--    输出hibernate sql参数-->
 <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />-->
+<!--    <logger name="org.hibernate.orm.jdbc.bind"  level="TRACE" />-->
     <logger name="org.hibernate.SQL"  level="DEBUG" />
 <!--    swagger-->
     <logger name="springfox.documentation.spring.web" level="warn" />

@@ -1,6 +1,5 @@
 package com.miya.common.config.orm;
 
-import cn.hutool.core.collection.ListUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.Metadata;
@@ -12,9 +11,7 @@ import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
-//import org.hibernate.type.StringType;
 import org.hibernate.type.descriptor.java.StringJavaType;
-import org.springframework.data.util.CastUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,21 +95,13 @@ public class MetadataExtractorIntegrator
 
         for (PersistentClass persistentClass : entityBindings) {
             Class<?> mappedClass = persistentClass.getMappedClass();
-            // Table table = persistentClass.getTable();
-            Iterator<Property> propertyIterator = CastUtils.cast(persistentClass.getPropertyIterator());
-            ArrayList<Property> properties = ListUtil.toList(propertyIterator);
+            List<Property> properties = persistentClass.getProperties();
 
             // todo test
             List<PropertyLength> columnList = properties.stream()
                     .filter(property -> property.getType().getClass().equals(StringJavaType.class))
-                    // .filter(property -> {
-                    //     Iterator<Column> columnIterator = CastUtils.cast(property.getColumnIterator());
-                    //     ArrayList<Column> columns = ListUtil.toList(columnIterator);
-                    //     return columns.size() != 0;
-                    // })
                     .map(property -> {
-                        Iterator<Column> columnIterator = CastUtils.cast(property.getColumnIterator());
-                        ArrayList<Column> columns = ListUtil.toList(columnIterator);
+                        List<Column> columns = property.getColumns();
                         if (columns.size() > 1) {
                             log.info("是谁有2个column?");
                         }
@@ -129,7 +118,7 @@ public class MetadataExtractorIntegrator
     }
 
     @AllArgsConstructor
-    public static class PropertyLength{
+    public static class PropertyLength {
         public final String name;
         public final long length;
     }

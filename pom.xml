@@ -38,14 +38,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-        <springboot.version>3.1.2</springboot.version>
+        <springboot.version>3.2.0</springboot.version>
         <maven.jar.version>3.3.0</maven.jar.version>
         <maven.compiler.version>3.11.0</maven.compiler.version>
         <querydsl.version>5.0.0</querydsl.version>
-        <lombok.version>1.18.26</lombok.version>
-        <hutool.version>5.8.18</hutool.version>
+        <lombok.version>1.18.30</lombok.version>
+        <hutool.version>5.8.23</hutool.version>
         <elasticsearch.version>7.13.4</elasticsearch.version>
-        <jxls.version>2.12.0</jxls.version>
+        <jxls.version>2.13.0</jxls.version>
 
         <miya.version>2.1.1</miya.version>
     </properties>

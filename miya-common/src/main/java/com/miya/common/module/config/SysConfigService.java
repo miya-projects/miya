@@ -38,7 +38,6 @@ public class SysConfigService implements SystemInit {
 
     private final SysConfigRepository configRepository;
     private final ConversionService conversionService = DefaultConversionService.getSharedInstance();
-    private SysConfigService INSTANCE;
 
     @Override
     public void init() throws SystemInitErrorException {
@@ -63,7 +62,7 @@ public class SysConfigService implements SystemInit {
     public void touchSystemConfig(SystemConfig systemConfig) {
         Optional<String> val = get(systemConfig);
         if (val.isEmpty()) {
-            INSTANCE.put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
+            put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
         }
     }
 
@@ -192,7 +191,6 @@ public class SysConfigService implements SystemInit {
 
     @PostConstruct
     public void afterPropertiesSet() {
-        INSTANCE = SpringUtil.getBean(SysConfigService.class);
         if (StrUtil.isBlank(get(SystemConfigKeys.BACKEND_DOMAIN))) {
             log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKeys.BACKEND_DOMAIN.getDefaultValue());
         }
