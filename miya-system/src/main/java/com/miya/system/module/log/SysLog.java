@@ -55,7 +55,7 @@ public class SysLog extends BaseEntity {
     /**
      * 详细日志内容
      */
-    @Column(nullable = false)
+    @Column(length = Integer.MAX_VALUE, nullable = false)
     @JdbcTypeCode(Types.CLOB)
     private String content;
 

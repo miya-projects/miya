@@ -27,15 +27,15 @@ import java.util.Objects;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = {@Index(name = "s_key_expire_date", columnList = "skey, expireDate")})
+@Table(indexes = {@Index(name = "key_expire_date", columnList = "`key`, expireDate")})
 public class SysCache extends BaseEntity {
 
-    @Column(length = 100, nullable = false)
-    private String sKey;
+    @Column(name = "`key`", length = 100, nullable = false)
+    private String key;
 
-    @Column
+    @Column(name = "val", length = 16_777_215)
     @JdbcTypeCode(Types.CLOB)
-    private String sVal;
+    private String val;
 
     private Date expireDate;
 

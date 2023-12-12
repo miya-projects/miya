@@ -11,7 +11,7 @@ import java.util.Date;
  * @author 杨超辉
  * 持久化缓存
  */
-public interface CacheRepository extends BaseRepository<SysCache, QSysCache> {
+public interface SysCacheRepository extends BaseRepository<SysCache, QSysCache> {
 
     /**
      * 清理过期的cache数据

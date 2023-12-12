@@ -3,7 +3,7 @@ package com.miya.system.config;
 import com.miya.common.config.MiyaCommonAutoConfiguration;
 import com.miya.common.service.JwtTokenService;
 import com.miya.system.module.FlagForMiyaSystemModule;
-import com.miya.system.module.common.repository.CacheRepository;
+import com.miya.system.module.common.repository.SysCacheRepository;
 import com.miya.common.module.cache.KeyValueStore;
 import com.miya.system.module.common.KeyValueStoreInDb;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -42,8 +42,8 @@ public class MiyaSystemAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = {KeyValueStore.class})
-    public KeyValueStore defaultKeyValueStore(CacheRepository cacheRepository) {
-        return new KeyValueStoreInDb(cacheRepository);
+    public KeyValueStore defaultKeyValueStore(SysCacheRepository sysCacheRepository) {
+        return new KeyValueStoreInDb(sysCacheRepository);
     }
 
     /**

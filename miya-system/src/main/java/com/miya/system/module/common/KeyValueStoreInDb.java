@@ -5,7 +5,7 @@ import com.miya.common.module.cache.CacheKey;
 import com.miya.common.module.cache.KeyValueStore;
 import com.miya.system.module.common.po.QSysCache;
 import com.miya.system.module.common.po.SysCache;
-import com.miya.system.module.common.repository.CacheRepository;
+import com.miya.system.module.common.repository.SysCacheRepository;
 import com.querydsl.core.types.ExpressionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ import java.util.Optional;
 @ConditionalOnMissingBean(value = {KeyValueStore.class})
 public class KeyValueStoreInDb implements KeyValueStore {
 
-    private final CacheRepository cacheRepository;
+    private final SysCacheRepository sysCacheRepository;
 
     /**
      * 获取配置项
@@ -38,12 +38,12 @@ public class KeyValueStoreInDb implements KeyValueStore {
     @ManagedOperation
     public String get(String key) {
         QSysCache qSysCache = QSysCache.sysCache;
-        Optional<SysCache> one = cacheRepository.findOne(
+        Optional<SysCache> one = sysCacheRepository.findOne(
                 ExpressionUtils.and(
-                        qSysCache.sKey.eq(key),
+                        qSysCache.key.eq(key),
                         ExpressionUtils.or(qSysCache.expireDate.after(new Date()), qSysCache.expireDate.isNull())
                 ));
-        return one.map(SysCache::getSVal).orElse(null);
+        return one.map(SysCache::getVal).orElse(null);
     }
 
     /**
@@ -52,9 +52,9 @@ public class KeyValueStoreInDb implements KeyValueStore {
      */
     public <T> T get(String key, Class<T> tClass) {
         QSysCache qSysCache = QSysCache.sysCache;
-        Optional<SysCache> one = cacheRepository.findOne(qSysCache.sKey.eq(key)
+        Optional<SysCache> one = sysCacheRepository.findOne(qSysCache.key.eq(key)
                 .and(qSysCache.expireDate.isNull().or(qSysCache.expireDate.after(new Date()))));
-        return one.map(sysCache -> JSONUtil.toBean(sysCache.getSVal(), tClass)).orElse(null);
+        return one.map(sysCache -> JSONUtil.toBean(sysCache.getVal(), tClass)).orElse(null);
     }
 
     /**
@@ -80,11 +80,11 @@ public class KeyValueStoreInDb implements KeyValueStore {
         if (value == null) {
             throw new RuntimeException("value不可为空");
         }
-        Iterable<SysCache> all = cacheRepository.findAll(QSysCache.sysCache.sKey.eq(key));
-        cacheRepository.deleteAllInBatch(all);
+        Iterable<SysCache> all = sysCacheRepository.findAll(QSysCache.sysCache.key.eq(key));
+        sysCacheRepository.deleteAllInBatch(all);
         //设置时统一json化
         SysCache sysCache = new SysCache(key, JSONUtil.toJsonStr(value), expirationDate);
-        cacheRepository.save(sysCache);
+        sysCacheRepository.save(sysCache);
     }
 
     /**
@@ -93,8 +93,8 @@ public class KeyValueStoreInDb implements KeyValueStore {
      */
     @ManagedOperation
     public void remove(String key) {
-        Iterable<SysCache> all = cacheRepository.findAll(QSysCache.sysCache.sKey.eq(key));
-        cacheRepository.deleteAll(all);
+        Iterable<SysCache> all = sysCacheRepository.findAll(QSysCache.sysCache.key.eq(key));
+        sysCacheRepository.deleteAll(all);
     }
 
     /**
@@ -103,7 +103,7 @@ public class KeyValueStoreInDb implements KeyValueStore {
     @ManagedOperation
     @Transactional
     public void realDeleteExpirationCache() {
-        cacheRepository.deleteAllByExpireDateBefore(new Date());
+        sysCacheRepository.deleteAllByExpireDateBefore(new Date());
     }
 
 

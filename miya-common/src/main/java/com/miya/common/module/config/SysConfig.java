@@ -41,7 +41,7 @@ public class SysConfig extends BaseEntity {
     /**
      * 变量值
      */
-    @Column(name = "val")
+    @Column(name = "val", length = Integer.MAX_VALUE)
     @JdbcTypeCode(Types.CLOB)
     private String val;
 
