@@ -16,6 +16,7 @@ import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -31,6 +32,8 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -169,6 +172,15 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({ClientAbortException.class})
     public void httpMediaTypeNotAcceptableException(HttpServletResponse response, ClientAbortException e) {}
+
+    /**
+     * springboot3.2 bug修复，资源找不到不会跳转404页面
+     * <a href="https://github.com/spring-projects/spring-framework/issues/31569">see</a>
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public final ResponseEntity<Object> handleResourceNotFound(Exception ex) throws Exception {
+        throw ex;
+    }
 
     /**
      * 数据完整性约束异常
