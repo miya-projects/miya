@@ -28,12 +28,11 @@ import static cn.hutool.core.map.MapUtil.entry;
 @RestController("/monitorAndMaintenance")
 public class MonitorAndMaintenanceApi {
 
-    @Value("#{sysConfig['SYSTEM_NAME']}")
+    @Value("#{sysConfigService.getSupplier(T(com.miya.common.module.config.SystemConfigKeys).SYSTEM_NAME)}")
     private Supplier<String> systemName;
 
-    @Value("#{sysConfig['SYSTEM_VERSION']}")
+    @Value("#{sysConfigService.getSupplier(T(com.miya.common.module.config.SystemConfigKeys).SYSTEM_VERSION)}")
     private Supplier<String> version;
-
 
     /**
      * 健康检查

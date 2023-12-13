@@ -4,7 +4,7 @@ import com.miya.common.annotation.constraint.CustomMessageInterpolator;
 import com.miya.common.config.orm.source.CommonDataSourceConfig;
 import com.miya.common.config.orm.source.DataSourceConfig;
 import com.miya.common.module.cache.CacheConfig;
-import com.miya.common.module.config.InitSystem;
+import com.miya.common.module.init.InitSystemService;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.common.util.TransactionUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -22,7 +22,7 @@ import jakarta.validation.Validator;
         }
 )
 @Import({
-        InitSystem.class,
+        InitSystemService.class,
         CacheConfig.class,
         CommonDataSourceConfig.class,
         SysConfigService.class,

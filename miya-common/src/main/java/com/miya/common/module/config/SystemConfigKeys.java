@@ -32,9 +32,4 @@ public enum SystemConfigKeys implements SystemConfig {
         return "SYSTEM";
     }
 
-    // public Object getValue() {
-    //     SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
-    //     // 不想给默认值 -> 应当有一次初始化
-    //     return configService.get(this);
-    // }
 }

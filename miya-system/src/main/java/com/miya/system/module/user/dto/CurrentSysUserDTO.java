@@ -1,6 +1,6 @@
 package com.miya.system.module.user.dto;
 
-import com.miya.common.module.config.SysConfigService;
+import com.miya.common.module.config.SystemMeta;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ public class CurrentSysUserDTO {
 
     private SysUserDetailDTO user;
 
-    private SysConfigService.SystemMeta systemMeta;
+    private SystemMeta systemMeta;
     private Long unreadNoticeAmount;
 
 }

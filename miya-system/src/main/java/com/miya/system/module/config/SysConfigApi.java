@@ -45,7 +45,7 @@ public class SysConfigApi extends BaseApi {
     @Operation(summary = "系统参数")
     @GetMapping("internal")
     public R<?> systemConfigs(){
-        List<SysConfig> configs = sysConfigService.configs(SysConfig.GROUP_SYSTEM);
+        List<SysConfig> configs = sysConfigService.getConfigsByGroup(SysConfig.GROUP_SYSTEM);
         List<Map<String, Object>> list = configs.stream().map(config -> {
             Map<String, Object> map = new HashMap<>();
             map.put("name", config.getDesc());
