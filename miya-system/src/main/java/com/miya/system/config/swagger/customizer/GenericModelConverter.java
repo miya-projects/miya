@@ -8,11 +8,11 @@ import org.modelmapper.internal.bytebuddy.ByteBuddy;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * 针对泛型返回值，动态生成泛型类子类，
+ * 针对泛型返回值，动态生成泛型类子类
+ * 不指定泛型类name即可，暂不使用该类
  */
 public class GenericModelConverter implements ModelConverter {
 

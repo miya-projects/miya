@@ -2,18 +2,15 @@ package com.miya.system.config.swagger;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.fasterxml.jackson.databind.JavaType;
-import com.miya.system.config.swagger.customizer.*;
-import com.miya.system.config.web.ReadableEnum;
+import com.miya.system.config.swagger.customizer.DomainClassGlobalSupport;
+import com.miya.system.config.swagger.customizer.ExtClientMethodNameSupport;
+import com.miya.system.config.swagger.customizer.QuerydslPredicateOperationWithJavaDocCustomizer;
 import com.querydsl.core.types.Predicate;
 import io.swagger.v3.core.converter.AnnotatedType;
-import io.swagger.v3.core.converter.ModelConverters;
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.configuration.SpringDocDataRestConfiguration;
@@ -32,10 +29,12 @@ import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.MediaType;
+
 import java.sql.Timestamp;
 import java.time.YearMonth;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Optional;
 
 import static org.springdoc.core.utils.Constants.SPRINGDOC_ENABLED;
 import static org.springdoc.core.utils.SpringDocUtils.getConfig;
@@ -62,7 +61,6 @@ public class SwaggerConfiguration {
 
     /**
      * 自定义全局配置openapi
-     * @return
      */
     @Bean
     public OpenAPI customOpenAPI() {
@@ -128,11 +126,6 @@ public class SwaggerConfiguration {
     @Bean
     ExtClientMethodNameSupport ExtClientMethodNameReader() {
         return new ExtClientMethodNameSupport();
-    }
-
-//    @Bean
-    GenericReturnTypeSupport genericReturnTypeSupport() {
-        return new GenericReturnTypeSupport(springDocConfigProperties().getDefaultProducesMediaType());
     }
 
     @Bean
