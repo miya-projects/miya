@@ -61,7 +61,7 @@
         ]
       },
       {
-        "name": "参数",
+        "name": "配置",
         "code": "config",
         "children": [
           {

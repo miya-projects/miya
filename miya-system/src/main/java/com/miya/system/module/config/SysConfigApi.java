@@ -44,15 +44,9 @@ public class SysConfigApi extends BaseApi {
 
     @Operation(summary = "系统参数")
     @GetMapping("internal")
-    public R<?> systemConfigs(){
+    public R<List<SysConfigDTO>> systemConfigs(){
         List<SysConfig> configs = sysConfigService.getConfigsByGroup(SysConfig.GROUP_SYSTEM);
-        List<Map<String, Object>> list = configs.stream().map(config -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("name", config.getDesc());
-            map.put("code", config.getKey());
-            map.put("value", config.getVal());
-            return map;
-        }).collect(Collectors.toList());
+        List<SysConfigDTO> list = configs.stream().map(SysConfigDTO::of).collect(Collectors.toList());
         return R.successWithData(list);
     }
 

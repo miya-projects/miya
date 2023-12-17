@@ -417,7 +417,7 @@ public class SysUserService extends BaseService implements SystemInit {
     public void export(Predicate predicate, HttpServletResponse response, SysUser user) {
         SimpleDownloadTask downloadTask = new SimpleDownloadTask("后台用户数据", "用户.xlsx", user, () -> {
             URL resource = ResourceUtil.getResource("excel-export-template/user.xlsx");
-            List<SysUserForExport> userList = SpringUtil.getBean(TransactionUtil.class).transactional(() -> {
+            List<SysUserForExport> userList = TransactionUtil.INSTANCE.transactional(() -> {
                 Iterable<SysUser> users = sysUserRepository.findAll(predicate);
                 return ListUtil.toList(users).stream().map(SysUserForExport::of).collect(Collectors.toList());
             });
