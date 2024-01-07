@@ -40,8 +40,9 @@ public class DefaultQuerydslBinder {
         bindings.bind(LocalDateTime.class).all(new LocalDateTimeMultiValueBinding());
         bindings.bind(YearMonth.class).all(new YearMonthMultiValueBinding());
 
+        // containsIgnoreCase 会报错，应该是querydsl不兼容新版hibernate导致
         bindings.bind(String.class)
-                .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
+                .first((SingleValueBinding<StringPath, String>) StringExpression::contains);
 
         bindings.excluding(QBaseEntity.baseEntity.createdUser);
     }
