@@ -28,7 +28,7 @@ public class InitSystemService {
     @PostConstruct
     public void init() {
         String ddlAuto = jr.getProperties().get(AvailableSettings.HBM2DDL_AUTO);
-        if (ddl.contains(ddlAuto)) {
+        if (!ddl.contains(ddlAuto)) {
             return;
         }
         Boolean isInitialize = SystemConfigKeys.IS_INITIALIZE.getValue();

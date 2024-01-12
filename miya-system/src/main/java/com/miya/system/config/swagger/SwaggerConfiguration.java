@@ -13,6 +13,8 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springdoc.core.configuration.SpringDocDataRestConfiguration;
 import org.springdoc.core.converters.PageableOpenAPIConverter;
 import org.springdoc.core.customizers.PropertyCustomizer;
@@ -28,7 +30,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.data.repository.support.Repositories;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Timestamp;
 import java.time.YearMonth;
@@ -53,6 +57,9 @@ public class SwaggerConfiguration {
 //        getConfig().replaceParameterObjectWithClass(YearMonth.class, String.class);
         getConfig().replaceWithClass(YearMonth.class, String.class);
         getConfig().replaceWithClass(Timestamp.class, Date.class);
+        getConfig().addAnnotationsToIgnore(AuthenticationPrincipal.class);
+        getConfig().addJavaTypeToIgnore(HttpServletRequest.class);
+        getConfig().addJavaTypeToIgnore(HttpServletResponse.class);
         io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = false;
 //        ModelConverters.getInstance().addConverter(new GenericModelConverter());
 //        ModelConverters.getInstance().addConverter(new ReadEnumModelConverter());
@@ -71,6 +78,7 @@ public class SwaggerConfiguration {
 //                        .addParameters("myHeader1", new Parameter().in("header").schema(new StringSchema()).name("myHeader1"))
 //                        .addHeaders("myHeader2", new Header().description("myHeader2 header").schema(new StringSchema()))
                 )
+
                 .addSecurityItem(new SecurityRequirement().addList("jwt"))
                 .info(new Info().title("miya").version("1.0").description("miya description"))
                 ;

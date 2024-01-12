@@ -2,7 +2,6 @@ package com.miya.common.module.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,6 @@ import java.util.concurrent.TimeUnit;
  * 使用该缓存的目的应当是为了减小db压力或加快访问速度
  */
 @Configuration
-@EnableCaching
 public class CacheConfig {
     public static final int DEFAULT_MAXSIZE = 10000;
     public static final int DEFAULT_TTL = 600;

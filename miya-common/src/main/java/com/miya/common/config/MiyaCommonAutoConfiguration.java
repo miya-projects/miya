@@ -10,9 +10,7 @@ import com.miya.common.util.TransactionUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import jakarta.validation.Validator;
 
@@ -33,14 +31,14 @@ import jakarta.validation.Validator;
 @AutoConfigureBefore(ValidationAutoConfiguration.class)
 public class MiyaCommonAutoConfiguration {
 
-        /**
-         * 自定义插值器
-         */
-        @Bean
-        public Validator validator() {
-                LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
-                localValidatorFactoryBean.setMessageInterpolator(new CustomMessageInterpolator());
-                return localValidatorFactoryBean;
-        }
+    /**
+     * 自定义插值器
+     */
+    @Bean
+    public Validator validator() {
+            LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+            localValidatorFactoryBean.setMessageInterpolator(new CustomMessageInterpolator());
+            return localValidatorFactoryBean;
+    }
 
 }
