@@ -44,7 +44,7 @@
         <maven.compiler.version>3.11.0</maven.compiler.version>
         <querydsl.version>5.0.0</querydsl.version>
         <lombok.version>1.18.30</lombok.version>
-        <hutool.version>5.8.23</hutool.version>
+        <hutool.version>5.8.25</hutool.version>
         <elasticsearch.version>7.13.4</elasticsearch.version>
         <jxls.version>2.13.0</jxls.version>
     </properties>

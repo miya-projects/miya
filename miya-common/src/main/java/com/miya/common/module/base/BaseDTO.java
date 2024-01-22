@@ -3,7 +3,7 @@ package com.miya.common.module.base;
 import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * DTO基类
@@ -21,11 +21,11 @@ public abstract class BaseDTO extends Convertable implements Serializable {
     /**
      * 创建时间戳 (单位:秒)
      */
-    protected Date createdTime;
+    protected LocalDateTime createdTime;
 
     /**
      * 更新时间戳 (单位:秒)
      */
-    protected Date updatedTime;
+    protected LocalDateTime updatedTime;
 
 }

@@ -7,6 +7,8 @@ import org.springframework.core.convert.converter.GenericConverter;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -14,7 +16,7 @@ import java.util.Set;
 /**
  * String转各种时间类型的转换器
  */
-public class StringToTimeLikeConverter implements GenericConverter {
+public class StringToTimeConverter implements GenericConverter {
 
     @Override
     public Set<ConvertiblePair> getConvertibleTypes() {
@@ -22,7 +24,9 @@ public class StringToTimeLikeConverter implements GenericConverter {
         return CollUtil.newHashSet(
                 new ConvertiblePair(String.class, Date.class),
                 new ConvertiblePair(String.class, LocalDateTime.class),
-                new ConvertiblePair(String.class, LocalDate.class)
+                new ConvertiblePair(String.class, LocalDate.class),
+                new ConvertiblePair(String.class, LocalTime.class),
+                new ConvertiblePair(String.class, YearMonth.class)
         );
     }
 
@@ -44,6 +48,12 @@ public class StringToTimeLikeConverter implements GenericConverter {
         }
         if (type.equals(Timestamp.class)){
             return Optional.ofNullable(Convert.toLocalDateTime(source)).map(Timestamp::valueOf).orElse(null);
+        }
+        if (type.equals(YearMonth.class)){
+            return YearMonth.parse(source.toString());
+        }
+        if (type.equals(LocalTime.class)){
+            return LocalTime.parse(source.toString());
         }
         return null;
     }

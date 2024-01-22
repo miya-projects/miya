@@ -16,7 +16,6 @@ import java.util.Optional;
 @Schema
 public class SysDownloadRecordDTO extends BaseDTO {
 
-    private Date createdTime;
 
     private SysDownloadRecord.Status status;
 

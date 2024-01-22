@@ -1,6 +1,8 @@
 package com.miya.common.config.orm;
 
 import com.miya.common.config.orm.annotations.NoDashesUuidGenerator;
+import com.miya.common.module.base.BaseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
@@ -19,6 +21,7 @@ import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
  * HHH000409: Using com.miya.common.config.orm.ManualInsertGenerator which does not generate IETF RFC 4122 compliant UUID values; consider using org.hibernate.id.UUIDGenerator instead
  */
 //UUIDGenerator
+@Slf4j
 public class NoDashesUUIDGenerator implements BeforeExecutionGenerator {
 
 
@@ -55,15 +58,11 @@ public class NoDashesUUIDGenerator implements BeforeExecutionGenerator {
 
     @Override
     public Object generate(SharedSessionContractImplementor session, Object owner, Object currentValue, EventType eventType) {
+        // 如果手动指定了ID，则不再生成，使用手动指定的ID
+        if (owner instanceof BaseEntity baseEntity && baseEntity.getId() != null) {
+            return baseEntity.getId();
+        }
         return UUIDJavaType.NoDashesStringTransformer.INSTANCE.transform( generator.generateUuid( session ) );
     }
 
-    //@Override
-    //public Object generate(SharedSessionContractImplementor session, Object obj) {
-    //    Object id = session.getEntityPersister(null, obj).getClassMetadata().getIdentifier(obj, session);
-    //    if (Objects.nonNull(id) && StringUtils.isNotBlank(id.toString())){
-    //        return id;
-    //    }
-    //    return super.generate(session, obj);
-    //}
 }

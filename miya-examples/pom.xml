@@ -109,22 +109,7 @@
                         </auth>
                     </to>
                     <container>
-                        <jvmFlags>
-<!--                            <jvmFlag>$JAVA_OPTS</jvmFlag>-->
-<!--                            <jvmFlag>-Dspring.datasource.url=jdbc:mysql://host.docker.internal:3306/miya</jvmFlag>-->
-<!--                            <jvmFlag>-Dspring.datasource.username=root</jvmFlag>-->
-<!--                            <jvmFlag>-Dspring.datasource.password=root</jvmFlag>-->
-                        </jvmFlags>
                         <mainClass>com.teamytd.Application</mainClass>
-<!--                        <args>-->
-<!--                            <arg>bash</arg>-->
-<!--                            <arg>-c</arg>-->
-<!--                            <arg>java</arg>-->
-<!--                            <arg>$JAVA_OPTS</arg>-->
-<!--                            <arg>-cp</arg>-->
-<!--                            <arg>@/app/jib-classpath-file</arg>-->
-<!--                            <arg>@/app/jib-main-class-file</arg>-->
-<!--                        </args>-->
                         <ports>
                             <port>8080</port>
                         </ports>

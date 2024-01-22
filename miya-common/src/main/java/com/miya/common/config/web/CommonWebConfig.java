@@ -2,7 +2,7 @@ package com.miya.common.config.web;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.miya.common.config.web.converter.StringToTimeLikeConverter;
+import com.miya.common.config.web.converter.StringToTimeConverter;
 import com.miya.common.config.web.interceptor.ActionLogInterceptor;
 import com.miya.common.config.web.interceptor.ApiRequestLimitInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class CommonWebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToTimeLikeConverter());
+        registry.addConverter(new StringToTimeConverter());
     }
 
 
