@@ -1,21 +1,17 @@
 package com.miya.system.module.dict;
 
-import com.google.common.collect.Lists;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import com.miya.common.exception.ErrorMsgException;
 import com.miya.common.model.dto.base.Grid;
-import com.miya.common.module.base.BaseEntity;
 import com.miya.common.module.base.BaseService;
 import com.miya.system.module.dict.model.*;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 字典服务
@@ -29,26 +25,6 @@ public class SysDictService extends BaseService {
     private SysDictRepository sysDictRepository;
 
     /**
-     * 获取某个字典的所有值
-     * @param code 字典code
-     */
-    public List<SysDictItem> getDictValues(String code){
-        Iterable<SysDictItem> all = sysDictItemRepository.findAll(QSysDictItem.sysDictItem.sysDict.code.eq(code));
-        return Lists.newArrayList(all.iterator());
-    }
-
-    /**
-     * 删除字典和数据
-     * @param sysDict
-     */
-    // public void deleteDictAndData(SysDict sysDict) {
-    //     Iterable<SysDictItem> all = sysDictItemRepository.findAll(QSysDictItem.sysDictItem.sysDict.eq(sysDict));
-    //     sysDictItemRepository.deleteInBatch(all);
-    //     sysDictRepository.delete(sysDict);
-    // }
-
-
-    /**
      * 分页查询数据字典
      * @param predicate
      * @param pageRequest
@@ -60,29 +36,84 @@ public class SysDictService extends BaseService {
     }
 
     /**
-     * 不分页查询数据字典
-     */
-    public List<SysDictDTO> listNoPage() {
-        List<SysDict> all = sysDictRepository.findAll(Sort.by(Sort.Order.desc(BaseEntity.Fields.createdTime)));
-        return all.stream().map(SysDictDTO::of).collect(Collectors.toList());
-    }
-
-    /**
-     * 根据id或code查找字典
-     * @param code
-     */
-    public Optional<SysDictDetailDTO> getDictByCode(String code) {
-        QSysDict qSysDict = QSysDict.sysDict;
-        SysDictDetailDTO sysDictDetailDTO = qf.select(Projections.bean(SysDictDetailDTO.class, new QSysDictDetailDTO(qSysDict)))
-                .from(qSysDict).where(qSysDict.code.eq(code)).fetchOne();
-        return Optional.ofNullable(sysDictDetailDTO);
-    }
-
-    /**
      * 删除字典和字典项
-     * @param sysDict
      */
     public void deleteDict(SysDict sysDict) {
         sysDictRepository.delete(sysDict);
+    }
+
+    /**
+     * 更新字典
+     */
+    public void updateDict(SysDictForm sysDictForm, SysDict sysDict) {
+        sysDictForm.mergeToPo(sysDict);
+        boolean existsBySysDict = sysDictRepository.exists(
+                QSysDict.sysDict.code.eq(sysDict.getCode())
+                        .and(QSysDict.sysDict.id.ne(sysDict.getId()))
+        );
+        if (existsBySysDict) {
+            throw new ErrorMsgException("已经有这样的code");
+        }
+        sysDictRepository.save(sysDict);
+    }
+
+    /**
+     * 新增字典
+     */
+    public void saveDict(SysDictForm sysDictForm) {
+        SysDict sysDict = sysDictForm.mergeToNewPo();
+        boolean exists = sysDictRepository.exists(QSysDict.sysDict.code.eq(sysDict.getCode()));
+        if (exists){
+            throw new ErrorMsgException("已经有这样的code");
+        }
+        sysDict.setIsSystem(Boolean.FALSE);
+        sysDictRepository.save(sysDict);
+    }
+
+    /**
+     * 字典数据分页
+     */
+    public Grid<SysDictItemDTO> pageForDictItem(Predicate predicate, SysDict sysDict, Pageable pageable) {
+        QSysDictItem qSysDictItem = QSysDictItem.sysDictItem;
+        predicate = qSysDictItem.sysDict.eq(sysDict).and(predicate);
+        Page<SysDictItem> all = sysDictItemRepository.findAll(predicate, pageable);
+        return Grid.of(all.map(SysDictItemDTO::of));
+    }
+
+    /**
+     * 新增字典数据
+     */
+    public void saveDictItem(SysDictItemForm sysDictItemForm, @NotNull SysDict sysDict) {
+        QSysDictItem qSysDictItem = QSysDictItem.sysDictItem;
+        boolean exists = sysDictItemRepository.exists(qSysDictItem.value.eq(sysDictItemForm.getValue()).and(qSysDictItem.sysDict.eq(sysDict)) );
+        if (exists) {
+            throw new ErrorMsgException("value已经存在");
+        }
+        SysDictItem sysDictItem = sysDictItemForm.mergeToNewPo();
+        sysDictItem.setSysDict(sysDict);
+        sysDictItemRepository.save(sysDictItem);
+    }
+
+    /**
+     * 更新字典数据
+     * @param sysDictItemForm
+     * @param sysDictItem
+     */
+    public void updateDictData(SysDictItemForm sysDictItemForm, SysDictItem sysDictItem) {
+        QSysDictItem qSysDictItem = QSysDictItem.sysDictItem;
+        boolean exists = sysDictItemRepository.exists(qSysDictItem.value.eq(
+                sysDictItemForm.getValue()).and(qSysDictItem.id.ne(sysDictItem.getId())));
+        if (exists){
+            throw new ErrorMsgException("已经有这样的code");
+        }
+        BeanUtil.copyProperties(sysDictItemForm.mergeToNewPo(), sysDictItem, CopyOptions.create().ignoreNullValue());
+        sysDictItemRepository.save(sysDictItem);
+    }
+
+    /**
+     * 删除字典数据
+     */
+    public void deleteDictData(SysDictItem sysDictItem) {
+        sysDictItemRepository.delete(sysDictItem);
     }
 }

@@ -202,24 +202,18 @@
                     </to>
                     <container>
                         <mainClass>com.miya.system.Application</mainClass>
-                        <jvmFlags>
-                            <jvmFlag>-Dspring.profiles.active=prod</jvmFlag>
-                            <jvmFlag>-Xms512m</jvmFlag>
-                            <jvmFlag>-Xdebug</jvmFlag>
-                        </jvmFlags>
-                        <args>
-                            <arg>args</arg>
-                        </args>
                         <ports>
                             <port>8080</port>
                         </ports>
                         <labels>
                             <app>${project.name}</app>
                         </labels>
-                        <format>OCI</format>
                         <environment>
                             <TZ>Asia/Shanghai</TZ>
+                            <!-- 自定义jvm参数 可在运行时添加环境变量覆盖 -->
+                            <JDK_JAVA_OPTIONS>-Xms512m -Xdebug -Dspring.profiles.active=local</JDK_JAVA_OPTIONS>
                         </environment>
+                        <format>OCI</format>
                     </container>
                 </configuration>
             </plugin>
