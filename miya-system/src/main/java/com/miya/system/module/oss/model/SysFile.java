@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.Type;
 
 import java.util.Map;
@@ -32,38 +33,45 @@ import java.util.Objects;
 @Accessors(chain = true)
 @Entity
 @Table(indexes = {@Index(name = "path", columnList = "path")})
+@Comment("文件")
 public class SysFile extends BaseEntity {
     /**
      * 服务端全路径/或oss的object name
      */
     @Column(length = 100, nullable = false)
+    @Comment("服务端全路径/或oss的object name")
     private String path;
 
     /**
      * 前端上传的文件名
      */
     @Column(length = 100)
+    @Comment("前端上传的文件名")
     private String filename;
 
     /**
      * 文件可读大小
      */
     @Column(length = 20, nullable = false)
+    @Comment("文件可读大小")
     private String simpleSize;
     /**
      * 文件大小
      */
     @Column(length = 20, nullable = false)
+    @Comment("文件大小")
     private Long size;
 
     /**
      * 分类
      */
     @Column(length = 50)
+    @Comment("分类")
     private String category;
 
     @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
+    @Comment("额外信息")
     private Map<String, Object> extra;
 
     /**

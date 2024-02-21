@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
@@ -43,17 +44,19 @@ public abstract class BaseEntity implements Serializable, Persistable<Serializab
     }
 
     /**
-     * 创建时间戳 (单位:秒)
+     * 数据创建时间
      */
     @Column(nullable = false, updatable = false)
     @CreatedDate
+    @Comment("数据创建时间")
     protected LocalDateTime createdTime;
 
     /**
-     * 更新时间戳 (单位:秒)
+     * 更新时间
      */
     @LastModifiedDate
     @Column(nullable = false)
+    @Comment("数据更新时间")
     protected LocalDateTime updatedTime;
 
     /**
@@ -61,6 +64,7 @@ public abstract class BaseEntity implements Serializable, Persistable<Serializab
      */
     @CreatedBy
     @Column(name = "created_user", length = 50)
+    @Comment("创建人")
     protected String createdUser;
 
     @JsonIgnore

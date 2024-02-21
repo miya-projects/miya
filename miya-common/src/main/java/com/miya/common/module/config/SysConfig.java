@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 
@@ -28,6 +29,7 @@ import java.util.Objects;
 @Table(indexes = {@Index(name = "key_unique", columnList = "group,key", unique = true)})
 @Accessors(chain = true)
 @Audited
+@Comment("系统配置")
 public class SysConfig extends BaseEntity {
 
     public static final String GROUP_SYSTEM = "SYSTEM";
@@ -35,12 +37,14 @@ public class SysConfig extends BaseEntity {
     /**
      * 变量key
      */
+    @Comment("变量key")
     @Column(name = "`key`", length = 50, nullable = false)
     private String key;
 
     /**
      * 变量值
      */
+    @Comment("变量值")
     @Column(name = "val", length = Integer.MAX_VALUE)
     @JdbcTypeCode(Types.CLOB)
     private String val;
@@ -48,12 +52,14 @@ public class SysConfig extends BaseEntity {
     /**
      * 配置项说明
      */
+    @Comment("配置项说明")
     @Column(name = "`desc`", length = 200)
     private String desc;
 
     /**
      * 分组
      */
+    @Comment("分组")
     @Column(name = "`group`", length = 30)
     private String group = GROUP_SYSTEM;
 

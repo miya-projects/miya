@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.Comments;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import java.util.List;
@@ -24,16 +26,20 @@ import java.util.Objects;
 @Accessors(chain = true)
 @Table(indexes = {@Index(name = "name_unique", columnList = "pid, name", unique = true)})
 @Audited
+@Comment("部门")
 public class SysDepartment extends BaseEntity {
 
     @Column(length = 100, nullable = false)
+    @Comment("部门名称")
     private String name;
 
     @Column(length = 200)
+    @Comment("部门描述")
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "pid")
+    @Comment("上级部门")
     private SysDepartment parent;
 
     @OneToMany(orphanRemoval = true, mappedBy = "parent")
@@ -41,6 +47,7 @@ public class SysDepartment extends BaseEntity {
 
     @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
+    @Comment("额外信息")
     private Map<String, Object> extra;
 
     @Override

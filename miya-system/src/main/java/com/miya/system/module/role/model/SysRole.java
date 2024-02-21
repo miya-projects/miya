@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
 import org.hibernate.envers.Audited;
 
 import java.util.Set;
@@ -24,18 +25,24 @@ import java.util.stream.Collectors;
 @Entity
 @Table(indexes = {@Index(name = "name_unique", columnList = "name", unique = true)})
 @Audited
+@Comment("角色")
 public class SysRole extends BaseEntity {
 
+
     @Column(length = 50, nullable = false)
+    @Comment("角色名")
     private String name;
 
     @Column(length = 10)
+    @Comment("显示顺序")
     private Integer sequence;
 
     @Column(length = 100)
+    @Comment("角色描述")
     private String description;
 
     @Column(nullable = false)
+    @Comment("是否为系统字典")
     private Boolean isSystem;
 
     /**

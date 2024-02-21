@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 
@@ -31,18 +32,21 @@ import java.util.Map;
 @Entity
 @Table(indexes = {@Index(name = "sys_log_business_index", columnList = "business_id")})
 @Accessors(chain = true)
+@Comment("业务日志")
 public class SysLog extends BaseEntity {
 
     /**
      * 日志操作人
      */
     @Column(length = 50)
+    @Comment("日志操作人")
     private String operatorName;
 
     /**
      * 所属模块
      */
     @Column(length = 50)
+    @Comment("所属模块")
     private String business;
 
     /**
@@ -51,11 +55,14 @@ public class SysLog extends BaseEntity {
      * 例如对订单的操作可以有: 取消、申请退款、付款、删除等，这样对日志分类也能引导程序员从这方面去思考
      */
     @Column(length = 50)
+    @Comment("操作类型")
     private String operationType;
+
     /**
      * 详细日志内容
      */
     @Column(length = Integer.MAX_VALUE, nullable = false)
+    @Comment("详细日志内容")
     @JdbcTypeCode(Types.CLOB)
     private String content;
 
@@ -64,6 +71,7 @@ public class SysLog extends BaseEntity {
      */
     @Type(JsonType.class)
     @Column(name = "extra", columnDefinition = "json")
+    @Comment("额外参数")
     private Map<String, Object> extra;
 
     /**
@@ -71,6 +79,7 @@ public class SysLog extends BaseEntity {
      */
     @Column(name = "business_id", length = 32)
     @JdbcTypeCode(Types.CHAR)
+    @Comment("业务数据id")
     private String businessId;
 
     @Override

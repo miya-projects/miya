@@ -42,24 +42,28 @@ import java.util.stream.Collectors;
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})
 @Table(indexes = {@Index(name = "avatar", columnList = "avatar_id"), @Index(name = "username", columnList = "username", unique = true)})
 @Audited
+@Comment("系统后台用户")
 public class SysUser extends BaseEntity {
 
     /**
-     * 用户登录账户
+     * 登录用户名
      */
     @Column(length = 20, nullable = false)
+    @Comment("登录用户名")
     private String username;
 
     /**
      * 用户登录密码
      */
     @Column(length = 60)
+    @Comment("用户登录密码")
     private String password;
 
     /**
      * 用户姓名
      */
     @Column(length = 50)
+    @Comment("用户姓名")
     private String name;
 
     /**
@@ -67,29 +71,34 @@ public class SysUser extends BaseEntity {
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Comment("账户状态")
     private AccountStatus accountStatus = AccountStatus.NORMAL;
 
     /**
      * 备注
      */
     @Column(length = 512)
+    @Comment("备注")
     private String remark;
 
     /**
      * 手机号
      */
     @Column(length = 20)
+    @Comment("手机号")
     private String phone;
 
     /**
      * 性别
      */
+    @Comment("性别")
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
     /**
      * 用户部门
      */
+    @Comment("用户部门")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "department_id")}, name = "sys_user_department")
@@ -106,6 +115,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户头像
      */
+    @Comment("用户头像")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -114,6 +124,7 @@ public class SysUser extends BaseEntity {
     /**
      * 偏好配置
      */
+    @Comment("偏好配置")
     @Type(JsonType.class)
     @Column(name = "preferences", columnDefinition = "json")
     private Preferences preferences = new Preferences();
@@ -121,6 +132,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户社交账号
      */
+    @Comment("用户社交账号")
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private Set<SysUserSocial> sysUserSocials = new HashSet<>();
