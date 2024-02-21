@@ -37,16 +37,16 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
 
     @Override
     public void init() throws SystemInitErrorException {
-        Boolean isInitialize = INSTANCE.get(SystemConfigKeys.IS_INITIALIZE);
+        Boolean isInitialize = get(SystemConfigKeys.IS_INITIALIZE);
         if (!isInitialize) {
             // 还未初始化，进行初始化
             for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
-                INSTANCE.put(configKey.name(), configKey.getDefaultValue(), configKey.getName(), configKey.group());
+                put(configKey.name(), configKey.getDefaultValue(), configKey.getName(), configKey.group());
             }
         } else {
             // 增量更新
             for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
-                INSTANCE.touchSystemConfig(configKey);
+                touchSystemConfig(configKey);
             }
         }
     }
@@ -56,9 +56,9 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      */
     @CacheEvict(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
     public void touchSystemConfig(SystemConfig systemConfig) {
-        Optional<String> val = INSTANCE.get(systemConfig);
-        if (val.isEmpty()) {
-            INSTANCE.put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
+        Object val = get(systemConfig);
+        if (val == null) {
+            put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
         }
     }
 
@@ -79,8 +79,8 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      * 获取系统元信息
      */
     public SystemMeta getSystemMeta() {
-        return new SystemMeta(INSTANCE.get(SystemConfigKeys.SYSTEM_NAME), INSTANCE.get(SystemConfigKeys.SYSTEM_VERSION),
-                INSTANCE.get(SystemConfigKeys.EXPORT_WAY));
+        return new SystemMeta(get(SystemConfigKeys.SYSTEM_NAME), get(SystemConfigKeys.SYSTEM_VERSION),
+                get(SystemConfigKeys.EXPORT_WAY));
     }
 
     /**
@@ -100,7 +100,7 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
 
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
     public <T> T get(SystemConfig systemConfig) {
-        Object val = INSTANCE.get(systemConfig.group(), systemConfig.name(), systemConfig.getValueType());
+        Object val = get(systemConfig.group(), systemConfig.name(), systemConfig.getValueType());
         if (val != null) {
             return CastUtils.cast(val);
         }

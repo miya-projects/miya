@@ -50,7 +50,7 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
     /**
      * 签名密钥
      */
-    private final byte[] secret;
+    private byte[] secret;
 
     private final KeyValueStore keyValueStore;
 
@@ -59,8 +59,6 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
 
     public JwtTokenService(KeyValueStore keyValueStore){
         this.keyValueStore = keyValueStore;
-        String sec = SystemConfigKeys.JWT_SECRET_KEY.getValue();
-        this.secret = sec.getBytes();
     }
 
 
@@ -246,6 +244,8 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
     @Override
     public void afterSingletonsInstantiated() {
         INSTANCE = SpringUtil.getBean(JwtTokenService.class);
+        String sec = SystemConfigKeys.JWT_SECRET_KEY.getValue();
+        this.secret = sec.getBytes();
     }
 }
 

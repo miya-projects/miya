@@ -5,16 +5,16 @@ import com.miya.common.module.config.SystemConfigKeys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.AvailableSettings;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.stereotype.Service;
-import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InitSystemService {
+public class InitSystemService implements SmartInitializingSingleton {
 
     private final List<SystemInit> systemInits;
     private final SysConfigService sysConfigService;
@@ -25,7 +25,6 @@ public class InitSystemService {
     /**
      * 初始化系统
      */
-    @PostConstruct
     public void init() {
         String ddlAuto = jr.getProperties().get(AvailableSettings.HBM2DDL_AUTO);
         if (!ddl.contains(ddlAuto)) {
@@ -43,4 +42,8 @@ public class InitSystemService {
         log.info("初始化完成");
     }
 
+    @Override
+    public void afterSingletonsInstantiated() {
+        init();
+    }
 }
