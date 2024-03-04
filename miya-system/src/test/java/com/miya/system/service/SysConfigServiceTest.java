@@ -20,7 +20,7 @@ public class SysConfigServiceTest {
 
     @Test
     public void getBackendDomain() {
-        String backendDomain = sysConfigService.get(SystemConfigKeys.BACKEND_DOMAIN);
+        String backendDomain = sysConfigService.getValOrDefaultVal(SystemConfigKeys.BACKEND_DOMAIN);
         log.info(backendDomain);
     }
 

@@ -79,7 +79,7 @@ public class DownloadService {
      */
     @Transactional
     public void export(DownloadTask task) {
-        String exportWay = configService.get(SystemConfigKeys.EXPORT_WAY);
+        String exportWay = configService.getValOrDefaultVal(SystemConfigKeys.EXPORT_WAY);
         if (exportWay.equalsIgnoreCase("async")){
             executeAsync(task);
         }else if (exportWay.equalsIgnoreCase("sync")) {

@@ -4,10 +4,10 @@ import cn.hutool.core.util.RandomUtil;
 import com.miya.common.annotation.Acl;
 import com.miya.common.annotation.RequestLimit;
 import com.miya.common.model.dto.base.R;
+import com.miya.system.module.sms.LogSmsService;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.dto.SysUserModifyForm;
 import com.miya.system.module.user.model.SysUserPrincipal;
-import com.miya.third.sms.service.SmsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,7 @@ public class AccountApi {
     @Resource
     private SysUserService sysUserService;
     @Resource
-    private SmsService smsService;
+    private LogSmsService logSmsService;
 
     /**
      * 登陆
@@ -69,7 +69,7 @@ public class AccountApi {
     @RequestLimit(count = 1)
     public R<?> sendVerifyCode(@Parameter(description = "手机号", example = "13800000000") @NotBlank String phone) {
         String verifyCode = RandomUtil.randomNumbers(6);
-        smsService.sendVerifyCode(phone, verifyCode);
+        logSmsService.sendVerifyCode(phone, verifyCode);
         return R.success();
     }
 

@@ -68,7 +68,7 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
         final DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
         final DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATE_PATTERN);
         final DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_TIME_PATTERN);
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DatePattern.NORM_TIME_PATTERN);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN);
 
         // 序列化
         builder.serializerByType(LocalDateTime.class, new LocalDateTimeSerializer(localDateTimeFormatter))

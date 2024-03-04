@@ -37,7 +37,7 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
 
     @Override
     public void init() throws SystemInitErrorException {
-        Boolean isInitialize = get(SystemConfigKeys.IS_INITIALIZE);
+        Boolean isInitialize = getValOrDefaultVal(SystemConfigKeys.IS_INITIALIZE);
         if (!isInitialize) {
             // 还未初始化，进行初始化
             for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
@@ -56,8 +56,8 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      */
     @CacheEvict(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
     public void touchSystemConfig(SystemConfig systemConfig) {
-        Object val = get(systemConfig);
-        if (val == null) {
+        Optional val = get(systemConfig);
+        if (val.isEmpty()) {
             put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
         }
     }
@@ -79,8 +79,8 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      * 获取系统元信息
      */
     public SystemMeta getSystemMeta() {
-        return new SystemMeta(get(SystemConfigKeys.SYSTEM_NAME), get(SystemConfigKeys.SYSTEM_VERSION),
-                get(SystemConfigKeys.EXPORT_WAY));
+        return new SystemMeta(getValOrDefaultVal(SystemConfigKeys.SYSTEM_NAME), getValOrDefaultVal(SystemConfigKeys.SYSTEM_VERSION),
+                getValOrDefaultVal(SystemConfigKeys.EXPORT_WAY));
     }
 
     /**
@@ -88,7 +88,7 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      * @param key
      */
     public <T> Supplier<T> getSupplier(SystemConfig key) {
-        return () -> INSTANCE.get(key);
+        return () -> INSTANCE.getValOrDefaultVal(key);
     }
 
     /**
@@ -99,12 +99,17 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
     }
 
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
-    public <T> T get(SystemConfig systemConfig) {
+    public <T> T getValOrDefaultVal(SystemConfig systemConfig) {
         Object val = get(systemConfig.group(), systemConfig.name(), systemConfig.getValueType());
         if (val != null) {
             return CastUtils.cast(val);
         }
         return CastUtils.cast(Objects.requireNonNull(conversionService.convert(systemConfig.getDefaultValue(), systemConfig.getValueType())));
+    }
+
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
+    public <T> Optional<T> get(SystemConfig systemConfig) {
+        return Optional.ofNullable((T)get(systemConfig.group(), systemConfig.name(), systemConfig.getValueType()));
     }
 
     /**
@@ -163,7 +168,7 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
     @Override
     public void afterSingletonsInstantiated() {
         INSTANCE = SpringUtil.getBean(SysConfigService.class);
-        if (StrUtil.isBlank(INSTANCE.get(SystemConfigKeys.BACKEND_DOMAIN))) {
+        if (StrUtil.isBlank(INSTANCE.getValOrDefaultVal(SystemConfigKeys.BACKEND_DOMAIN))) {
             log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKeys.BACKEND_DOMAIN.getDefaultValue());
         }
     }

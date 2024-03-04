@@ -2,6 +2,7 @@ package com.miya.system.config.swagger.customizer;
 
 
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.querydsl.core.types.Path;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.converter.ResolvedSchema;
@@ -52,6 +53,16 @@ public class QuerydslPredicateOperationWithJavaDocCustomizer implements GlobalOp
     private final QuerydslBindingsFactory querydslBindingsFactory;
     private final JavadocProvider javadocProvider;
 
+
+    /**
+     * Instantiates a new Querydsl predicate operation customizer.
+     *
+     * @param querydslBindingsFactory the querydsl bindings factory
+     */
+    public QuerydslPredicateOperationWithJavaDocCustomizer(QuerydslBindingsFactory querydslBindingsFactory) {
+        this.querydslBindingsFactory = querydslBindingsFactory;
+        this.javadocProvider = SpringUtil.getBean(JavadocProvider.class);
+    }
 
     /**
      * Instantiates a new Querydsl predicate operation customizer.
