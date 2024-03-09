@@ -26,7 +26,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(indexes = {@Index(name = "key_unique", columnList = "group,key", unique = true)})
+@Table(indexes = {@Index(name = "key_unique", columnList = "`group`,`key`", unique = true)})
 @Accessors(chain = true)
 @Audited
 @Comment("系统配置")

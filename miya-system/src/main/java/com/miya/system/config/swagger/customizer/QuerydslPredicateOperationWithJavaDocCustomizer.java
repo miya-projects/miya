@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.core.customizers.GlobalOperationCustomizer;
 import org.springdoc.core.customizers.QuerydslPredicateOperationCustomizer;
+import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springdoc.core.providers.JavadocProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
  * 从实体类的javadoc中解析出字段描述添加到注释中，原本的QuerydslPredicateOperationCustomizer没有填充字段描述
  */
 @Slf4j
-public class QuerydslPredicateOperationWithJavaDocCustomizer implements GlobalOperationCustomizer {
+public class QuerydslPredicateOperationWithJavaDocCustomizer extends QuerydslPredicateOperationCustomizer implements GlobalOperationCustomizer {
 
 
 
@@ -59,7 +60,8 @@ public class QuerydslPredicateOperationWithJavaDocCustomizer implements GlobalOp
      *
      * @param querydslBindingsFactory the querydsl bindings factory
      */
-    public QuerydslPredicateOperationWithJavaDocCustomizer(QuerydslBindingsFactory querydslBindingsFactory) {
+    public QuerydslPredicateOperationWithJavaDocCustomizer(QuerydslBindingsFactory querydslBindingsFactory, SpringDocConfigProperties springDocConfigProperties) {
+        super(querydslBindingsFactory, springDocConfigProperties);
         this.querydslBindingsFactory = querydslBindingsFactory;
         this.javadocProvider = SpringUtil.getBean(JavadocProvider.class);
     }
@@ -69,7 +71,8 @@ public class QuerydslPredicateOperationWithJavaDocCustomizer implements GlobalOp
      *
      * @param querydslBindingsFactory the querydsl bindings factory
      */
-    public QuerydslPredicateOperationWithJavaDocCustomizer(QuerydslBindingsFactory querydslBindingsFactory, JavadocProvider javadocProvider) {
+    public QuerydslPredicateOperationWithJavaDocCustomizer(QuerydslBindingsFactory querydslBindingsFactory, JavadocProvider javadocProvider, SpringDocConfigProperties springDocConfigProperties) {
+        super(querydslBindingsFactory, springDocConfigProperties);
         this.querydslBindingsFactory = querydslBindingsFactory;
         this.javadocProvider = javadocProvider;
     }

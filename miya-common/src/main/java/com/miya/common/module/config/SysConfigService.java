@@ -19,7 +19,9 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -56,7 +58,7 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      */
     @CacheEvict(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
     public void touchSystemConfig(SystemConfig systemConfig) {
-        Optional val = get(systemConfig);
+        Optional<?> val = get(systemConfig);
         if (val.isEmpty()) {
             put(systemConfig.name(), systemConfig.getDefaultValue(), systemConfig.getName(), systemConfig.group());
         }

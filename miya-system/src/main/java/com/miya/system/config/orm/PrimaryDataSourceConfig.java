@@ -2,7 +2,7 @@ package com.miya.system.config.orm;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceWrapper;
-import com.miya.common.config.orm.source.DataSourceConfig;
+import com.miya.common.config.orm.source.DataSourceConfigure;
 import com.miya.common.module.base.ExtendsRepositoryImpl;
 import com.miya.system.module.FlagForMiyaSystemModule;
 import lombok.SneakyThrows;
@@ -30,6 +30,8 @@ import jakarta.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,9 +51,6 @@ import java.util.Objects;
 public class PrimaryDataSourceConfig {
 
     @Resource
-    private DataSourceConfig dataSourceConfig;
-
-    @Resource
     private JpaProperties jr;
 
     @Bean(initMethod = "init")
@@ -65,7 +64,8 @@ public class PrimaryDataSourceConfig {
     @Primary
     @Bean(name = "entityManagerFactory")
     @ConditionalOnMissingBean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(ObjectProvider<PersistenceUnitManager> persistenceUnitManager, DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(ObjectProvider<PersistenceUnitManager> persistenceUnitManager,
+                                                                       DataSource dataSource, List<DataSourceConfigure> configures) {
         HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setDatabase(Database.MYSQL);
         String category = null;
@@ -82,12 +82,14 @@ public class PrimaryDataSourceConfig {
         properties.putIfAbsent(EnversSettings.AUDIT_STRATEGY, ValidityAuditStrategy.class.getName());
 
 //        properties.put("hibernate.envers.autoRegisterListeners", Boolean.FALSE.toString());
+        final List<Class<?>> classes = new ArrayList<>();
+        configures.forEach(c -> c.addOrmPackages(classes));
 
         EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(adapter,
                 jr.getProperties(), persistenceUnitManager.getIfAvailable());
         return builder
                 .dataSource(dataSource)
-                .packages(dataSourceConfig.getClasses().toArray(new Class[0]))
+                .packages(classes.toArray(new Class[0]))
                 .properties(jr.getProperties())
                 .persistenceUnit("persistenceUnit")
                 .build();

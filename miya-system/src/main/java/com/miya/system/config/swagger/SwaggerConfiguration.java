@@ -1,7 +1,10 @@
 package com.miya.system.config.swagger;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.swagger.customizer.DomainClassGlobalSupport;
 import com.miya.system.config.swagger.customizer.ExtClientMethodNameSupport;
 import com.miya.system.config.swagger.customizer.QuerydslPredicateOperationWithJavaDocCustomizer;
@@ -15,29 +18,35 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.configuration.SpringDocDataRestConfiguration;
 import org.springdoc.core.converters.PageableOpenAPIConverter;
 import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springdoc.core.providers.JavadocProvider;
 import org.springdoc.core.providers.ObjectMapperProvider;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.data.repository.support.Repositories;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 
 import static org.springdoc.core.utils.Constants.SPRINGDOC_ENABLED;
@@ -47,10 +56,11 @@ import static org.springdoc.core.utils.SpringDocUtils.getConfig;
  * @author 杨超辉
  * 丝袜哥配置
  */
+@Slf4j
 @Configuration
 @AutoConfigureBefore(value = {SpringDocDataRestConfiguration.class})
 @ConditionalOnProperty(name = SPRINGDOC_ENABLED, matchIfMissing = true)
-public class SwaggerConfiguration {
+public class SwaggerConfiguration implements ApplicationRunner {
 
     static {
 //        getConfig().replaceParameterObjectWithClass(Timestamp.class, Date.class);
@@ -123,10 +133,11 @@ public class SwaggerConfiguration {
      */
     @Bean
     QuerydslPredicateOperationWithJavaDocCustomizer queryDslQuerydslPredicateOperationCustomizer(
-            Optional<QuerydslBindingsFactory> querydslBindingsFactory, JavadocProvider javadocProvider) {
+            Optional<QuerydslBindingsFactory> querydslBindingsFactory, JavadocProvider javadocProvider,
+            SpringDocConfigProperties springDocConfigProperties) {
         if (querydslBindingsFactory.isPresent()) {
             getConfig().addRequestWrapperToIgnore(Predicate.class);
-            return new QuerydslPredicateOperationWithJavaDocCustomizer(querydslBindingsFactory.get(), javadocProvider);
+            return new QuerydslPredicateOperationWithJavaDocCustomizer(querydslBindingsFactory.get(), javadocProvider, springDocConfigProperties);
         }
         return null;
     }
@@ -136,23 +147,39 @@ public class SwaggerConfiguration {
         return new ExtClientMethodNameSupport();
     }
 
-    @Bean
-    PropertyCustomizer propertyCustomizer() {
-        return new PropertyCustomizer() {
+    //@Bean
+    //PropertyCustomizer propertyCustomizer() {
+    //    return new PropertyCustomizer() {
+    //
+    //        @Override
+    //        public Schema customize(Schema property, AnnotatedType type) {
+    //            if (type.isSchemaProperty()) {
+    //                if (type.getType().isEnum()) {
+    //                    property.setEnum(ListUtil.toList(type.getType().getEnumConstants()));
+    //                }
+    //            }
+    //            return property;
+    //        }
+    //    };
+    //}
 
-            @Override
-            public Schema customize(Schema property, AnnotatedType type) {
-                if (type.isSchemaProperty()) {
-//                    if (type.getType().isEnum()) {
-//                        property.setEnum(ListUtil.toList(type.getType().getEnumConstants()));
-//                    }
-                }
-                return property;
+    @Override
+    public void run(ApplicationArguments args) {
+        ProjectConfiguration configuration = SpringUtil.getBean(ProjectConfiguration.class);
+        if (!configuration.isProduction()) {
+            Environment environment = SpringUtil.getBean(Environment.class);
+            String port = environment.getProperty("server.port");
+
+            LinkedHashSet<InetAddress> inetAddresses = NetUtil.localAddressList(inter -> !inter.getDisplayName().contains("Virtual"), add -> add instanceof Inet4Address);
+            for (InetAddress ip : inetAddresses) {
+                String url = StrUtil.format("http://{}:{}/swagger-ui.html", ip.getHostAddress(), port);
+                log.info("swagger地址: {}", url);
             }
-        };
+        }
+
     }
 
-//    @Bean
+    //    @Bean
 //    public GlobalOpenApiCustomizer extraApi() {
 //        return new GlobalOpenApiCustomizer() {
 //
