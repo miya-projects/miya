@@ -41,6 +41,11 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
+
         <!--powerjob-->
         <!--<dependency>-->
         <!--    <groupId>tech.powerjob</groupId>-->

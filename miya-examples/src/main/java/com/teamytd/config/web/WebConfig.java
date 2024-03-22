@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
      * 默认允许上传的后缀
      */
     private static final String[] allowUploadSuffix = {
-      "txt"
+      "txt", "mp4"
     };
 
     /**

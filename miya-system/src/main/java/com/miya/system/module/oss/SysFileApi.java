@@ -71,7 +71,7 @@ public class SysFileApi {
      * 上传文件
      * @param files
      */
-    @PostMapping("upload")
+    @PostMapping(value = "upload", consumes = "multipart/form-data")
     @Operation(summary = "上传文件(支持多个)")
     public R<?> upload(@NotNull @RequestParam("file") List<MultipartFile> files,
                        @Parameter(description = "在上传单个文件时返回参数的格式化类型，默认返回数组，对象类型只有在上传单个文件时生效") FormatType formatType) {

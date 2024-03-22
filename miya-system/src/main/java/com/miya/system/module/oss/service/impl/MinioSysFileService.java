@@ -9,11 +9,14 @@ import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
 import io.minio.*;
 import io.minio.errors.MinioException;
+import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -117,6 +120,7 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
         return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
+                .method(Method.GET)
                 .build());
     }
 
@@ -169,9 +173,11 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
     public SysFile upload(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String realFileName = rename(fileName);
+        Optional<MediaType> mediaType = MediaTypeFactory.getMediaType(fileName);
         PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                 .bucket(bucketName)
                 .object(realFileName)
+                .contentType(mediaType.orElse(MediaType.APPLICATION_OCTET_STREAM).toString())
                 .stream(file.getInputStream(), file.getSize(), MAX_PART_SIZE)
                 .build();
         minioClient.putObject(putObjectArgs);

@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -85,7 +87,8 @@ public class AliyunSysFileService implements SysFileService, InitializingBean, D
     @Override
     @SneakyThrows(IOException.class)
     public SysFile upload(MultipartFile file) {
-        return upload(file.getOriginalFilename(), file.getInputStream(), "");
+        Optional<MediaType> mediaType = MediaTypeFactory.getMediaType(file.getOriginalFilename());
+        return upload(file.getOriginalFilename(), file.getInputStream(), mediaType.orElse(MediaType.APPLICATION_OCTET_STREAM).toString());
     }
 
     @Override

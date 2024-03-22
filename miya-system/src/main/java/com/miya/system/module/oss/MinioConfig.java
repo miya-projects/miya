@@ -22,7 +22,7 @@ public class MinioConfig {
     @Bean
     @SneakyThrows
     @ConditionalOnMissingBean(MinioClient.class)
-    @ConditionalOnProperty(prefix = "config.oss.minio", name = {"endpoint", "accessKey", "secretKey"})
+    @ConditionalOnProperty(prefix = "config.oss.minio", name = {"endpoint", "access-key", "secret-key"})
     public MinioClient minioClient(){
         OssConfigProperties.Minio minio = ossConfigProperties.getMinio();
         return MinioClient.builder()

@@ -82,10 +82,10 @@ public class ActionLogInterceptor implements HandlerInterceptor, ResponseBodyAdv
         StringBuilder logStr = new StringBuilder();
 
         if (format){
-            logStr.append("接收到请求：{} {} \n");
+            logStr.append("接收到请求：{} {}");
             Set<Map.Entry<String, String[]>> entries = request.getParameterMap().entrySet();
             if (entries.size() != 0){
-                logStr.append("请求参数: \n");
+                logStr.append("\n请求参数: \n");
                 entries.forEach( entry -> {
                     String key = entry.getKey();
                     String[] value = entry.getValue();
