@@ -5,6 +5,7 @@ import com.miya.common.annotation.Acl;
 import com.miya.common.annotation.RequestLimit;
 import com.miya.common.model.dto.base.R;
 import com.miya.system.module.sms.LogSmsService;
+import com.miya.system.module.user.dto.CurrentSysUserDTO;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.dto.SysUserModifyForm;
 import com.miya.system.module.user.model.SysUserPrincipal;
@@ -67,7 +68,7 @@ public class AccountApi {
     @Operation(summary = "发送手机验证码")
     @Acl(userType = Acl.NotNeedLogin.class)
     @RequestLimit(count = 1)
-    public R<?> sendVerifyCode(@Parameter(description = "手机号", example = "13800000000") @NotBlank String phone) {
+    public R<?> sendVerifyCode(@Parameter(description = "手机号", example = "13800000000") @NotBlank @RequestPart String phone) {
         String verifyCode = RandomUtil.randomNumbers(6);
         logSmsService.sendVerifyCode(phone, verifyCode);
         return R.success();
@@ -75,7 +76,7 @@ public class AccountApi {
 
     @Operation(summary = "获取用户信息和偏好配置", description = "每次重新打开首页便获取一次")
     @GetMapping
-    public R<?> current(@AuthenticationPrincipal final SysUserPrincipal sysUserPrincipal) {
+    public R<CurrentSysUserDTO> current(@AuthenticationPrincipal final SysUserPrincipal sysUserPrincipal) {
         //        QSysUser qSysUser = QSysUser.sysUser;
         //        Projections.fields();
         //        Criteria.LEFT_JOIN;

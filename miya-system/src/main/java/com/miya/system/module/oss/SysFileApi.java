@@ -97,7 +97,7 @@ public class SysFileApi {
     @PostMapping(value = "upload/imageByUrl")
     @Operation(summary = "通过url上传图片")
     @RequestLimit(count = 5, seconds = 20)
-    public R<?> uploadByUrl(@NotBlank String url) {
+    public R<SysFile> uploadByUrl(@NotBlank String url) {
         try {
             SysFile sysFile = sysFileService.uploadImageByUrl(url);
             return R.successWithData(sysFile);
@@ -111,7 +111,7 @@ public class SysFileApi {
      * 上传图片(进行压缩) 返回对象名
      * @param images
      */
-    @PostMapping(value = "upload/image")
+    @PostMapping(value = "upload/image", consumes = "multipart/form-data")
     @Operation(summary = "上传图片(支持多张，进行压缩,然后丢弃原图)")
     public R<List<SysFile>> uploadImages(@NotNull @RequestParam List<MultipartFile> images) throws IOException {
         if (images.size() > MAX_UPLOAD_SIZE) {
