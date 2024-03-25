@@ -35,13 +35,9 @@ import com.miya.system.module.user.event.UserModifyEvent;
 import com.miya.system.module.user.model.*;
 import com.miya.third.sms.CacheKeys;
 import com.querydsl.core.types.Predicate;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.springframework.data.util.CastUtils;
@@ -206,11 +202,11 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param sysUser   被登录的用户
      * @return  token
      */
-    public LoginRes loginAs(SysUser sysUser) {
+    public LoginDTO loginAs(SysUser sysUser) {
         // token有效期 30分钟
         DateTime expiredDate = DateUtil.offsetMinute(new Date(), 30);
         String token = generateToken(sysUser, expiredDate, LoginWay.USERNAME_AND_PASSWORD);
-        return LoginRes.builder().token(token).expiredDate(expiredDate).build();
+        return LoginDTO.builder().token(token).expiredDate(expiredDate).build();
     }
 
     public CurrentSysUserDTO current(SysUserPrincipal sysUserPrincipal) {
@@ -223,30 +219,11 @@ public class SysUserService extends BaseService implements SystemInit {
     }
 
     /**
-     * 登录接口返回的dto
-     */
-    @Setter
-    @Getter
-    @Builder
-    @Schema(description = "登录接口返回的dto")
-    public static class LoginRes {
-
-        @Schema(description = "token")
-        private String token;
-        /**
-         * token失效日期
-         */
-        @Schema(description = "token失效日期")
-        private Date expiredDate;
-//        private SysUserDTO sysUserDTO;
-    }
-
-    /**
      * 通过手机号+验证码登录
      * @param phone  手机号
      * @param verifyCode  验证码
      */
-    public LoginRes loginByPhone(String phone, String verifyCode) {
+    public LoginDTO loginByPhone(String phone, String verifyCode) {
         Optional<SysUser> sysUserOptional = sysUserRepository.findOne(qSysUser.phone.eq(phone));
         if (!sysUserOptional.isPresent()) {
             throw new ResponseCodeException(ResponseCode.Common.LOGIN_FAILED, "用户不存在");
@@ -264,7 +241,7 @@ public class SysUserService extends BaseService implements SystemInit {
         DateTime expiredDate = DateUtil.offsetDay(new Date(), 7);
         String token = generateToken(sysUser, expiredDate, LoginWay.PHONE_AND_CODE);
         loginLog(sysUser, token);
-        return LoginRes.builder().token(token).expiredDate(expiredDate).build();
+        return LoginDTO.builder().token(token).expiredDate(expiredDate).build();
     }
 
     /**
@@ -272,10 +249,10 @@ public class SysUserService extends BaseService implements SystemInit {
      * @param username  用户名
      * @param password  密码
      */
-    public LoginRes login(String username, String password) {
+    public LoginDTO login(String username, String password) {
         //使用token的登录方式
         Optional<SysUser> sysUserOptional = sysUserRepository.findOne(qSysUser.username.eq(username));
-        if (!sysUserOptional.isPresent()) {
+        if (sysUserOptional.isEmpty()) {
             throw new ResponseCodeException(ResponseCode.Common.LOGIN_FAILED, "用户名不存在");
         }
         SysUser sysUser = sysUserOptional.get();
@@ -291,7 +268,7 @@ public class SysUserService extends BaseService implements SystemInit {
         DateTime expiredDate = DateUtil.offsetDay(new Date(), 1);
         String token = generateToken(sysUser, expiredDate, LoginWay.USERNAME_AND_PASSWORD);
         loginLog(sysUser, token);
-        return LoginRes.builder().token(token).expiredDate(expiredDate).build();
+        return LoginDTO.builder().token(token).expiredDate(expiredDate).build();
     }
 
     /**

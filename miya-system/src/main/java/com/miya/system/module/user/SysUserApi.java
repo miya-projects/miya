@@ -6,6 +6,7 @@ import com.miya.common.model.dto.base.R;
 import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
+import com.miya.system.module.user.dto.LoginDTO;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.dto.SysUserDetailDTO;
 import com.miya.system.module.user.dto.SysUserForm;
@@ -137,7 +138,7 @@ public class SysUserApi extends BaseApi {
     @Operation(summary = "以他人的身份登录")
     @PutMapping("{id}/loginAs")
     @Acl(business = "sys:user:loginAs")
-    public R<SysUserService.LoginRes> loginAs(@NotNull(message = "id不合法") @PathVariable(value = "id") SysUser sysUser) {
+    public R<LoginDTO> loginAs(@NotNull(message = "id不合法") @PathVariable(value = "id") SysUser sysUser) {
         return R.successWithData(sysUserService.loginAs(sysUser));
     }
 

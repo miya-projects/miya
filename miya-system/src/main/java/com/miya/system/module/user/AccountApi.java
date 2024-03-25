@@ -6,6 +6,7 @@ import com.miya.common.annotation.RequestLimit;
 import com.miya.common.model.dto.base.R;
 import com.miya.system.module.sms.LogSmsService;
 import com.miya.system.module.user.dto.CurrentSysUserDTO;
+import com.miya.system.module.user.dto.LoginDTO;
 import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.dto.SysUserModifyForm;
 import com.miya.system.module.user.model.SysUserPrincipal;
@@ -42,8 +43,8 @@ public class AccountApi {
     @PostMapping(value = "login")
     @Operation(summary = "后台登录", description = "后台登录接口")
     @Acl(userType = Acl.NotNeedLogin.class)
-    public R<SysUserService.LoginRes> login(@Parameter(description = "用户名", example = "admin") @NotBlank String userName,
-                                            @Parameter(description = "密码", example = "123456") @NotBlank String password) {
+    public R<LoginDTO> login(@Parameter(description = "用户名", example = "admin") @NotBlank String userName,
+                             @Parameter(description = "密码", example = "123456") @NotBlank String password) {
         return R.successWithData(sysUserService.login(userName, password));
     }
 
@@ -55,8 +56,8 @@ public class AccountApi {
     @PostMapping(value = "loginByPhone")
     @Operation(summary = "通过手机号验证码登录", description = "后台登录接口")
     @Acl(userType = Acl.NotNeedLogin.class)
-    public R<SysUserService.LoginRes> loginByPhone(@Parameter(description = "手机号", example = "13800000000") @NotBlank String phone,
-                                                   @Parameter(description = "验证码", example = "123456") @NotBlank String verifyCode) {
+    public R<LoginDTO> loginByPhone(@Parameter(description = "手机号", example = "13800000000") @NotBlank String phone,
+                                    @Parameter(description = "验证码", example = "123456") @NotBlank String verifyCode) {
         return R.successWithData(sysUserService.loginByPhone(phone, verifyCode));
     }
 
