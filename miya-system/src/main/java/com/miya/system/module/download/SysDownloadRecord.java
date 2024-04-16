@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
@@ -20,6 +21,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@Comment("文件下载记录")
 public class SysDownloadRecord extends BaseEntity {
 
     @Enumerated(EnumType.STRING)

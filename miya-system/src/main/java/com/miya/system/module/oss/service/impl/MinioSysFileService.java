@@ -51,6 +51,7 @@ public class MinioSysFileService implements SysFileService, InitializingBean {
             BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
                     .bucket(bucketName)
                     .build();
+            minioClient.ignoreCertCheck();
             boolean isExist = minioClient.bucketExists(bucketExistsArgs);
             if (!isExist) {
                 log.info("bucket {} not exits, try creating...", bucketName);

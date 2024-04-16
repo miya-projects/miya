@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
@@ -28,6 +29,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(indexes = {@Index(name = "key_expire_date", columnList = "`key`, expireDate")})
+@Comment("kv数据存储")
 public class SysCache extends BaseEntity {
 
     @Column(name = "`key`", length = 100, nullable = false)
