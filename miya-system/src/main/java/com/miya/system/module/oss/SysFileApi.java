@@ -10,7 +10,7 @@ import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.system.config.web.ReadableEnum;
 import com.miya.system.module.oss.model.SysFile;
 import com.miya.system.module.oss.service.SysFileService;
-import com.miya.system.util.PictureCompression;
+import com.miya.system.util.ThumbnailsUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -122,7 +122,7 @@ public class SysFileApi {
                 throw new ResponseCodeException(ResponseCode.Common.NOT_ALLOW_UPLOAD);
             }
             String suffix = FileUtil.extName(multipartFile.getOriginalFilename());
-            if (PictureCompression.isNotSupportCompression(suffix)) {
+            if (ThumbnailsUtil.isNotSupportCompression(suffix)) {
                 return R.errorWithCodeAndMsg(ResponseCode.Common.FILE_IS_NOT_IMAGE, multipartFile.getOriginalFilename());
             }
         }
@@ -147,7 +147,7 @@ public class SysFileApi {
         }
         String fileName = image.getOriginalFilename();
         String suffix = FileUtil.extName(fileName);
-        if (PictureCompression.isNotSupportCompression(suffix)) {
+        if (ThumbnailsUtil.isNotSupportCompression(suffix)) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.FILE_IS_NOT_IMAGE, fileName);
         }
         // 原本的文件输入流 => 图像压缩 => 管道 => 上传流具体实现 CountdownLatch同步
@@ -156,10 +156,8 @@ public class SysFileApi {
         pipedInputStream.connect(pipedOutputStream);
         executor.execute(() -> {
             try {
-                PictureCompression.compressImageOfDetail(image.getInputStream(), pipedOutputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
+                ThumbnailsUtil.compressPictureForScale(image, pipedOutputStream, 500);
+            } finally {
                 try {
                     pipedOutputStream.close();
                     pipedInputStream.close();
