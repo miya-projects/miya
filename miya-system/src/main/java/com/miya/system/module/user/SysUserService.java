@@ -39,7 +39,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jxls.common.Context;
 import org.springframework.data.util.CastUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,6 +46,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -398,8 +398,8 @@ public class SysUserService extends BaseService implements SystemInit {
                 Iterable<SysUser> users = sysUserRepository.findAll(predicate);
                 return ListUtil.toList(users).stream().map(SysUserForExport::of).collect(Collectors.toList());
             });
-            Context context = new Context();
-            context.putVar("items", userList);
+            Map<String, Object> data = new HashMap<>();
+            data.put("items", userList);
 
             PipedInputStream pipedInputStream = new PipedInputStream();
             PipedOutputStream pipedOutputStream = null;
@@ -408,11 +408,15 @@ public class SysUserService extends BaseService implements SystemInit {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            try {
-                XlsxUtil.export(resource.openStream(), pipedOutputStream, context);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            // 异步执行
+            PipedOutputStream finalPipedOutputStream = pipedOutputStream;
+            CompletableFuture.runAsync(() -> {
+                try {
+                    XlsxUtil.export(resource.openStream(), finalPipedOutputStream, data);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             return pipedInputStream;
         });
         downloadService.export(downloadTask);

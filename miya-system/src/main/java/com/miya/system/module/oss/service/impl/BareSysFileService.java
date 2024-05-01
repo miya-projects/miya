@@ -132,7 +132,7 @@ public class BareSysFileService implements SysFileService, WebMvcConfigurer {
         }
         sysFile.setSize(size);
         sysFile.setSimpleSize(FileUtil.readableFileSize(size));
-        sysFileRepository.save(sysFile);
+        sysFile = sysFileRepository.save(sysFile);
         return sysFile;
     }
 

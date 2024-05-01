@@ -46,7 +46,7 @@
         <lombok.version>1.18.30</lombok.version>
         <hutool.version>5.8.26</hutool.version>
         <elasticsearch.version>7.13.4</elasticsearch.version>
-        <jxls.version>2.14.0</jxls.version>
+        <jxls.version>3.0.0</jxls.version>
     </properties>
 
     <modules>
@@ -249,11 +249,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jxls</groupId>
-                <artifactId>jxls</artifactId>
-                <version>${jxls.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jxls</groupId>

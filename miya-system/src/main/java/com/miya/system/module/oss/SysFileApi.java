@@ -14,14 +14,12 @@ import com.miya.system.util.ThumbnailsUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,14 +27,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Executor;
 
 /**
  * 文件api
@@ -133,10 +130,6 @@ public class SysFileApi {
         return R.successWithData(list);
     }
 
-    @Resource
-    @Qualifier("taskExecutor")
-    private Executor executor;
-
     /**
      * 上传图片(进行压缩) 返回对象名
      * @param image
@@ -150,23 +143,10 @@ public class SysFileApi {
         if (ThumbnailsUtil.isNotSupportCompression(suffix)) {
             return R.errorWithCodeAndMsg(ResponseCode.Common.FILE_IS_NOT_IMAGE, fileName);
         }
-        // 原本的文件输入流 => 图像压缩 => 管道 => 上传流具体实现 CountdownLatch同步
-        PipedInputStream pipedInputStream = new PipedInputStream();
-        PipedOutputStream pipedOutputStream = new PipedOutputStream();
-        pipedInputStream.connect(pipedOutputStream);
-        executor.execute(() -> {
-            try {
-                ThumbnailsUtil.compressPictureForScale(image, pipedOutputStream, 500);
-            } finally {
-                try {
-                    pipedOutputStream.close();
-                    pipedInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        SysFile sysFile = sysFileService.upload(fileName, pipedInputStream, "image/png");
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ThumbnailsUtil.compressPictureForScale(image, byteArrayOutputStream, 500);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        SysFile sysFile = sysFileService.upload(fileName, byteArrayInputStream, "image/png");
         return R.successWithData(sysFile);
     }
 
