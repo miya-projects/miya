@@ -50,7 +50,8 @@ public class CustomExpressionEvaluator implements ExpressionEvaluator {
     @Override
     public Object evaluate(Map<String, Object> context) {
         StandardEvaluationContext ctx = getStandardEvaluationContext(context);
-        return parser.parseExpression(defaultExpression).getValue(ctx);
+        Object value = parser.parseExpression(defaultExpression).getValue(ctx);
+        return wrapValue(value);
     }
 
     /**

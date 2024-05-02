@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -103,18 +104,26 @@ public class DownloadService {
         if (response == null){
             throw new IllegalStateException("当前线程请求已失去");
         }
-        final SysDownloadRecord record = TransactionUtil.INSTANCE.transactional(() -> newDownloadRecord(task));
+        final SysDownloadRecord record = newDownloadRecord(task);
         log.info("[{}]开始导出", task.getName());
-        SysFile file = fileService.upload(task.getFileName(), task.get());
-        TransactionUtil.INSTANCE.transactional(() -> {
-            record.setFile(file);
-            record.setStatus(SysDownloadRecord.Status.COMPLETED);
-            record.setCompletedTime(new Date());
-            downloadRecordRepository.save(record);
-        });
+        SysFile file = null;
+        try {
+            file = fileService.upload(task.getFileName(), task.get());
+        }catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+            response.getWriter().write("导出失败");
+            response.getWriter().close();
+            return;
+        }
+        record.setFile(file);
+        record.setStatus(SysDownloadRecord.Status.COMPLETED);
+        record.setCompletedTime(new Date());
+        downloadRecordRepository.save(record);
+
         log.info("[{}]导出完毕", task.getName());
         response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(task.getFileName(), StandardCharsets.UTF_8));
         response.setContentType("application/octet-stream");
+        response.setContentLengthLong(file.getSize());
         IoUtil.copy(fileService.openStream(file), response.getOutputStream());
     }
 

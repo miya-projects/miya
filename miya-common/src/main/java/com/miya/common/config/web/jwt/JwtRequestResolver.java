@@ -28,8 +28,7 @@ public class JwtRequestResolver {
     private final JwtTokenService jwtTokenService;
 
     /**
-     * 认证一个请求
-     * @param request
+     * 认证一个请求 只有get请求可以采用query携带token的方式认证
      */
     public GeneralAuthentication getAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
@@ -45,7 +44,7 @@ public class JwtRequestResolver {
 
     /**
      * 解析authorization头 获得token
-     * @param authorization
+     * @param authorization http请求中头中的authorization
      * @return token
      */
     public String resolveTokenFromAuthorization(String authorization){
@@ -62,7 +61,6 @@ public class JwtRequestResolver {
 
     /**
      * 将token解析为authentication  解析无状态token
-     * @param token
      */
     public GeneralAuthentication getAuthentication(String token) {
         GeneralAuthentication generalAuthentication;
