@@ -26,9 +26,7 @@ tasks.named<BootJar>("bootJar") {
 }
 
 repositories {
-    mavenLocal{
-        url = uri("D:/software/maven/repository")
-    }
+    mavenLocal()
     maven {
         url = uri("https://maven.aliyun.com/repository/public")
     }
