@@ -78,8 +78,8 @@ jib {
     to {
         image = "registry.cn-hangzhou.aliyuncs.com/rxxy/miya-examples:latest"
         auth {
-            username = System.getProperty("REGISTRY_USERNAME")
-            password = System.getProperty("REGISTRY_PASSWORD")
+            username = System.getenv("REGISTRY_USERNAME")
+            password = System.getenv("REGISTRY_PASSWORD")
         }
     }
     container {
