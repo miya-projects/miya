@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<included>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+
+    <property name="CONSOLE_LOG_SIMPLE_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %replace(%caller{1}){'\t|Caller.{1}0|\r\n', ''} - %m%n">
+    </property>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss.SSS} %clr(%5p) [%t] %cyan(%replace(%caller{1}){'\t|Caller.{1}0|\r\n', ''}) - %m%n">
+    </property>
+    <property name="FILE_LOG_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] %replace(%caller{1}){'\t|Caller.{1}0|\r\n', ''} - %m%n">
+    </property>
+
+    <!--<property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>-->
+    <property name="LOG_FILE" value="miya.log"/>
+    <property name="LOG_PATH" value="."/>
+
+    <!--<logger name="org.springframework.web" level="DEBUG"/>-->
+    <!--<logger name="org.apache" level="warn"/>-->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <!--<logger name="springfox.documentation.spring.web" level="warn"/>-->
+    <logger name="com.miya" level="DEBUG"/>
+    <logger name="com.teamytd" level="DEBUG"/>
+    <logger name="com.miya.common.config.web.RepeatableRequestMappingHandlerMapping" level="info"/>
+
+
+    <!-- 控制台appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+
+    <!-- 文件appender -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+        <file>${LOG_PATH}/${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}.%i.${LOG_FILE}.gz</fileNamePattern>
+            <cleanHistoryOnStart>false</cleanHistoryOnStart>
+            <!-- 单文件最大大小 -->
+            <maxFileSize>100MB</maxFileSize>
+            <!-- 最多保留日志文件总大小，超出这个大小后，旧日志会被删掉 -->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!-- 保留50个存档文件，超出这个数量后，旧日志会被删掉 -->
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- error文件appender -->
+    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+        <file>${LOG_PATH}/error-${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}.%i.error-${LOG_FILE}.gz</fileNamePattern>
+            <cleanHistoryOnStart>false</cleanHistoryOnStart>
+            <!-- 单文件最大大小 -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 最多保留日志文件总大小，超出这个大小后，旧日志会被删掉 -->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!-- 保留30个存档文件，超出这个数量后，旧日志会被删掉 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+</included>

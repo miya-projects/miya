@@ -6,6 +6,7 @@
     <module name="miya-examples.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.teamytd.Application" />
     <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/miya-examples/build" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

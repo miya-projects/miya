@@ -35,7 +35,6 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
 
     private final SysConfigRepository configRepository;
     private final ConversionService conversionService = DefaultConversionService.getSharedInstance();
-    private SysConfigService INSTANCE;
 
     @Override
     public void init() throws SystemInitErrorException {
@@ -87,17 +86,19 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
 
     /**
      * 返回supplier包装过的参数，推荐使用，每次get都会重新加载参数(缓存或DB)。且低依赖(不用依赖于整个configService)。
-     * @param key
+     * @param systemConfig
      */
-    public <T> Supplier<T> getSupplier(SystemConfig key) {
-        return () -> INSTANCE.getValOrDefaultVal(key);
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
+    public <T> Supplier<T> getSupplier(SystemConfig systemConfig) {
+        return () -> getValOrDefaultVal(systemConfig);
     }
 
     /**
      * 返回supplier包装过的参数，推荐使用，每次get都会重新加载参数(缓存或DB)。且低依赖(不用依赖于整个configService)。
      */
+    @Cacheable(cacheNames = "SYS_CONFIG", key = "#group + #key")
     public <T> Supplier<T> getSupplier(String group, String key, Class<T> valueType) {
-        return () -> INSTANCE.get(group, key, valueType);
+        return () -> get(group, key, valueType);
     }
 
     @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
@@ -169,8 +170,7 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
 
     @Override
     public void afterSingletonsInstantiated() {
-        INSTANCE = SpringUtil.getBean(SysConfigService.class);
-        if (StrUtil.isBlank(INSTANCE.getValOrDefaultVal(SystemConfigKeys.BACKEND_DOMAIN))) {
+        if (StrUtil.isBlank(getValOrDefaultVal(SystemConfigKeys.BACKEND_DOMAIN))) {
             log.warn("未配置后端访问域名，将使用默认值{}", SystemConfigKeys.BACKEND_DOMAIN.getDefaultValue());
         }
     }

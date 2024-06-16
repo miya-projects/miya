@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -39,14 +40,13 @@ public class AliyunOssConfig {
         ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setSupportCname(true);
 
-        Supplier<String> domainSupplier = SpringUtil.getBean(SysConfigService.class)
-                .getSupplier(SystemConfigKeys.OSS_DOMAIN);
+        Optional<String> domainOptional = SpringUtil.getBean(SysConfigService.class)
+                .get(SystemConfigKeys.OSS_DOMAIN);
         String endpoint = aliyun.getEndpoint();
-        String domain = domainSupplier.get();
-        if(StrUtil.isNotBlank(domain)){
+        if(domainOptional.isPresent() && StrUtil.isNotBlank(domainOptional.get())){
             // 数据库的自定义域名配置优先级高于配置文件。
-            log.info("阿里云OSS：使用自定义域名: {}", domain);
-            endpoint = domain;
+            log.info("阿里云OSS：使用自定义域名: {}", domainOptional.get());
+            endpoint = domainOptional.get();
         }
         return new OSSClientBuilder().build(endpoint, aliyun.getAccessKey(), aliyun.getSecretKey(), conf);
     }
