@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "definitions": {
+    "node": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能名"
+        },
+        "code": {
+          "type": "string",
+          "description": "功能代码"
+        },
+        "children": {
+          "type": "array",
+          "description": "子功能",
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        }
+      }
+    }
+  },
+  "type": "array",
+  "items": {
+    "type": "object",
+    "$ref": "#/definitions/node"
+  }
+}

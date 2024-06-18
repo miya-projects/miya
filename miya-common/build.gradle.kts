@@ -1,11 +1,12 @@
 plugins {
     id("buildlogic.java-conventions")
-    id("java-library")
+    // id("java-library")
 }
 description = "miya-common"
 
 dependencies {
     // spring系列
+    // api("org.springframework.boot:spring-boot-starter-data-jpa")
     api(libs.org.springframework.boot.spring.boot.starter.data.jpa)
     api(libs.org.springframework.boot.spring.boot.starter.web)
     api(libs.org.springframework.security.spring.security.crypto)

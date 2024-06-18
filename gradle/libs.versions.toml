@@ -29,19 +29,25 @@ org-hibernate-validator-hibernate-validator-annotation-processor = "8.0.1.Final"
 org-jxls-jxls-poi = "3.0.0"
 org-modelmapper-modelmapper = "3.1.1"
 org-springdoc-springdoc-openapi-starter-webmvc-ui = "2.3.0"
-org-springframework-boot-spring-boot-configuration-processor = "3.2.3"
-org-springframework-boot-spring-boot-starter = "3.2.3"
-org-springframework-boot-spring-boot-starter-cache = "3.2.3"
-org-springframework-boot-spring-boot-starter-data-jpa = "3.2.3"
-org-springframework-boot-spring-boot-starter-test = "3.2.3"
-org-springframework-boot-spring-boot-starter-web = "3.2.3"
+
+org-projectlombok-lombok = "1.18.32"
+org-hibernate-orm-hibernate-jpamodelgen = "6.3.1.Final"
+com-querydsl-querydsl-apt = "5.0.0"
+
+
+# springboot
+org-springframework-boot-spring-boot-starter = "3.3.1"
+org-springframework-boot-spring-boot-starter-cache = "3.3.1"
+org-springframework-boot-spring-boot-starter-data-jpa = "3.3.1"
+org-springframework-boot-spring-boot-starter-test = "3.3.1"
+org-springframework-boot-spring-boot-starter-web = "3.3.1"
+org-springframework-boot-spring-boot-configuration-processor = "3.3.1"
+
+# spring
 org-springframework-retry-spring-retry = "2.0.5"
 org-springframework-security-spring-security-crypto = "6.2.2"
 org-springframework-spring-context-support = "6.1.4"
 org-springframework-spring-tx = "6.1.4"
-org-projectlombok-lombok = "1.18.32"
-org-hibernate-orm-hibernate-jpamodelgen = "6.3.1.Final"
-com-querydsl-querydsl-apt = "5.0.0"
 
 [libraries]
 co-elastic-clients-elasticsearch-java = { module = "co.elastic.clients:elasticsearch-java", version.ref = "co-elastic-clients-elasticsearch-java" }

@@ -74,6 +74,7 @@ public class PrimaryDataSourceConfig {
         }
 
         Map<String, String> properties = jr.getProperties();
+
         properties.putIfAbsent("hibernate.integration.envers.enabled", Boolean.FALSE.toString());
         properties.putIfAbsent(EnversSettings.AUDIT_TABLE_SUFFIX, "");
         properties.putIfAbsent(EnversSettings.AUDIT_TABLE_PREFIX, "audit_");
@@ -86,11 +87,11 @@ public class PrimaryDataSourceConfig {
         configures.forEach(c -> c.addOrmPackages(classes));
 
         EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(adapter,
-                jr.getProperties(), persistenceUnitManager.getIfAvailable());
+                properties, persistenceUnitManager.getIfAvailable());
         return builder
                 .dataSource(dataSource)
                 .packages(classes.toArray(new Class[0]))
-                .properties(jr.getProperties())
+                .properties(properties)
                 .persistenceUnit("persistenceUnit")
                 .build();
     }

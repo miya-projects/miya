@@ -43,6 +43,8 @@ dependencies {
 
     // 测试依赖
     testImplementation(libs.org.springframework.boot.spring.boot.starter.test)
+    testImplementation(libs.org.springframework.boot.spring.boot.starter.data.jpa)
+
     testImplementation(libs.junit.junit)
     testCompileOnly(libs.org.projectlombok.lombok)
 

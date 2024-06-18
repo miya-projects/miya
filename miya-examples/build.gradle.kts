@@ -4,8 +4,9 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     `java-library`
-    id("org.springframework.boot") version "3.2.3"
-    id("com.google.cloud.tools.jib") version ("3.4.3")
+    id("org.springframework.boot") version "3.3.1"
+    // 3.4.3 在windows下执行jibDockerBuild会卡住
+    id("com.google.cloud.tools.jib") version ("3.4.2")
     // id("io.spring.dependency-management") version ("3.2.3")
 }
 // apply(plugin = "io.spring.dependency-management")
@@ -37,7 +38,7 @@ repositories {
 
 dependencies {
     implementation(libs.io.github.rxxy.miya.system)
-    implementation(libs.org.springframework.boot.spring.boot.starter)
+    // implementation(libs.org.springframework.boot.spring.boot.starter)
 
     // implementation(libs.org.springframework.boot.spring.boot.starter.data.jpa)
     // implementation(libs.org.springframework.boot.spring.boot.starter.web)
