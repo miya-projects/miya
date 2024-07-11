@@ -73,6 +73,14 @@ dependencies {
 
 }
 
+// 不排除会报错，且只有jib打包后跑容器会报错
+// Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+configurations {
+    implementation {
+        exclude(group = "commons-logging", module = "commons-logging")
+    }
+}
+
 
 jib {
     from.image = "registry.cn-hangzhou.aliyuncs.com/rxxy/java:17-jdk"
