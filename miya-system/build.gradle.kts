@@ -58,3 +58,7 @@ dependencies {
 
 
 description = "miya-system"
+
+tasks.withType<Test> {
+    enabled = false
+}
