@@ -1,19 +1,21 @@
 package com.miya.common.service;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.RegisteredPayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miya.common.auth.way.LoginDevice;
+import com.miya.common.auth.way.LoginWay;
 import com.miya.common.config.web.jwt.JwtPayload;
 import com.miya.common.config.web.jwt.TokenExpirationException;
 import com.miya.common.config.web.jwt.TokenService;
 import com.miya.common.module.cache.CacheKey;
 import com.miya.common.module.cache.KeyValueStore;
 import com.miya.common.module.config.SystemConfigKeys;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -27,25 +29,19 @@ import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.repository.support.RepositoryInvoker;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author 杨超辉
  */
 @Slf4j
 public class JwtTokenService implements Serializable, TokenService, ApplicationContextAware, SmartInitializingSingleton {
+
+    @Serial
     private static final long serialVersionUID = -3301605591108950415L;
-    private static final String CLAIM_KEY_USERNAME = "sub";
-    private static final String CLAIM_KEY_ID = "id";
-    private static final String CLAIM_KEY_CREATED = "createdDate";
-    private static final String CLAIM_KEY_AUTH_TYPE = "authType";
-    private static final String CLAIM_KEY_LOGIN_DEVICE = "loginDevice";
-    private static final String JWT_SECRET_KEY = "JWT_SECRET";
 
     /**
      * 签名密钥
@@ -67,7 +63,7 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
      * @param token
      */
     public JwtPayload getPayload(String token) {
-        Claims claims = getClaimsFromToken(token);
+        Map<String, Object> claims = getClaimsFromToken(token);
         try {
             ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
             return mapper.readValue(JSONUtil.toJsonStr(claims), JwtPayload.class);
@@ -78,20 +74,6 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
         }
     }
 
-    /**
-     * 获取token的创建时间
-     * @param token
-     */
-    public Date getCreatedDateFromToken(String token) {
-        Date created;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            created = new Date((Long) claims.get(CLAIM_KEY_CREATED));
-        } catch (Exception e) {
-            created = null;
-        }
-        return created;
-    }
 
     /**
      * 获取token中的过期时间
@@ -100,8 +82,8 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
     public Date getExpirationDateFromToken(String token) {
         Date expiration;
         try {
-            final Claims claims = getClaimsFromToken(token);
-            expiration = claims.getExpiration();
+            final Map<String, Object> claims = getClaimsFromToken(token);
+            expiration = Convert.toDate(claims.get(RegisteredPayload.EXPIRES_AT));
         } catch (Exception e) {
             expiration = null;
         }
@@ -112,18 +94,13 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
      * 获取token中存的信息 payload
      * @param token
      */
-    private Claims getClaimsFromToken(String token) {
-        Claims claims;
-        try {
-            claims = Jwts.parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            log.trace(ExceptionUtils.getStackTrace(e));
-            claims = null;
+    private Map<String, Object> getClaimsFromToken(String token) {
+        JWT jwt = JWT.of(token).setKey(secret);
+        if (!jwt.verify()) {
+            log.warn("jwt验证不通过: {}", token);
+            return null;
         }
-        return claims;
+        return jwt.getPayloads();
     }
 
 
@@ -143,10 +120,34 @@ public class JwtTokenService implements Serializable, TokenService, ApplicationC
      */
     public String payloadToToken(JwtPayload jwtPayload) {
         Map<String, Object> claims = jwtPayload.toClaims();
-        return Jwts.builder()
-                .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+        return JWT.create()
+                .addPayloads(claims)
+                .setKey(secret)
+                .sign();
+    }
+
+    public static void main(String[] args) {
+        JwtPayload payload = JwtPayload.builder().userClass(String.class)
+                .exp(new Date())
+                .loginWay(LoginWay.WXCODE)
+                .loginDevice(LoginDevice.MOBILE)
+                .loginTime(new Date()).userId("1")
+                .build();
+        JwtTokenService service = new JwtTokenService(null);
+
+        byte[] key = "1234567890".getBytes();
+
+        //https://datatracker.ietf.org/doc/html/rfc7519#page-6
+        service.secret = key;
+        String s = service.payloadToToken(payload);
+        // 密钥
+
+        String token = JWT.create()
+                .addPayloads(payload.toClaims())
+                .setKey(key)
+                .sign();
+        System.out.println(token);
+        System.out.println(s);
     }
 
     /**

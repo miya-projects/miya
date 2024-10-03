@@ -5,30 +5,42 @@ plugins {
 dependencies {
     api(libs.org.springframework.boot.spring.boot.starter)
     api(libs.org.springframework.boot.spring.boot.starter.web)
+    api(libs.org.springframework.boot.spring.boot.starter.data.jpa)
     api(libs.org.springframework.boot.spring.boot.starter.cache)
+
+    api(libs.com.alibaba.druid.spring.boot.starter)
+    api(libs.org.hibernate.orm.hibernate.envers)
+
+    api(libs.io.hypersistence.hypersistence.utils.hibernate.v62)
     api(libs.org.springframework.retry.spring.retry)
     api(libs.org.springframework.boot.spring.boot.configuration.processor)
+    api(libs.org.springframework.security.spring.security.crypto)
 
-    api(libs.javax.mail.mail)
     api(project(":miya-common"))
     api(project(":miya-sms-service"))
 
-    api(libs.com.google.guava.guava)
-    api(libs.net.coobird.thumbnailator)
+    api(libs.com.github.ben.manes.caffeine.caffeine)
+
     api(libs.jakarta.json.jakarta.json.api)
-    api(libs.org.jxls.jxls.poi)
-    api(libs.com.fasterxml.jackson.core.jackson.databind)
     compileOnly(libs.org.hibernate.validator.hibernate.validator.annotation.processor)
 
-    runtimeOnly(libs.com.mysql.mysql.connector.j)
-    api(libs.co.elastic.clients.elasticsearch.java)
+    // 三方工具包
+    api(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
     api(libs.com.github.therapi.therapi.runtime.javadoc)
-    compileOnly(libs.io.minio.minio)
+    // api(libs.com.google.guava.guava)
+    api(libs.net.coobird.thumbnailator)
+    api(libs.javax.mail.mail)
+    api(libs.org.jxls.jxls.poi)
     api(variantOf(libs.com.querydsl.querydsl.jpa) {
         classifier("jakarta")
     })
-    api(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
 
+
+
+    // 外部服务包
+    compileOnly(libs.io.minio.minio)
+    api(libs.co.elastic.clients.elasticsearch.java)
+    runtimeOnly(libs.com.mysql.mysql.connector.j)
 
 
     annotationProcessor(libs.org.projectlombok.lombok)

@@ -44,11 +44,12 @@ public class JwtPayload {
     private Date exp;
 
 
+    //<a href="https://github.com/jwtk/jjwt/issues/122">issue</a>
     public Map<String, Object> toClaims() {
         Map<String, Object> map = BeanUtil.beanToMap(this);
-        if (exp != null){
-            // jwt rfc规范要求exp为秒级时间戳，这里转claims时进行一次转换 <a href="https://github.com/jwtk/jjwt/issues/122">issue</a>
-            map.put("exp", exp.getTime() / 1000);
+        if (userClass != null) {
+            // 在生成token时，不同序列化框架对class可能有不同的表现，尽量使用简单类型
+            map.put("userClass", userClass.getName());
         }
         return map;
     }

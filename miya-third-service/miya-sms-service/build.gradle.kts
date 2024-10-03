@@ -7,12 +7,11 @@ plugins {
 }
 
 dependencies {
-    api(libs.org.springframework.boot.spring.boot.starter)
     api(project(":miya-common"))
     api(libs.com.aliyun.oss.aliyun.sdk.oss)
     api(libs.com.aliyun.dysmsapi20170525)
 
-    annotationProcessor("org.projectlombok:lombok:1.18.32")
+    annotationProcessor(libs.org.projectlombok.lombok)
 }
 
 description = "miya-sms-service"

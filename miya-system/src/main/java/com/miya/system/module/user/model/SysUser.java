@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
@@ -36,7 +35,6 @@ import java.util.stream.Collectors;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Accessors(chain = true)
 @FilterDef(name = "orderOwnerFilter",
         parameters = {@ParamDef(name = "ownerIds", type = String.class)})
 @Filters({@Filter(name = "orderOwnerFilter", condition = "id in (:ownerIds)")})

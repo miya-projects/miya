@@ -69,8 +69,6 @@ dependencies {
     annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:0.15.0")
     annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen:6.3.1.Final")
 
-
-
 }
 
 // 不排除会报错，且只有jib打包后跑容器会报错

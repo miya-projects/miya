@@ -14,10 +14,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.apache.commons:commons-lang3:3.13.0")
-    // implementation("org.apache.commons:commons-collections4:4.4")
-    implementation("cn.hutool:hutool-all:5.8.26")
-    compileOnly("org.projectlombok:lombok:1.18.30")
 }
 
 group = "io.github.rxxy"
@@ -66,36 +62,36 @@ tasks.withType<Jar> {
 // }
 
 
-publishing {
-    repositories {
-        mavenLocal()
-    }
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-        pom {
-            name.set("miya")
-            description.set("miya")
-            url.set("https://github.com/rxxy/miya")
-            licenses {
-                license {
-                    name.set("The Apache License, Version 2.0")
-                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                }
-            }
-            developers {
-                developer {
-                    id.set("rxxy")
-                    name.set("rxxy")
-                    roles.add("Java Developer")
-                }
-            }
-            scm {
-                url = "https://github.com/miya-projects/miya-service"
-                connection = "scm:git:https://git@github.com/xxx/yyy.git"
-                developerConnection = "scm:git:git@github.com:xxx/yyy.git"
-            }
-        }
-    }
-}
+// publishing {
+//     repositories {
+//         mavenLocal()
+//     }
+//     publications.create<MavenPublication>("maven") {
+//         from(components["java"])
+//         pom {
+//             name.set("miya")
+//             description.set("miya")
+//             url.set("https://github.com/rxxy/miya")
+//             licenses {
+//                 license {
+//                     name.set("The Apache License, Version 2.0")
+//                     url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+//                 }
+//             }
+//             developers {
+//                 developer {
+//                     id.set("rxxy")
+//                     name.set("rxxy")
+//                     roles.add("Java Developer")
+//                 }
+//             }
+//             scm {
+//                 url = "https://github.com/miya-projects/miya-service"
+//                 connection = "scm:git:https://git@github.com/xxx/yyy.git"
+//                 developerConnection = "scm:git:git@github.com:xxx/yyy.git"
+//             }
+//         }
+//     }
+// }
 
 // apply(from = "publish.gradle.kts")

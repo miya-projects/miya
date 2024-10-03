@@ -2,7 +2,6 @@ package com.miya.common.config;
 
 import com.miya.common.annotation.constraint.CustomMessageInterpolator;
 import com.miya.common.config.orm.source.CommonDataSourceConfig;
-import com.miya.common.module.cache.CacheConfig;
 import com.miya.common.module.init.InitSystemService;
 import com.miya.common.module.config.SysConfigService;
 import com.miya.common.util.TransactionUtil;
@@ -20,7 +19,6 @@ import jakarta.validation.Validator;
 )
 @Import({
         InitSystemService.class,
-        CacheConfig.class,
         CommonDataSourceConfig.class,
         SysConfigService.class,
         TransactionUtil.class,

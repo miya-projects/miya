@@ -3,7 +3,6 @@ package com.miya.common.config.web.jwt;
 import com.miya.common.auth.way.GeneralAuthentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -19,7 +18,6 @@ import java.util.Objects;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtRequestResolver jwtRequestResolver;

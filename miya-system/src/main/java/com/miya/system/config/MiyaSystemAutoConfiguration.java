@@ -1,6 +1,8 @@
 package com.miya.system.config;
 
 import com.miya.common.config.MiyaCommonAutoConfiguration;
+import com.miya.common.config.web.jwt.JwtFilter;
+import com.miya.common.config.web.jwt.JwtRequestResolver;
 import com.miya.common.service.JwtTokenService;
 import com.miya.system.module.FlagForMiyaSystemModule;
 import com.miya.system.module.common.repository.SysCacheRepository;
@@ -54,6 +56,17 @@ public class MiyaSystemAutoConfiguration {
     @Bean
     public JwtTokenService tokenStore(KeyValueStore keyValueStore) {
         return new JwtTokenService(keyValueStore);
+    }
+
+
+    @Bean
+    public JwtRequestResolver jwtRequestResolver(JwtTokenService jwtTokenService) {
+        return new JwtRequestResolver(jwtTokenService);
+    }
+
+    @Bean
+    public JwtFilter jwtFilter(JwtRequestResolver jwtRequestResolver) {
+        return new JwtFilter(jwtRequestResolver);
     }
 
     // @Bean

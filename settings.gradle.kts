@@ -10,3 +10,7 @@ include(":miya-sms-service")
 project(":miya-sms-service").projectDir = file("miya-third-service/miya-sms-service")
 
 
+dependencyResolutionManagement {
+    // 默认是"lib"
+    // println("default name: ${defaultLibrariesExtensionName.get()}")
+}
