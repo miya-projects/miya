@@ -7,6 +7,7 @@ plugins {
 }
 
 dependencies {
+    implementation(platform(project(":version-platform")))
     api(project(":miya-common"))
     api(libs.com.aliyun.oss.aliyun.sdk.oss)
     api(libs.com.aliyun.dysmsapi20170525)

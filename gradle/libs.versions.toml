@@ -14,7 +14,6 @@ com-github-xiaoymin-knife4j-openapi3-ui = "4.5.0"
 com-google-guava-guava = "31.1-jre"
 com-mysql-mysql-connector-j = "8.1.0"
 io-hypersistence-hypersistence-utils-hibernate-v62 = "3.7.3"
-io-jsonwebtoken-jjwt = "0.9.1"
 io-minio-minio = "8.5.9"
 jakarta-json-jakarta-json-api = "2.1.0"
 jakarta-persistence-jakarta-persistence-api = "3.1.0"
@@ -24,18 +23,11 @@ net-coobird-thumbnailator = "0.4.20"
 org-hibernate-orm-hibernate-envers = "6.4.4.Final"
 
 hibernate-validator = "8.0.1.Final"
-org-jxls-jxls-poi = "3.0.0"
-org-modelmapper-modelmapper = "3.1.1"
 org-springdoc-springdoc-openapi-starter-webmvc-ui = "2.3.0"
 
-org-hibernate-orm-hibernate-jpamodelgen = "6.3.1.Final"
 querydsl = "5.0.0"
-
 # spring
-org-springframework-retry-spring-retry = "2.0.5"
-org-springframework-security-spring-security-crypto = "6.2.2"
-spring = "6.1.4"
-springboot = "3.3.1"
+springboot = "3.3.4"
 
 [libraries]
 io-minio-minio = { module = "io.minio:minio", version.ref = "io-minio-minio" }
@@ -55,8 +47,6 @@ org-springdoc-springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:sp
 com-google-guava-guava = { module = "com.google.guava:guava", version.ref = "com-google-guava-guava" }
 io-hypersistence-hypersistence-utils-hibernate-v62 = { module = "io.hypersistence:hypersistence-utils-hibernate-62", version.ref = "io-hypersistence-hypersistence-utils-hibernate-v62" }
 
-io-jsonwebtoken-jjwt = { module = "io.jsonwebtoken:jjwt", version.ref = "io-jsonwebtoken-jjwt" }
-
 jakarta-json-jakarta-json-api = { module = "jakarta.json:jakarta.json-api", version.ref = "jakarta-json-jakarta-json-api" }
 jakarta-persistence-jakarta-persistence-api = { module = "jakarta.persistence:jakarta.persistence-api", version.ref = "jakarta-persistence-jakarta-persistence-api" }
 
@@ -64,27 +54,16 @@ javax-mail-mail = { module = "javax.mail:mail", version.ref = "javax-mail-mail" 
 junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
 net-coobird-thumbnailator = { module = "net.coobird:thumbnailator", version.ref = "net-coobird-thumbnailator" }
 org-hibernate-orm-hibernate-envers = { module = "org.hibernate.orm:hibernate-envers", version.ref = "org-hibernate-orm-hibernate-envers" }
-org-jxls-jxls-poi = { module = "org.jxls:jxls-poi", version.ref = "org-jxls-jxls-poi" }
-org-modelmapper-modelmapper = { module = "org.modelmapper:modelmapper", version.ref = "org-modelmapper-modelmapper" }
+org-jxls-jxls-poi = { module = "org.jxls:jxls-poi", version = "3.0.0" }
+org-modelmapper-modelmapper = { module = "org.modelmapper:modelmapper", version = "3.1.1" }
 
 
-org-springframework-boot-spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "springboot" }
 
 org-springframework-boot-spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springboot" }
-org-springframework-boot-spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "springboot" }
-org-springframework-boot-spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springboot" }
-org-springframework-boot-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springboot" }
-org-springframework-boot-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springboot" }
-
-org-springframework-retry-spring-retry = { module = "org.springframework.retry:spring-retry", version.ref = "org-springframework-retry-spring-retry" }
-org-springframework-security-spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "org-springframework-security-spring-security-crypto" }
-
-org-springframework-spring-context-support = { module = "org.springframework:spring-context-support", version.ref = "spring" }
-org-springframework-spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring" }
 
 org-projectlombok-lombok = { module = "org.projectlombok:lombok", version = "1.18.32"}
 
-org-hibernate-orm-hibernate-jpamodelgen = { module = "org.hibernate.orm:hibernate-jpamodelgen", version.ref = "org-hibernate-orm-hibernate-jpamodelgen"}
+org-hibernate-orm-hibernate-jpamodelgen = { module = "org.hibernate.orm:hibernate-jpamodelgen", version = "6.3.1.Final"}
 
 com-querydsl-querydsl-jpa = { module = "com.querydsl:querydsl-jpa", version.ref = "querydsl" }
 com-querydsl-querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl"}
@@ -94,9 +73,10 @@ org-hibernate-validator-hibernate-validator-annotation-processor = { module = "o
 
 org-apache-commons-commons-lang3 = { module = "org.apache.commons:commons-lang3", version = "3.13.0"}
 
-
 hutool = { module = "cn.hutool:hutool-all", version = "5.8.26"}
+
+[plugins]
+springboot = {id = "org.springframework.boot", version.ref = "springboot"}
 
 [bundles]
 querydsl = ["com-querydsl-querydsl-jpa", "com-querydsl-querydsl-apt"]
-

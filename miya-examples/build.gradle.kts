@@ -3,17 +3,14 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 
 plugins {
-    `java-library`
-    id("org.springframework.boot") version "3.3.1"
+    id("buildlogic.java-conventions")
+    alias(libs.plugins.springboot)
     // 3.4.3 在windows下执行jibDockerBuild会卡住
     id("com.google.cloud.tools.jib") version ("3.4.2")
     // id("io.spring.dependency-management") version ("3.2.3")
 }
-// apply(plugin = "io.spring.dependency-management")
-
-
-group = "io.github.rxxy"
-version = "1.0"
+// group = "io.github.rxxy"
+// version = "1.0"
 description = "miya-examples"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -37,37 +34,50 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.io.github.rxxy.miya.system)
-    // implementation(libs.org.springframework.boot.spring.boot.starter)
+    implementation(platform(project(":version-platform")))
+    testImplementation(platform(project(":version-platform")))
 
+    implementation("org.projectlombok:lombok")
+    implementation(libs.hutool)
+    api(project(":miya-system"))
+    // implementation(libs.org.springframework.boot.spring.boot.starter)
     // implementation(libs.org.springframework.boot.spring.boot.starter.data.jpa)
     // implementation(libs.org.springframework.boot.spring.boot.starter.web)
     // implementation(libs.org.springframework.boot.spring.boot.starter.cache)
-    implementation(libs.org.springframework.boot.spring.boot.starter.websocket)
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 
-    api(libs.jakarta.persistence.jakarta.persistence.api)
-    api(libs.com.alibaba.druid.spring.boot.starter)
-    api(variantOf(libs.com.querydsl.querydsl.jpa) {
+    // api(libs.jakarta.persistence.jakarta.persistence.api)
+    // api(libs.com.alibaba.druid.spring.boot.starter)
+    // api(variantOf(libs.com.querydsl.querydsl.jpa) {
+    //     classifier("jakarta")
+    // })
+    // api(libs.org.hibernate.orm.hibernate.envers)
+    // api(libs.io.hypersistence.hypersistence.utils.hibernate.v62)
+    //
+    // implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
+    //
+    // implementation(libs.com.aliyun.oss.aliyun.sdk.oss)
+    // implementation(libs.io.minio.minio)
+
+    annotationProcessor(platform(project(":version-platform")))
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor(variantOf(libs.com.querydsl.querydsl.apt) {
         classifier("jakarta")
     })
-    api(libs.org.hibernate.orm.hibernate.envers)
-    api(libs.io.hypersistence.hypersistence.utils.hibernate.v62)
-
-    implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
-
-    implementation(libs.org.apache.commons.commons.lang3)
-    implementation(libs.org.apache.commons.commons.collections4)
-    implementation(libs.cn.hutool.hutool.all)
-    implementation(libs.com.aliyun.oss.aliyun.sdk.oss)
-    implementation(libs.io.minio.minio)
-    compileOnly(libs.org.projectlombok.lombok)
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen")
+    annotationProcessor("org.hibernate.validator:hibernate-validator-annotation-processor")
+    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
 
-    annotationProcessor("org.projectlombok:lombok:1.18.32")
-    annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api:3.1.0")
-    annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:0.15.0")
-    annotationProcessor("org.hibernate.orm:hibernate-jpamodelgen:6.3.1.Final")
+    // annotationProcessor(libs.org.projectlombok.lombok)
+    // annotationProcessor(variantOf(libs.com.querydsl.querydsl.apt) {
+    //     classifier("jakarta")
+    // })
+    // annotationProcessor(libs.jakarta.persistence.jakarta.persistence.api)
+    // annotationProcessor(libs.org.hibernate.orm.hibernate.jpamodelgen)
+    // annotationProcessor(libs.com.github.therapi.therapi.runtime.javadoc.scribe)
 
 }
 
@@ -120,4 +130,7 @@ tasks.withType<Jar> {
 }
 
 
+tasks.withType<BootJar> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE;
+}
 
