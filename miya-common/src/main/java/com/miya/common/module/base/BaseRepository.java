@@ -1,5 +1,7 @@
 package com.miya.common.module.base;
 
+import com.miya.common.module.specificationbinds.EntityBinder;
+import com.miya.common.module.specificationbinds.SpecificationBinderCustomizer;
 import com.querydsl.core.types.EntityPath;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +20,16 @@ import org.springframework.data.repository.NoRepositoryBean;
  */
 @NoRepositoryBean
 public interface BaseRepository<T, S extends EntityPath<?>> extends JpaRepository<T, String>,
-        QuerydslPredicateExecutor<T>, QuerydslBinderCustomizer<S>, JpaSpecificationExecutor<T>, ExtendsRepository<T, String, S> {
+        QuerydslPredicateExecutor<T>, QuerydslBinderCustomizer<S>, JpaSpecificationExecutor<T>,
+        ExtendsRepository<T, String, S>, SpecificationBinderCustomizer<T> {
 
     @Override
     default void customize(@NonNull QuerydslBindings bindings, @NonNull S entityPath) {
         DefaultQuerydslBinder.customize(bindings, entityPath);
     }
 
+    @Override
+    default void customize(EntityBinder entityBinder, T root) {
+
+    }
 }

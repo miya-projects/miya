@@ -19,6 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.miya.common.config.web.databind.ControllerAdviceInitBinder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,10 @@ import java.util.TimeZone;
 @Component
 public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer {
 
+
+    @Value("#{@projectConfiguration.enableSpecialCharacterFilter}")
+    private Boolean enableSpecialCharacterFilter;
+
     @Override
     public void customize(Jackson2ObjectMapperBuilder builder) {
 
@@ -48,7 +53,10 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
         builder.timeZone(TimeZone.getDefault());
         builder.featuresToDisable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         builder.serializerByType(ReadableEnum.class, new ReadableEnumSerializer());
-        builder.deserializerByType(String.class, new StringTrimmerDeserializer(String.class));
+
+        if (enableSpecialCharacterFilter) {
+            builder.deserializerByType(String.class, new StringTrimmerDeserializer(String.class));
+        }
 
         builder.postConfigurer(objectMapper -> {
             objectMapper.getFactory()

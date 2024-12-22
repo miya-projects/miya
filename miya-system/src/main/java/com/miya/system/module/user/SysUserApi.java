@@ -7,11 +7,11 @@ import com.miya.common.model.dto.base.ResponseCode;
 import com.miya.common.module.base.BaseApi;
 import com.miya.common.module.base.BaseEntity;
 import com.miya.system.module.user.dto.LoginDTO;
-import com.miya.system.module.user.model.SysUser;
 import com.miya.system.module.user.dto.SysUserDetailDTO;
 import com.miya.system.module.user.dto.SysUserForm;
 import com.miya.system.module.user.dto.SysUserListDTO;
-import com.miya.system.module.user.model.*;
+import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUserPrincipal;
 import com.querydsl.core.types.Predicate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,15 +46,24 @@ public class SysUserApi extends BaseApi {
     private final SysUserService sysUserService;
     private final SysUserRepository sysUserRepository;
 
+    //@GetMapping("aaa")
+    //@Acl(business = "sys:user:view")
+    //public R<Grid<SysUserListDTO>> list111(
+    //        @QuerydslPredicate(root = SysUser.class) Predicate predicate,
+    //        @PageableDefault(sort = BaseEntity.Fields.createdTime, direction = Sort.Direction.DESC) Pageable pageable) {
+    //    Page<SysUser> all = sysUserRepository.findAll(predicate, pageable);
+    //    return R.successWithData(Grid.of(all.map(SysUserListDTO::of)));
+    //}
+
     /**
      * 用户列表
      */
     @GetMapping
     @Acl(business = "sys:user:view")
     public R<Grid<SysUserListDTO>> list(
-            @QuerydslPredicate(root = SysUser.class) Predicate predicate,
+            Specification<SysUser> specification,
             @PageableDefault(sort = BaseEntity.Fields.createdTime, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<SysUser> all = sysUserRepository.findAll(predicate, pageable);
+        Page<SysUser> all = sysUserRepository.findAll(specification, pageable);
         return R.successWithData(Grid.of(all.map(SysUserListDTO::of)));
     }
 

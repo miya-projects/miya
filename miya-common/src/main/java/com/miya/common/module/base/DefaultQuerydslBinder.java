@@ -1,6 +1,7 @@
 package com.miya.common.module.base;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
@@ -128,6 +129,11 @@ public class DefaultQuerydslBinder {
                 LocalDateTime endDateTime = localDates.get(1);
                 if (Objects.isNull(startDateTime) || Objects.isNull(endDateTime)) {
                     return Optional.empty();
+                }
+                // 如果结束时间的小时分钟秒都为0，则重置为一天的结束时间
+                boolean isZero = endDateTime.getHour() == 0 && endDateTime.getMinute() == 0 && endDateTime.getSecond() == 0;
+                if (isZero) {
+                    endDateTime = LocalDateTimeUtil.endOfDay(endDateTime);
                 }
                 booleanBuilder.and(localDateTimeDatePath.between(startDateTime, endDateTime));
                 return Optional.of(booleanBuilder);

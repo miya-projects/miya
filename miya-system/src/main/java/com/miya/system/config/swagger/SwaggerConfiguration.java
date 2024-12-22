@@ -4,16 +4,19 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.miya.common.module.base.BaseEntity;
+import com.miya.common.module.specificationbinds.QueryBindingConfigurator;
+import com.miya.common.module.specificationbinds.SpecificationBinderCustomizer;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.swagger.customizer.DomainClassGlobalSupport;
 import com.miya.system.config.swagger.customizer.ExtClientMethodNameSupport;
 import com.miya.system.config.swagger.customizer.QuerydslPredicateOperationWithJavaDocCustomizer;
+import com.miya.system.config.swagger.customizer.SpecificationPredicateOperationCustomizer;
+import com.miya.common.module.specificationbinds.DefaultQueryBindingConfigurator;
 import com.querydsl.core.types.Predicate;
-import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +24,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.configuration.SpringDocDataRestConfiguration;
 import org.springdoc.core.converters.PageableOpenAPIConverter;
-import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springdoc.core.providers.JavadocProvider;
 import org.springdoc.core.providers.ObjectMapperProvider;
@@ -34,6 +36,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.data.repository.support.Repositories;
@@ -44,10 +47,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springdoc.core.utils.Constants.SPRINGDOC_ENABLED;
 import static org.springdoc.core.utils.SpringDocUtils.getConfig;
@@ -140,6 +140,23 @@ public class SwaggerConfiguration implements ApplicationRunner {
             return new QuerydslPredicateOperationWithJavaDocCustomizer(querydslBindingsFactory.get(), javadocProvider, springDocConfigProperties);
         }
         return null;
+    }
+
+    /**
+     * 解析querydsl的predicate参数
+     */
+    @Bean
+    SpecificationPredicateOperationCustomizer specificationPredicateOperationCustomizer(
+            QueryBindingConfigurator queryBindingConfigurator,
+            JavadocProvider javadocProvider,
+            SpringDocConfigProperties springDocConfigProperties) {
+        //if (querydslBindingsFactory.isPresent()) {
+        //    getConfig().addRequestWrapperToIgnore(Predicate.class);
+        //    return new QuerydslPredicateOperationWithJavaDocCustomizer(querydslBindingsFactory.get(), javadocProvider, springDocConfigProperties);
+        //}
+        getConfig().addRequestWrapperToIgnore(Specification.class);
+        //return null;
+        return new SpecificationPredicateOperationCustomizer(javadocProvider, springDocConfigProperties, queryBindingConfigurator);
     }
 
     @Bean

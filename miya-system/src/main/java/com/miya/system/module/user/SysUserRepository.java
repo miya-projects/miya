@@ -2,8 +2,10 @@ package com.miya.system.module.user;
 
 import com.miya.common.module.base.BaseRepository;
 import com.miya.common.module.base.DefaultQuerydslBinder;
+import com.miya.common.module.specificationbinds.EntityBinder;
 import com.miya.system.module.user.model.QSysUser;
 import com.miya.system.module.user.model.SysUser;
+import com.miya.system.module.user.model.SysUser_;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 
@@ -20,6 +22,12 @@ public interface SysUserRepository extends BaseRepository<SysUser, QSysUser> {
         bindings.excluding(qSysUser.password, qSysUser.id, qSysUser.avatar);
     }
 
-    <T> List<T> findByName(String name,  Class<T> type);
+    @Override
+    default void customize(EntityBinder entityBinder, SysUser root) {
+        //entityBinder.addExcludeField("password");
+        entityBinder.addExcludeField(SysUser_.password);
+    }
+
+    <T> List<T> findByName(String name, Class<T> type);
 
 }

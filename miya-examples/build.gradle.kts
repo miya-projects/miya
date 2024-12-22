@@ -38,7 +38,7 @@ dependencies {
     testImplementation(platform(project(":version-platform")))
 
     implementation("org.projectlombok:lombok")
-    implementation(libs.hutool)
+    implementation("cn.hutool:hutool-all")
     api(project(":miya-system"))
     // implementation(libs.org.springframework.boot.spring.boot.starter)
     // implementation(libs.org.springframework.boot.spring.boot.starter.data.jpa)
@@ -46,18 +46,6 @@ dependencies {
     // implementation(libs.org.springframework.boot.spring.boot.starter.cache)
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 
-    // api(libs.jakarta.persistence.jakarta.persistence.api)
-    // api(libs.com.alibaba.druid.spring.boot.starter)
-    // api(variantOf(libs.com.querydsl.querydsl.jpa) {
-    //     classifier("jakarta")
-    // })
-    // api(libs.org.hibernate.orm.hibernate.envers)
-    // api(libs.io.hypersistence.hypersistence.utils.hibernate.v62)
-    //
-    // implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
-    //
-    // implementation(libs.com.aliyun.oss.aliyun.sdk.oss)
-    // implementation(libs.io.minio.minio)
 
     annotationProcessor(platform(project(":version-platform")))
     annotationProcessor("org.projectlombok:lombok")

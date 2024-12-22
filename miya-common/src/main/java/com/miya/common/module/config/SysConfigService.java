@@ -19,6 +19,7 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,10 +47,15 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
             }
         } else {
             // 增量更新
-            for (SystemConfigKeys configKey : SystemConfigKeys.values()) {
-                touchSystemConfig(configKey);
-            }
+            touchSystemConfigs(Arrays.asList(SystemConfigKeys.values()));
         }
+    }
+
+    /**
+     * 摸一下系统配置，如果不存在就创建
+     */
+    public void touchSystemConfigs(List<SystemConfig> systemConfigs) {
+        systemConfigs.forEach(this::touchSystemConfig);
     }
 
     /**
@@ -88,9 +94,9 @@ public class SysConfigService implements SystemInit, SmartInitializingSingleton 
      * 返回supplier包装过的参数，推荐使用，每次get都会重新加载参数(缓存或DB)。且低依赖(不用依赖于整个configService)。
      * @param systemConfig
      */
-    @Cacheable(cacheNames = "SYS_CONFIG", key = "#systemConfig.group() + #systemConfig.name()")
     public <T> Supplier<T> getSupplier(SystemConfig systemConfig) {
-        return () -> getValOrDefaultVal(systemConfig);
+        SysConfigService configService = SpringUtil.getBean(SysConfigService.class);
+        return () -> configService.getValOrDefaultVal(systemConfig);
     }
 
     /**

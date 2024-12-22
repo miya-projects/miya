@@ -8,11 +8,18 @@ plugins {
 
 dependencies {
     implementation(platform(project(":version-platform")))
+    annotationProcessor(platform(project(":version-platform")))
+
     api(project(":miya-common"))
-    api(libs.com.aliyun.oss.aliyun.sdk.oss)
+    // 处理启动解析xml报错
+    implementation("org.dom4j:dom4j:2.1.4")
+    api("com.aliyun.oss:aliyun-sdk-oss:3.16.1") {
+        exclude(group = "org.dom4j", module = "dom4j")
+    }
+    // implementation 'pull-parser:pull-parser:2'
     api(libs.com.aliyun.dysmsapi20170525)
 
-    annotationProcessor(libs.org.projectlombok.lombok)
+    annotationProcessor("org.projectlombok:lombok")
 }
 
 description = "miya-sms-service"

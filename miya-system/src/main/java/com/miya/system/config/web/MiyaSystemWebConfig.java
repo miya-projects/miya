@@ -1,19 +1,23 @@
 package com.miya.system.config.web;
 
 import com.miya.common.config.web.interceptor.SignAccessInterceptor;
+import com.miya.common.module.specificationbinds.QueryBindingConfigurator;
 import com.miya.system.config.ProjectConfiguration;
 import com.miya.system.config.filter.interceptors.ApiAccessInterceptor;
+import com.miya.common.module.specificationbinds.DefaultQueryBindingConfigurator;
+import com.miya.common.module.specificationbinds.SpecificationArgumentResolver;
 import com.miya.system.module.FlagForMiyaSystemModule;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import jakarta.annotation.Resource;
+
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author 杨超辉
@@ -26,6 +30,8 @@ public class MiyaSystemWebConfig implements WebMvcConfigurer {
     private ProjectConfiguration projectConfiguration;
     @Resource
     private ApiAccessInterceptor apiAccessInterceptor;
+    @Resource
+    private QueryBindingConfigurator queryBindingConfigurator;
 
     /**
      * 路由匹配规则
@@ -52,4 +58,8 @@ public class MiyaSystemWebConfig implements WebMvcConfigurer {
                 .addPathPatterns(Collections.singletonList("/api/**"));
     }
 
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new SpecificationArgumentResolver(queryBindingConfigurator));
+    }
 }
