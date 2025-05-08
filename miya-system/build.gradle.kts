@@ -58,6 +58,7 @@ dependencies {
     annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
+    api("org.springframework.boot:spring-boot-starter-test")
 
 
     // 测试依赖

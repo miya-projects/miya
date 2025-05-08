@@ -6,7 +6,7 @@ plugins {
     id("buildlogic.java-conventions")
     alias(libs.plugins.springboot)
     // 3.4.3 在windows下执行jibDockerBuild会卡住
-    id("com.google.cloud.tools.jib") version ("3.4.2")
+    id("com.google.cloud.tools.jib") version ("3.4.5")
     // id("io.spring.dependency-management") version ("3.2.3")
 }
 // group = "io.github.rxxy"
@@ -119,6 +119,6 @@ tasks.withType<Jar> {
 
 
 tasks.withType<BootJar> {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE;
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
